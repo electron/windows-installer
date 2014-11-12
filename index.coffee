@@ -56,16 +56,19 @@ module.exports = (grunt) ->
     spawn {cmd, args}, (error, result, code) ->
       return done(error) if error?
 
-      nupkgPath = path.join(outputDirectory, "#{metadata.name}.#{metadata.version}.nupkg")
+      f = ->
+        nupkgPath = path.join(outputDirectory, "#{metadata.name}.#{metadata.version}.nupkg")
 
-      cmd = path.resolve(__dirname, '..', 'vendor', 'Update.com')
-      args = [
-        '--releasify'
-        nupkgPath
-        '--releaseDir'
-        outputDirectory
-        '--loadingGif'
-        loadingGif
-      ]
+        cmd = path.resolve(__dirname, '..', 'vendor', 'Update.com')
+        args = [
+          '--releasify'
+          nupkgPath
+          '--releaseDir'
+          outputDirectory
+          '--loadingGif'
+          loadingGif
+        ]
 
-      spawn {cmd, args}, (error, result, code) -> done(error)
+        spawn {cmd, args}, (error, result, code) -> done(error)
+
+      setTimeout(f, 5000)
