@@ -28,6 +28,7 @@ module.exports = (grunt) ->
 
   grunt.loadNpmTasks('grunt-coffeelint')
   grunt.loadNpmTasks('grunt-contrib-coffee')
+  grunt.loadNpmTasks('grunt-shell')
 
   grunt.registerTask 'clean', ->
     grunt.file.delete('tasks') if grunt.file.exists('tasks')
