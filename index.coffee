@@ -39,8 +39,6 @@ module.exports = (grunt) ->
       outputDirectory
     ]
 
-    console.log targetNuspecPath
-
     grunt.util.spawn {cmd, args}, (error, result, code) ->
       return done(error) if error?
 
@@ -53,4 +51,4 @@ module.exports = (grunt) ->
         '-g'
         loadingGif
       ]
-      spawn {cmd, args}, (error, result, code) -> done(error)
+      grunt.util.spawn {cmd, args}, (error, result, code) -> done(error)
