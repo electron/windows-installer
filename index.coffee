@@ -16,11 +16,11 @@ module.exports = (grunt) ->
     spawnedProcess.stdout.on 'data', (data) -> stdout += data
     spawnedProcess.stderr.on 'data', (data) -> stderr += data
     spawnedProcess.on 'error', (processError) -> error ?= processError
-    spawnedProcess.on 'close', (exitCode, signal) ->
-      error ?= new Error(signal) if exitCode != 0
-      results = {stderr: stderr.join(''), stdout: stdout.join(''), code: exitCode}
-      grunt.log.error results.stderr if exitCode != 0
-      callback(error, results, exitCode)
+    spawnedProcess.on 'close', (code, signal) ->
+      error ?= new Error(signal) if code != 0
+      results = {stderr, stdout, code}
+      grunt.log.error results.stderr) if code != 0
+      callback(error, results, code)
 
   grunt.registerTask 'create-windows-installer', 'Create the Windows installer', ->
     @requiresConfig("#{@name}.appDirectory")
