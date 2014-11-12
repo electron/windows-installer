@@ -17,9 +17,9 @@ module.exports = (grunt) ->
     metadata = grunt.file.readJSON('package.json')
 
     inputTemplate = grunt.file.read(path.join(__dirname, 'template.nuspec'))
-    nuspecContent = _.template(inputTemplate, metadata))
+    nuspecContent = _.template(inputTemplate, metadata)
 
-    targetNuspecPath = path.join(temp.mkdirSync('squirrel-installer-'), "#{metadata.name}.nuspec"))
+    targetNuspecPath = path.join(temp.mkdirSync('squirrel-installer-'), "#{metadata.name}.nuspec")
     grunt.file.write(targetNuspecPath, nuspecContent)
 
     cmd = path.resolve(__dirname, '..', 'vendor', 'nuget.exe')
