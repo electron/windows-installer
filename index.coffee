@@ -32,4 +32,6 @@ module.exports = (grunt) ->
       outputDirectory
     ]
 
-    grunt.util.spawn({cmd, args}, done)
+    grunt.util.spawn {cmd, args}, (error, result, code) ->
+      grunt.log.writeln(result)
+      done(error)
