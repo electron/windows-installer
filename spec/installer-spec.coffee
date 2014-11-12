@@ -9,7 +9,7 @@ describe 'create-windows-installer task', ->
     outputDirectory = temp.mkdirSync('grunt-atom-shell-installer-')
 
     grunt.config.init
-      pkg: grunt.file.readJSON(path.join(__dirname, 'fixtures', 'app', 'package.json'))
+      pkg: grunt.file.readJSON(path.join(__dirname, 'fixtures', 'app', 'resources', 'app', 'package.json'))
 
       'create-windows-installer':
         appDirectory: path.join(__dirname, 'fixtures', 'app')
