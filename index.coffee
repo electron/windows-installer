@@ -14,7 +14,7 @@ module.exports = (grunt) ->
     {appDirectory, outputDirectory} = grunt.config(@name)
     outputDirectory ?= path.resolve('.')
 
-    metadata = grunt.file.readJSON('package.json')
+    metadata = grunt.file.readJSON(path.join(appDirectory, 'resources', 'app', 'package.json'))
 
     metadata.authors ?= ''
     metadata.description ?= ''
