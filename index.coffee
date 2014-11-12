@@ -11,6 +11,7 @@ module.exports = (grunt) ->
     error = null
 
     ChildProcess.execFile options.cmd, options.args, (error, stdout, stderr) ->
+      grunt.log.writeln(stdout)
       grunt.log.error(stderr) if stderr
       callback(error)
 
