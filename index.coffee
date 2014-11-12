@@ -19,7 +19,7 @@ module.exports = (grunt) ->
     metadata.authors ?= ''
     metadata.description ?= ''
     metadata.exe ?= "#{metadata.name}.exe"
-    metadata.iconUrl ?= ''
+    metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/atom-shell/master/atom/browser/resources/win/atom.ico'
     metadata.owners ?= metadata.authors
 
     console.log metadata
