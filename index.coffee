@@ -13,6 +13,7 @@ module.exports = (grunt) ->
 
     {appDirectory, outputDirectory} = grunt.config(@name)
     outputDirectory ?= path.resolve('.')
+    loadingGif ?= path.resolve(__dirname, 'resources', 'install-spinner.gif')
 
     metadata = grunt.file.readJSON(path.join(appDirectory, 'resources', 'app', 'package.json'))
 
@@ -41,4 +42,15 @@ module.exports = (grunt) ->
     console.log targetNuspecPath
 
     grunt.util.spawn {cmd, args}, (error, result, code) ->
-      done(error)
+      return done(error) if error?
+
+      nupkgPath = path.join(outputDirectory, "#{metadata.name}.#{metadata.version}.nupkg")
+
+      cmd = path.resolve(__dirname, '..', 'vendor', 'Update.com')
+      args = [
+        '--releasify'
+        nupkgPath
+        '-g'
+        loadingGif
+      ]
+      spawn {cmd, args}, (error, result, code) -> done(error)
