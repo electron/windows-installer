@@ -32,4 +32,7 @@ module.exports = (grunt) ->
       outputDirectory
     ]
 
+    console.log cmd
+    console.log args
+
     grunt.util.spawn({cmd, args}, done)
