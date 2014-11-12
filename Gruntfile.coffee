@@ -18,6 +18,14 @@ module.exports = (grunt) ->
           level: 'ignore'
       src: ['*.coffee']
 
+    shell:
+      test:
+        command: 'node_modules/jasmine-focused/bin/jasmine-focused --captureExceptions --coffee spec'
+        options:
+          stdout: true
+          stderr: true
+          failOnError: true
+
   grunt.loadNpmTasks('grunt-coffeelint')
   grunt.loadNpmTasks('grunt-contrib-coffee')
 
@@ -25,3 +33,4 @@ module.exports = (grunt) ->
     grunt.file.delete('tasks') if grunt.file.exists('tasks')
   grunt.registerTask('lint', ['coffeelint'])
   grunt.registerTask('default', ['lint', 'coffee'])
+  grunt.registerTask('test', ['default', 'shell:test'])
