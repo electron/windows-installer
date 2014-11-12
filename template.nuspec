@@ -24,7 +24,6 @@
     <file src="msvcp120.dll" target="lib\net45\msvcp120.dll" />
     <file src="msvcr120.dll" target="lib\net45\msvcr120.dll" />
     <file src="vccorlib120.dll" target="lib\net45\vccorlib120.dll" />
-    <file src="version" target="lib\net45\version" />
     <file src="xinput1_3.dll" target="lib\net45\xinput1_3.dll" />
   </files>
 </package>
