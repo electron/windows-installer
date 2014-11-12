@@ -5,7 +5,7 @@
     <version><%= version %></version>
     <authors><%= authors %></authors>
     <owners><%= owners %></owners>
-    <iconUrl><% iconUrl %></iconUrl>
+    <iconUrl><%= iconUrl %></iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description><%= description %></description>
   </metadata>
