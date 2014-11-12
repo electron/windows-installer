@@ -10,16 +10,9 @@ module.exports = (grunt) ->
     stderr = ''
     error = null
 
-    spawnedProcess = ChildProcess.spawn(options.cmd, options.args, options.opts)
-    spawnedProcess.stdout.on 'data', (data) -> stdout += data
-    spawnedProcess.stderr.on 'data', (data) -> stderr += data
-    spawnedProcess.on 'error', (processError) -> error ?= processError
-    spawnedProcess.on 'close', (code, signal) ->
-      error ?= new Error(signal) if code != 0
-      results = {stderr, stdout, code}
-      grunt.log.error(results.stderr) if code != 0
-      spawnedProcess.kill()
-      callback(error, results, code)
+    spawnedProcess = ChildProcess.execFile cmd, options.args, (error, stdout, stderr) ->
+      grunt.log.error(stderr) if stderr
+      callback(error)
 
   grunt.registerTask 'create-windows-installer', 'Create the Windows installer', ->
     @requiresConfig("#{@name}.appDirectory")
