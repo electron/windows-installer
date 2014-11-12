@@ -1,3 +1,4 @@
+ChildProcess = require 'child_process'
 fs = require 'fs'
 path = require 'path'
 temp = require 'temp'
@@ -7,8 +8,19 @@ temp.track()
 
 module.exports = (grunt) ->
   spawn = (options, callback) ->
-    spawnedProcess = grunt.util.spawn(options, callback)
-    spawnedProcess.on('error', callback)
+    stdout = []
+    stderr = []
+    error = null
+
+    spawnedProcess = ChildProcess.spawn(options.cmd, options.args, options.opts)
+    spawnedProcess.stdout.on 'data', (data) -> stdout.push(data.toString())
+    spawnedProcess.stderr.on 'data', (data) -> stderr.push(data.toString())
+    spawnedProcess.on 'error', (processError) -> error ?= processError
+    spawnedProcess.on 'close', (exitCode, signal) ->
+      error ?= new Error(signal) if exitCode != 0
+      results = {stderr: stderr.join(''), stdout: stdout.join(''), code: exitCode}
+      grunt.log.error results.stderr if exitCode != 0
+      callback(error, results, exitCode)
 
   grunt.registerTask 'create-windows-installer', 'Create the Windows installer', ->
     @requiresConfig("#{@name}.appDirectory")
