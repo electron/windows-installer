@@ -48,7 +48,7 @@ module.exports = (grunt) ->
       args = [
         '--releasify'
         nupkgPath
-        '-g'
+        '--loadingGif'
         loadingGif
       ]
       grunt.util.spawn {cmd, args}, (error, result, code) -> done(error)
