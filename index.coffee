@@ -22,6 +22,8 @@ module.exports = (grunt) ->
     metadata.iconUrl ?= ''
     metadata.owners ?= metadata.authors
 
+    console.log metadata
+
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
     nuspecContent = template(metadata)
 
