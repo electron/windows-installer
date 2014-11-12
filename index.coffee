@@ -18,6 +18,7 @@ module.exports = (grunt) ->
       error ?= new Error(signal) if code != 0
       results = {stderr, stdout, code}
       grunt.log.error(results.stderr) if code != 0
+      spawnedProcess.kill()
       callback(error, results, code)
 
   grunt.registerTask 'create-windows-installer', 'Create the Windows installer', ->
