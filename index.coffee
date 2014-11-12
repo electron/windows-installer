@@ -51,4 +51,6 @@ module.exports = (grunt) ->
         '--loadingGif'
         loadingGif
       ]
-      grunt.util.spawn {cmd, args}, (error, result, code) -> done(error)
+      grunt.util.spawn {cmd, args}, (error, result, code) ->
+        console.log result
+        done(error)
