@@ -11,7 +11,7 @@ module.exports = (grunt) ->
 
     done = @async()
 
-    {appDirectory, outputDirectory} = grunt.config(@name)
+    {appDirectory, loadingGif, outputDirectory} = grunt.config(@name)
     outputDirectory ?= path.resolve('.')
     loadingGif ?= path.resolve(__dirname, 'resources', 'install-spinner.gif')
 
