@@ -4,8 +4,6 @@ path = require 'path'
 temp = require 'temp'
 _ = require 'underscore'
 
-temp.track()
-
 module.exports = (grunt) ->
   spawn = (options, callback) ->
     stdout = ''
