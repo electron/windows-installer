@@ -22,7 +22,7 @@ module.exports = (grunt) ->
 
     shell:
       test:
-        command: "#{path.join('node_modules', 'jasmine-focused', 'bin', 'jasmine-focused')} --captureExceptions --coffee spec"
+        command: "node #{path.join('node_modules', 'jasmine-focused', 'bin', 'jasmine-focused')} --captureExceptions --coffee spec"
         options:
           stdout: true
           stderr: true
