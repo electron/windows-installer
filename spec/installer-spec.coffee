@@ -21,7 +21,7 @@ describe 'create-windows-installer task', ->
     grunt.registerTask 'done', 'done',  -> tasksDone = true
     grunt.task.run(['create-windows-installer', 'done']).start()
 
-    waitsFor -> tasksDone
+    waitsFor 30000, -> tasksDone
 
     runs ->
       expect(fs.existsSync(path.join(outputDirectory, 'myapp.1.0.0.nupkg'))).toBe true
