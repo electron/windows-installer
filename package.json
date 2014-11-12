@@ -12,6 +12,8 @@
     "prepublish": "grunt clean lint coffee"
   },
   "dependencies": {
+    "temp": "^0.8.1",
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
