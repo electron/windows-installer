@@ -22,8 +22,6 @@ module.exports = (grunt) ->
     metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/atom-shell/master/atom/browser/resources/win/atom.ico'
     metadata.owners ?= metadata.authors
 
-    console.log metadata
-
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
     nuspecContent = template(metadata)
 
@@ -43,5 +41,4 @@ module.exports = (grunt) ->
     console.log targetNuspecPath
 
     grunt.util.spawn {cmd, args}, (error, result, code) ->
-      grunt.log.writeln(result)
       done(error)
