@@ -16,6 +16,12 @@ module.exports = (grunt) ->
 
     metadata = grunt.file.readJSON('package.json')
 
+    metadata.authors ?= ''
+    metadata.description ?= ''
+    metadata.exe ?= "#{metadata.name}.exe"
+    metadata.iconUrl ?= ''
+    metadata.owners ?= metadata.authors
+
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
     nuspecContent = template(metadata)
 
