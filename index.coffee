@@ -32,6 +32,8 @@ module.exports = (grunt) ->
       outputDirectory
     ]
 
+    console.log targetNuspecPath
+
     grunt.util.spawn {cmd, args}, (error, result, code) ->
       grunt.log.writeln(result)
       done(error)
