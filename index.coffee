@@ -11,12 +11,12 @@ module.exports = (grunt) ->
 
     done = @async()
 
-    {appDirectory, outputDirectory} = @options()
+    {appDirectory, outputDirectory} = grunt.config(@name)
     outputDirectory ?= path.resolve('.')
 
     metadata = grunt.file.readJSON('package.json')
 
-    inputTemplate = grunt.file.read(path.join(__dirname, 'template.nuspec'))
+    inputTemplate = grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec'))
     nuspecContent = _.template(inputTemplate, metadata)
 
     targetNuspecPath = path.join(temp.mkdirSync('squirrel-installer-'), "#{metadata.name}.nuspec")
@@ -31,8 +31,5 @@ module.exports = (grunt) ->
       '-OutputDirectory'
       outputDirectory
     ]
-
-    console.log cmd
-    console.log args
 
     grunt.util.spawn({cmd, args}, done)
