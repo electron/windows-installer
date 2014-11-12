@@ -6,7 +6,7 @@ temp = require 'temp'
 
 describe 'create-windows-installer task', ->
   it 'creates a nuget package', ->
-    outputDirectory = temp.mkdirSync('grunt-atom-shell-installer-')
+    outputDirectory = __drname
 
     grunt.config.init
       pkg: grunt.file.readJSON(path.join(__dirname, 'fixtures', 'app', 'resources', 'app', 'package.json'))
