@@ -10,7 +10,7 @@ module.exports = (grunt) ->
     stderr = ''
     error = null
 
-    spawnedProcess = ChildProcess.execFile cmd, options.args, (error, stdout, stderr) ->
+    ChildProcess.execFile options.cmd, options.args, (error, stdout, stderr) ->
       grunt.log.error(stderr) if stderr
       callback(error)
 
