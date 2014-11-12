@@ -48,7 +48,7 @@ module.exports = (grunt) ->
     ]
 
     spawn {cmd, args}, (error, result, code) ->
-      return done(error) if error?
+      done(error)
 
       # nupkgPath = path.join(outputDirectory, "#{metadata.name}.#{metadata.version}.nupkg")
       #
