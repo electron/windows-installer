@@ -8,13 +8,13 @@ temp.track()
 
 module.exports = (grunt) ->
   spawn = (options, callback) ->
-    stdout = []
-    stderr = []
+    stdout = ''
+    stderr = ''
     error = null
 
     spawnedProcess = ChildProcess.spawn(options.cmd, options.args, options.opts)
-    spawnedProcess.stdout.on 'data', (data) -> stdout.push(data.toString())
-    spawnedProcess.stderr.on 'data', (data) -> stderr.push(data.toString())
+    spawnedProcess.stdout.on 'data', (data) -> stdout += data
+    spawnedProcess.stderr.on 'data', (data) -> stderr += data
     spawnedProcess.on 'error', (processError) -> error ?= processError
     spawnedProcess.on 'close', (exitCode, signal) ->
       error ?= new Error(signal) if exitCode != 0
