@@ -6,6 +6,10 @@ _ = require 'underscore'
 temp.track()
 
 module.exports = (grunt) ->
+  spawn = (options, callback) ->
+    spawnedProcess = grunt.util.spawn(options, callback)
+    spawnedProcess.on('error', callback)
+
   grunt.registerTask 'create-windows-installer', 'Create the Windows installer', ->
     @requiresConfig("#{@name}.appDirectory")
 
@@ -39,7 +43,7 @@ module.exports = (grunt) ->
       outputDirectory
     ]
 
-    grunt.util.spawn {cmd, args}, (error, result, code) ->
+    spawn {cmd, args}, (error, result, code) ->
       return done(error) if error?
 
       nupkgPath = path.join(outputDirectory, "#{metadata.name}.#{metadata.version}.nupkg")
@@ -53,7 +57,8 @@ module.exports = (grunt) ->
         '--loadingGif'
         loadingGif
       ]
-      grunt.util.spawn {cmd, args}, (error, result, code) ->
+
+      spawn {cmd, args}, (error, result, code) ->
         grunt.log.writeln result
         grunt.log.writeln code
         done(error)
