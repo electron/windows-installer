@@ -48,6 +48,8 @@ module.exports = (grunt) ->
       args = [
         '--releasify'
         nupkgPath
+        '--releaseDir'
+        outputDirectory
         '--loadingGif'
         loadingGif
       ]
