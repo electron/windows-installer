@@ -15,7 +15,7 @@ module.exports = (grunt) ->
 
     done = @async()
 
-    {appDirectory, loadingGif, outputDirectory} = grunt.config(@name)
+    {appDirectory, loadingGif, outputDirectory, iconUrl} = grunt.config(@name)
     outputDirectory ?= path.resolve('.')
     loadingGif ?= path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
 
@@ -24,7 +24,7 @@ module.exports = (grunt) ->
     metadata.authors ?= metadata.author?.name ? metadata.author ? ''
     metadata.description ?= ''
     metadata.exe ?= "#{metadata.name}.exe"
-    metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/atom-shell/master/atom/browser/resources/win/atom.ico'
+    metadata.iconUrl ?= iconUrl ? 'https://raw.githubusercontent.com/atom/atom-shell/master/atom/browser/resources/win/atom.ico'
     metadata.owners ?= metadata.authors
 
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
