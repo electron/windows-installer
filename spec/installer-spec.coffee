@@ -5,7 +5,7 @@ grunt = require 'grunt'
 temp = require 'temp'
 
 describe 'create-windows-installer task', ->
-  it 'creates a nuget package', ->
+  it 'creates a nuget package and installer', ->
     outputDirectory = temp.mkdirSync('grunt-atom-shell-installer-')
 
     grunt.config.init
