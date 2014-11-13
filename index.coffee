@@ -58,7 +58,7 @@ module.exports = (grunt) ->
         '--releasify'
         nupkgPath
         '--releaseDir'
-        outputDirectory
+        path.join(outputDirectory, 'release')
         '--loadingGif'
         loadingGif
       ]
