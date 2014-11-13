@@ -64,4 +64,11 @@ module.exports = (grunt) ->
         loadingGif
       ]
 
-      spawn {cmd, args}, (error) -> done(error)
+      spawn {cmd, args}, (error) ->
+        return done(error) if error?
+
+        if metadata.productName
+          setupPath = path.join(outputDirectory, "#{metadata.productName}Setup.exe")
+          fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
+
+        done()
