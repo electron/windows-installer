@@ -35,7 +35,9 @@ module.exports = (grunt) ->
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
     nuspecContent = template(metadata)
 
-    targetNuspecPath = path.join(temp.mkdirSync('squirrel-installer-'), "#{metadata.name}.nuspec")
+    nugetOutput = temp.mkdirSync('squirrel-installer-')
+
+    targetNuspecPath = path.join(nugetOutput, "#{metadata.name}.nuspec")
     grunt.file.write(targetNuspecPath, nuspecContent)
 
     cmd = path.resolve(__dirname, '..', 'vendor', 'nuget.exe')
@@ -45,20 +47,20 @@ module.exports = (grunt) ->
       '-BasePath'
       appDirectory
       '-OutputDirectory'
-      outputDirectory
+      nugetOutput
     ]
 
     spawn {cmd, args}, (error, result, code) ->
       return done(error) if error?
 
-      nupkgPath = path.join(outputDirectory, "#{metadata.name}.#{metadata.version}.nupkg")
+      nupkgPath = path.join(nugetOutput, "#{metadata.name}.#{metadata.version}.nupkg")
 
       cmd = path.resolve(__dirname, '..', 'vendor', 'Update.com')
       args = [
         '--releasify'
         nupkgPath
         '--releaseDir'
-        path.join(outputDirectory, 'release')
+        outputDirectory
         '--loadingGif'
         loadingGif
       ]

@@ -24,4 +24,4 @@ describe 'create-windows-installer task', ->
     waitsFor 30000, -> tasksDone
 
     runs ->
-      expect(fs.existsSync(path.join(outputDirectory, 'myapp.1.0.0.nupkg'))).toBe true
+      expect(fs.existsSync(path.join(outputDirectory, 'myapp.1.0.0-full.nupkg'))).toBe true
