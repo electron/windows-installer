@@ -22,7 +22,7 @@ module.exports = (grunt) ->
 
     {appDirectory, loadingGif, outputDirectory} = grunt.config(@name)
     outputDirectory ?= path.resolve('.')
-    loadingGif ?= path.resolve(__dirname, 'resources', 'install-spinner.gif')
+    loadingGif ?= path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
 
     metadata = grunt.file.readJSON(path.join(appDirectory, 'resources', 'app', 'package.json'))
 
