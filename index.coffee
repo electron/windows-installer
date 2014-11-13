@@ -25,7 +25,7 @@ module.exports = (grunt) ->
 
     metadata = grunt.file.readJSON(path.join(appDirectory, 'resources', 'app', 'package.json'))
 
-    metadata.authors ?= ''
+    metadata.authors ?= metadata.author?.name ? metadata.author ? ''
     metadata.description ?= ''
     metadata.exe ?= "#{metadata.name}.exe"
     metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/atom-shell/master/atom/browser/resources/win/atom.ico'
