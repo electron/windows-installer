@@ -5,11 +5,7 @@ temp = require 'temp'
 _ = require 'underscore'
 
 module.exports = (grunt) ->
-  spawn = (options, callback) ->
-    stdout = ''
-    stderr = ''
-    error = null
-
+  exec = (options, callback) ->
     ChildProcess.execFile options.cmd, options.args, (error, stdout, stderr) ->
       grunt.log.error(stderr) if stderr
       callback(error)
@@ -49,7 +45,7 @@ module.exports = (grunt) ->
       nugetOutput
     ]
 
-    spawn {cmd, args}, (error) ->
+    exec {cmd, args}, (error) ->
       return done(error) if error?
 
       nupkgPath = path.join(nugetOutput, "#{metadata.name}.#{metadata.version}.nupkg")
@@ -64,7 +60,7 @@ module.exports = (grunt) ->
         loadingGif
       ]
 
-      spawn {cmd, args}, (error) ->
+      exec {cmd, args}, (error) ->
         return done(error) if error?
 
         if metadata.productName
