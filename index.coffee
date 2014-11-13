@@ -49,7 +49,7 @@ module.exports = (grunt) ->
       nugetOutput
     ]
 
-    spawn {cmd, args}, (error, result, code) ->
+    spawn {cmd, args}, (error) ->
       return done(error) if error?
 
       nupkgPath = path.join(nugetOutput, "#{metadata.name}.#{metadata.version}.nupkg")
@@ -64,4 +64,4 @@ module.exports = (grunt) ->
         loadingGif
       ]
 
-      spawn {cmd, args}, (error, result, code) -> done(error)
+      spawn {cmd, args}, (error) -> done(error)
