@@ -15,17 +15,17 @@ module.exports = (grunt) ->
 
     done = @async()
 
-    {appDirectory, loadingGif, outputDirectory, iconUrl} = grunt.config(@name)
+    {appDirectory, authors, description, iconUrl, loadingGif, outputDirectory, owners} = grunt.config(@name)
     outputDirectory ?= path.resolve('.')
     loadingGif ?= path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
 
     metadata = grunt.file.readJSON(path.join(appDirectory, 'resources', 'app', 'package.json'))
 
-    metadata.authors ?= metadata.author?.name ? metadata.author ? ''
-    metadata.description ?= ''
+    metadata.authors ?= authors ? metadata.author?.name ? metadata.author ? ''
+    metadata.description ?= description ? ''
     metadata.exe ?= "#{metadata.name}.exe"
     metadata.iconUrl ?= iconUrl ? 'https://raw.githubusercontent.com/atom/atom-shell/master/atom/browser/resources/win/atom.ico'
-    metadata.owners ?= metadata.authors
+    metadata.owners ?= owners ? metadata.authors
 
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
     nuspecContent = template(metadata)
