@@ -19,7 +19,7 @@ module.exports = (grunt) ->
 
     appDirectory = path.resolve(config.appDirectory)
 
-    outputDirectory = config.outputDirectory ? '.'
+    outputDirectory = config.outputDirectory ? 'installer'
     outputDirectory = path.resolve(outputDirectory)
 
     loadingGif = config.loadingGif ? path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
