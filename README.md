@@ -47,3 +47,4 @@ There are several configuration settings supported:
 | `exe`             | No       | The name of your app's main `.exe` file. This uses the `name` field in your app's package.json file with an added `.exe` extension when unspecified. |
 | `description`     | No       | The description value for the nuget package metadata. Defaults to the `description` field from your app's package.json file when unspecified. |
 | `version`         | No       | The version value for the nuget package metadata. Defaults to the `version` field from your app's package.json file when unspecified. |
+| `title`           | No       | The title value for the nuget package metadata. Defaults to the `productName` field from your app's package.json file when unspecified. |

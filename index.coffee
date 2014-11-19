@@ -33,6 +33,7 @@ module.exports = (grunt) ->
     metadata.exe ?= "#{metadata.name}.exe"
     metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/atom-shell/master/atom/browser/resources/win/atom.ico'
     metadata.owners ?= metadata.authors
+    metadata.title ?= metadata.productName
     metadata.version = metadata.version.replace(/-.*$/, '')
 
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
