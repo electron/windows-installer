@@ -19,6 +19,9 @@ module.exports = (grunt) ->
 
     appDirectory = path.resolve(config.appDirectory)
 
+    # Bundle Update.exe with the app
+    grunt.file.copy(path.resolve(__dirname, '..', 'vendor', 'Update.exe'), path.join(appDirectory, 'Update.exe'))
+
     outputDirectory = config.outputDirectory ? 'installer'
     outputDirectory = path.resolve(outputDirectory)
 

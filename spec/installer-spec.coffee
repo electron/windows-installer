@@ -5,6 +5,10 @@ grunt = require 'grunt'
 temp = require 'temp'
 
 describe 'create-windows-installer task', ->
+  beforeEach ->
+    updateExePath = path.join(__dirname, 'fixtures', 'app', 'Update.exe')
+    fs.unlinkSync(updateExePath) if fs.existsSync(updateExePath)
+
   it 'creates a nuget package and installer', ->
     outputDirectory = temp.mkdirSync('grunt-atom-shell-installer-')
 
@@ -26,3 +30,4 @@ describe 'create-windows-installer task', ->
     runs ->
       expect(fs.existsSync(path.join(outputDirectory, 'myapp-1.0.0-full.nupkg'))).toBe true
       expect(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.exe'))).toBe true
+      expect(fs.existsSync(path.join(__dirname, 'fixtures', 'app', 'Update.exe'))).toBe true

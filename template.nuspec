@@ -14,6 +14,7 @@
     <file src="locales\**" target="lib\net45\locales" />
     <file src="resources\**" target="lib\net45\resources" />
     <file src="*.pak" target="lib\net45" />
+    <file src="Update.exe" target="lib\net45\squirrel.exe" />
     <file src="<%- exe %>" target="lib\net45\<%- exe %>" />
     <file src="chromiumcontent.dll" target="lib\net45\chromiumcontent.dll" />
     <file src="d3dcompiler_43.dll" target="lib\net45\d3dcompiler_43.dll" />
