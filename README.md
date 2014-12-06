@@ -37,14 +37,22 @@ Then run `grunt create-windows-installer` and you will have an `.nupkg`, a
 
 There are several configuration settings supported:
 
-| Config Name       | Required | Description |
-| ----------------- | -------- | ----------- |
-| `appDirectory`    | Yes      | The folder path of your Atom Shell-based app |
-| `outputDirectory` | No       | The folder path to create the `.exe` installer in. Defaults to the `installer` folder at the project root. |
-| `loadingGif`      | No       | The local path to a `.gif` file to display during install. |
-| `authors`         | Yes      | The authors value for the nuget package metadata. Defaults to the `author` field from your app's package.json file when unspecified. |
-| `owners`          | No       | The owners value for the nuget package metadata. Defaults to the `authors` field when unspecified. |
-| `exe`             | No       | The name of your app's main `.exe` file. This uses the `name` field in your app's package.json file with an added `.exe` extension when unspecified. |
-| `description`     | No       | The description value for the nuget package metadata. Defaults to the `description` field from your app's package.json file when unspecified. |
-| `version`         | No       | The version value for the nuget package metadata. Defaults to the `version` field from your app's package.json file when unspecified. |
-| `title`           | No       | The title value for the nuget package metadata. Defaults to the `productName` field and then the `name` field from your app's package.json file when unspecified. |
+| Config Name           | Required | Description |
+| --------------------- | -------- | ----------- |
+| `appDirectory`        | Yes      | The folder path of your Atom Shell-based app |
+| `outputDirectory`     | No       | The folder path to create the `.exe` installer in. Defaults to the `installer` folder at the project root. |
+| `loadingGif`          | No       | The local path to a `.gif` file to display during install. |
+| `authors`             | Yes      | The authors value for the nuget package metadata. Defaults to the `author` field from your app's package.json file when unspecified. |
+| `owners`              | No       | The owners value for the nuget package metadata. Defaults to the `authors` field when unspecified. |
+| `exe`                 | No       | The name of your app's main `.exe` file. This uses the `name` field in your app's package.json file with an added `.exe` extension when unspecified. |
+| `description`         | No       | The description value for the nuget package metadata. Defaults to the `description` field from your app's package.json file when unspecified. |
+| `version`             | No       | The version value for the nuget package metadata. Defaults to the `version` field from your app's package.json file when unspecified. |
+| `title`               | No       | The title value for the nuget package metadata. Defaults to the `productName` field and then the `name` field from your app's package.json file when unspecified. |
+| `certificateFile`     | No       | The path to an Authenticode Code Signing Certificate |
+| `certificatePassword` | No       | The password to decrypt the certificate given in `certificateFile` |
+
+## Sign your installer or else bad things will happen
+
+For development / internal use, creating installers without a signature is okay, but for a production app you need to sign your application. Internet Explorer's SmartScreen filter will block your app from being downloaded, and many anti-virus vendors will consider your app as malware unless you obtain a valid cert.
+
+Any certificate valid for "Authenticode Code Signing" will work here, but if you get the right kind of code certificate, you can also opt-in to [Windows Error Reporting](http://en.wikipedia.org/wiki/Windows_Error_Reporting). [This MSDN page](http://msdn.microsoft.com/en-us/library/windows/hardware/hh801887.aspx) has the latest links on where to get a WER-compatible certificate. The "Standard Code Signing" certificate is sufficient for this purpose.
