@@ -28,8 +28,7 @@ module.exports = (grunt) ->
     loadingGif = config.loadingGif ? path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
     loadingGif = path.resolve(loadingGif)
 
-    certificateFile = config.certificateFile
-    certificatePassword = config.certificatePassword
+    {certificateFile, certificatePassword} = config
 
     appMetadata = grunt.file.readJSON(path.join(appDirectory, 'resources', 'app', 'package.json'))
     metadata = _.extend({}, appMetadata, config)
