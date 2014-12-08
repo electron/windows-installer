@@ -1,0 +1,24 @@
+{
+  "max_line_length": {
+    "value": 140,
+    "level": "warn"
+  },
+  "no_empty_param_list": {
+    "level": "error"
+  },
+  "missing_fat_arrows": {
+    "level": "ignore"
+  },
+  "arrow_spacing": {
+    "level": "error"
+  },
+  "no_interpolation_in_single_quotes": {
+    "level": "error"
+  },
+  "no_trailing_whitespace": {
+    "level": "ignore"
+  },
+  "no_debugger": {
+    "level": "error"
+  }
+}
