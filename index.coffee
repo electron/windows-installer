@@ -57,6 +57,7 @@ module.exports = (grunt) ->
       appDirectory
       '-OutputDirectory'
       nugetOutput
+      '-NoDefaultExcludes'
     ]
 
     exec {cmd, args}, (error) ->
