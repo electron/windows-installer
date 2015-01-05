@@ -4,6 +4,8 @@ path = require 'path'
 temp = require 'temp'
 _ = require 'underscore'
 
+temp.track()
+
 module.exports = (grunt) ->
   exec = (options, callback) ->
     ChildProcess.execFile options.cmd, options.args, (error, stdout, stderr) ->
