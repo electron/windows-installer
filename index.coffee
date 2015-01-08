@@ -34,7 +34,7 @@ module.exports = (grunt) ->
     {certificateFile, certificatePassword} = config
 
     appResourcesDirectory = path.join(appDirectory, 'resources', 'app')
-    if grunt.file.exists(appResourcesDirectory) and grunt.file.isDir(appResourcesDirectory)
+    if grunt.file.isDir(appResourcesDirectory)
       appMetadata = grunt.file.readJSON(path.join(appResourcesDirectory, 'package.json'))
     else
       appMetadata = JSON.parse(asar.extractFile(path.join(appDirectory, 'resources', 'app.asar'), 'package.json'))
