@@ -1,5 +1,6 @@
 ChildProcess = require 'child_process'
 fs = require 'fs'
+asar = require 'asar'
 path = require 'path'
 temp = require 'temp'
 _ = require 'underscore'
@@ -32,7 +33,11 @@ module.exports = (grunt) ->
 
     {certificateFile, certificatePassword} = config
 
-    appMetadata = grunt.file.readJSON(path.join(appDirectory, 'resources', 'app', 'package.json'))
+    appDir = path.join(appDirectory, 'resources', 'app')
+    if grunt.file.exists(appDir) and grunt.file.isDir(appDir)
+      appMetadata = grunt.file.readJSON(path.join(appDir, 'package.json'))
+    else
+      appMetadata = JSON.parse(asar.extractFile(path.join(appDirectory, 'resources', 'app.asar'), 'package.json'))
     metadata = _.extend({}, appMetadata, config)
 
     metadata.authors ?= metadata.author?.name ? metadata.author ? ''
