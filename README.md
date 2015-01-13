@@ -50,6 +50,7 @@ There are several configuration settings supported:
 | `title`               | No       | The title value for the nuget package metadata. Defaults to the `productName` field and then the `name` field from your app's package.json file when unspecified. |
 | `certificateFile`     | No       | The path to an Authenticode Code Signing Certificate |
 | `certificatePassword` | No       | The password to decrypt the certificate given in `certificateFile` |
+| `setupIcon`           | No       | The ICO file to use as the icon for the generated Setup.exe |
 
 ## Sign your installer or else bad things will happen
 
