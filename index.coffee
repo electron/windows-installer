@@ -67,13 +67,13 @@ module.exports = (grunt) ->
       '-NoDefaultExcludes'
     ]
 
-    syncReleases = (cb) -> cb()
-
-    if remoteReleases?
-      syncReleases = (cb) ->
+    syncReleases = (cb) ->
+      if remoteReleases?
         cmd = path.resolve(__dirname, '..', 'vendor', 'SyncReleases.exe')
         args = ['-u', remoteReleases, '-r', outputDirectory]
         exec {cmd, args}, cb
+      else
+        process.nextTick -> cb()
 
     exec {cmd, args}, (error) ->
       return done(error) if error?
