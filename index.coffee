@@ -31,7 +31,7 @@ module.exports = (grunt) ->
     loadingGif = config.loadingGif ? path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
     loadingGif = path.resolve(loadingGif)
 
-    {certificateFile, certificatePassword} = config
+    {certificateFile, certificatePassword, remoteReleases} = config
 
     appResourcesDirectory = path.join(appDirectory, 'resources', 'app')
     if grunt.file.isDir(appResourcesDirectory)
@@ -67,35 +67,46 @@ module.exports = (grunt) ->
       '-NoDefaultExcludes'
     ]
 
+    syncReleases = (cb) -> cb()
+
+    if remoteReleases?
+      syncReleases = (cb) ->
+        cmd = path.resolve(__dirname, '..', 'vendor', 'SyncReleases.exe')
+        args = ['-u', remoteReleases, '-r', outputDirectory]
+        exec {cmd, args}, cb
+
     exec {cmd, args}, (error) ->
       return done(error) if error?
 
       nupkgPath = path.join(nugetOutput, "#{metadata.name}.#{metadata.version}.nupkg")
 
-      cmd = path.resolve(__dirname, '..', 'vendor', 'Update.com')
-      args = [
-        '--releasify'
-        nupkgPath
-        '--releaseDir'
-        outputDirectory
-        '--loadingGif'
-        loadingGif
-      ]
-
-      if certificateFile? and certificatePassword?
-        args.push '--signWithParams'
-        args.push "/a /f \"#{path.resolve(certificateFile)}\" /p \"#{certificatePassword}\""
-
-      if config.setupIcon
-        setupIconPath = path.resolve(config.setupIcon)
-        args.push '--setupIcon'
-        args.push setupIconPath
-
-      exec {cmd, args}, (error) ->
+      syncReleases (error) ->
         return done(error) if error?
 
-        if metadata.productName
-          setupPath = path.join(outputDirectory, "#{metadata.productName}Setup.exe")
-          fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
+        cmd = path.resolve(__dirname, '..', 'vendor', 'Update.com')
+        args = [
+          '--releasify'
+          nupkgPath
+          '--releaseDir'
+          outputDirectory
+          '--loadingGif'
+          loadingGif
+        ]
 
-        done()
+        if certificateFile? and certificatePassword?
+          args.push '--signWithParams'
+          args.push "/a /f \"#{path.resolve(certificateFile)}\" /p \"#{certificatePassword}\""
+
+        if config.setupIcon
+          setupIconPath = path.resolve(config.setupIcon)
+          args.push '--setupIcon'
+          args.push setupIconPath
+
+        exec {cmd, args}, (error) ->
+          return done(error) if error?
+
+          if metadata.productName
+            setupPath = path.join(outputDirectory, "#{metadata.productName}Setup.exe")
+            fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
+
+          done()

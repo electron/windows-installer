@@ -51,6 +51,7 @@ There are several configuration settings supported:
 | `certificateFile`     | No       | The path to an Authenticode Code Signing Certificate |
 | `certificatePassword` | No       | The password to decrypt the certificate given in `certificateFile` |
 | `setupIcon`           | No       | The ICO file to use as the icon for the generated Setup.exe |
+| `remoteReleases`      | No       | A URL to your existing updates. If given, these will be downloaded to create delta updates |
 
 ## Sign your installer or else bad things will happen
 
