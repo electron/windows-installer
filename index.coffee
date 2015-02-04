@@ -31,7 +31,7 @@ module.exports = (grunt) ->
     loadingGif = config.loadingGif ? path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
     loadingGif = path.resolve(loadingGif)
 
-    {certificateFile, certificatePassword, remoteReleases} = config
+    {certificateFile, certificatePassword, remoteReleases, signWithParams} = config
 
     appResourcesDirectory = path.join(appDirectory, 'resources', 'app')
     if grunt.file.isDir(appResourcesDirectory)
@@ -93,7 +93,10 @@ module.exports = (grunt) ->
           loadingGif
         ]
 
-        if certificateFile? and certificatePassword?
+        if signWithParams?
+          args.push '--signWithParams'
+          args.push signWithParams
+        else if certificateFile? and certificatePassword?
           args.push '--signWithParams'
           args.push "/a /f \"#{path.resolve(certificateFile)}\" /p \"#{certificatePassword}\""
 
