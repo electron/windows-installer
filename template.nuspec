@@ -27,5 +27,7 @@
     <file src="msvcr120.dll" target="lib\net45\msvcr120.dll" />
     <file src="vccorlib120.dll" target="lib\net45\vccorlib120.dll" />
     <file src="xinput1_3.dll" target="lib\net45\xinput1_3.dll" />
+    <file src="natives_blob.bin" target="lib\net45\natives_blob.bin" />
+    <file src="snapshot_blob.bin" target="lib\net45\snapshot_blob.bin" />
   </files>
 </package>
