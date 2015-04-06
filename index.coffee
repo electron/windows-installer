@@ -33,11 +33,13 @@ module.exports = (grunt) ->
 
     {certificateFile, certificatePassword, remoteReleases, signWithParams} = config
 
-    appResourcesDirectory = path.join(appDirectory, 'resources', 'app')
-    if grunt.file.isDir(appResourcesDirectory)
-      appMetadata = grunt.file.readJSON(path.join(appResourcesDirectory, 'package.json'))
+    asarFile = path.join(appDirectory, 'resources', 'app.asar')
+    if fs.existsSync(asarFile)
+      appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'))
     else
-      appMetadata = JSON.parse(asar.extractFile(path.join(appDirectory, 'resources', 'app.asar'), 'package.json'))
+      appResourcesDirectory = path.join(appDirectory, 'resources', 'app')
+      appMetadata = grunt.file.readJSON(path.join(appResourcesDirectory, 'package.json'))
+
     metadata = _.extend({}, appMetadata, config)
 
     metadata.authors ?= metadata.author?.name ? metadata.author ? ''
