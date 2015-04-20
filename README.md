@@ -1,15 +1,15 @@
-# Atom Shell Installer Grunt Plugin
+# Electron Installer Grunt Plugin
 
-[![Build status](https://ci.appveyor.com/api/projects/status/yd1ybqg3eq397i26/branch/master?svg=true)](https://ci.appveyor.com/project/kevinsawicki/grunt-atom-shell-installer/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/yd1ybqg3eq397i26/branch/master?svg=true)](https://ci.appveyor.com/project/kevinsawicki/grunt-electron-installer/branch/master)
 
 Grunt plugin that builds Windows installers for
-[Atom Shell](https://github.com/atom/atom-shell) apps using
+[Electron](https://github.com/atom/electron) apps using
 [Squirrel](https://github.com/Squirrel/Squirrel.Windows).
 
 ## Installing
 
 ```sh
-npm install --save-dev grunt-atom-shell-installer
+npm install --save-dev grunt-electron-installer
 ```
 
 ## Configuring
@@ -17,7 +17,7 @@ npm install --save-dev grunt-atom-shell-installer
 In your `Gruntfile.coffee` or `Gruntfile.js` add the following:
 
 ```js
-grunt.loadNpmTasks('grunt-atom-shell-installer')
+grunt.loadNpmTasks('grunt-electron-installer')
 ```
 
 Then assuming you have an Atom Shell app built at the given `appDirectory`,

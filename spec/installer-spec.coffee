@@ -10,7 +10,7 @@ describe 'create-windows-installer task', ->
     fs.unlinkSync(updateExePath) if fs.existsSync(updateExePath)
 
   it 'creates a nuget package and installer', ->
-    outputDirectory = temp.mkdirSync('grunt-atom-shell-installer-')
+    outputDirectory = temp.mkdirSync('grunt-electron-installer-')
 
     grunt.config.init
       pkg: grunt.file.readJSON(path.join(__dirname, 'fixtures', 'app', 'resources', 'app', 'package.json'))
