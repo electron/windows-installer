@@ -20,7 +20,7 @@ In your `Gruntfile.coffee` or `Gruntfile.js` add the following:
 grunt.loadNpmTasks('grunt-electron-installer')
 ```
 
-Then assuming you have an Atom Shell app built at the given `appDirectory`,
+Then assuming you have an Electron app built at the given `appDirectory`,
 you can configure the installer task like so:
 
 ```js
@@ -39,7 +39,7 @@ There are several configuration settings supported:
 
 | Config Name           | Required | Description |
 | --------------------- | -------- | ----------- |
-| `appDirectory`        | Yes      | The folder path of your Atom Shell-based app |
+| `appDirectory`        | Yes      | The folder path of your Electron app |
 | `outputDirectory`     | No       | The folder path to create the `.exe` installer in. Defaults to the `installer` folder at the project root. |
 | `loadingGif`          | No       | The local path to a `.gif` file to display during install. |
 | `authors`             | Yes      | The authors value for the nuget package metadata. Defaults to the `author` field from your app's package.json file when unspecified. |
