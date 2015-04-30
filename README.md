@@ -63,8 +63,12 @@ Any certificate valid for "Authenticode Code Signing" will work here, but if you
 ## Handling Squirrel Events
 
 Squirrel will spawn your app with command line flags on first run, updates,
-and uninstalls. You should handle these events in your app's `main` entry point
-with something such as:
+and uninstalls. it is **very** important that your app handle these events as _early_
+as possible, and quit **immediately** after handling them. Squirrel will give your
+app a short amount of time (~15sec) to apply these operations and quit.
+
+You should handle these events in your app's `main` entry point with something 
+such as:
 
 ```js
 var app = require('app');
@@ -99,6 +103,9 @@ var handleStartupEvent = function() {
 
       return true;
     case '--squirrel-obsolete':
+      // This is called on the outgoing version of your app before 
+      // we update to the new version - it's the opposite of
+      // --squirrel-updated
       app.quit();
       return true;
   }
