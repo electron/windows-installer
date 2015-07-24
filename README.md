@@ -51,6 +51,7 @@ There are several configuration settings supported:
 | `certificateFile`     | No       | The path to an Authenticode Code Signing Certificate |
 | `certificatePassword` | No       | The password to decrypt the certificate given in `certificateFile` |
 | `signWithParams`      | No       | Params to pass to signtool.  Overrides `certificateFile` and `certificatePassword`. |
+| `iconUrl`             | No       | A URL to an ICO file to use as the application icon (displayed in Control Panel > Programs and Features). Defaults to the Atom icon. |
 | `setupIcon`           | No       | The ICO file to use as the icon for the generated Setup.exe |
 | `remoteReleases`      | No       | A URL to your existing updates. If given, these will be downloaded to create delta updates |
 
@@ -67,7 +68,7 @@ and uninstalls. it is **very** important that your app handle these events as _e
 as possible, and quit **immediately** after handling them. Squirrel will give your
 app a short amount of time (~15sec) to apply these operations and quit.
 
-You should handle these events in your app's `main` entry point with something 
+You should handle these events in your app's `main` entry point with something
 such as:
 
 ```js
@@ -103,7 +104,7 @@ var handleStartupEvent = function() {
 
       return true;
     case '--squirrel-obsolete':
-      // This is called on the outgoing version of your app before 
+      // This is called on the outgoing version of your app before
       // we update to the new version - it's the opposite of
       // --squirrel-updated
       app.quit();
