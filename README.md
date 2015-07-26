@@ -25,15 +25,24 @@ you can configure the installer task like so:
 
 ```js
 'create-windows-installer': {
-  appDirectory: '/tmp/build/my-app',
-  outputDirectory: '/tmp/build/installer',
-  authors: 'My App Inc.',
-  exe: 'myapp.exe'
+  x64: {
+    appDirectory: '/tmp/build/my-app-64',
+    outputDirectory: '/tmp/build/installer64',
+    authors: 'My App Inc.',
+    exe: 'myapp.exe'
+  },
+  ia32: {
+    appDirectory: '/tmp/build/my-app-32',
+    outputDirectory: '/tmp/build/installer32',
+    authors: 'My App Inc.',
+    exe: 'myapp.exe'
+  }
 }
 ```
 
 Then run `grunt create-windows-installer` and you will have an `.nupkg`, a
-`RELEASES` file, and a `.exe` installer file in the `outputDirectory` folder.
+`RELEASES` file, and a `.exe` installer file in the `outputDirectory` folder
+for each multi task target given under the config entry.
 
 There are several configuration settings supported:
 
