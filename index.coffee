@@ -13,12 +13,12 @@ module.exports = (grunt) ->
       grunt.log.error(stderr) if stderr
       callback(error)
 
-  grunt.registerTask 'create-windows-installer', 'Create the Windows installer', ->
-    @requiresConfig("#{@name}.appDirectory")
+  grunt.registerMultiTask 'create-windows-installer', 'Create the Windows installer', ->
+    @requiresConfig("#{@name}.#{@target}.appDirectory")
 
     done = @async()
 
-    config = grunt.config(@name)
+    config = grunt.config("#{@name}.#{@target}")
 
     appDirectory = path.resolve(config.appDirectory)
 
