@@ -16,8 +16,9 @@ describe 'create-windows-installer task', ->
       pkg: grunt.file.readJSON(path.join(__dirname, 'fixtures', 'app', 'resources', 'app', 'package.json'))
 
       'create-windows-installer':
-        appDirectory: path.join(__dirname, 'fixtures', 'app')
-        outputDirectory: outputDirectory
+        config:
+          appDirectory: path.join(__dirname, 'fixtures', 'app')
+          outputDirectory: outputDirectory
 
     grunt.loadTasks(path.resolve(__dirname, '..', 'tasks'))
 
