@@ -1,1 +1,1 @@
-The files in this folder are from Squirrel for Windows 0.99.1
+The files in this folder are from Squirrel for Windows 1.0.0
