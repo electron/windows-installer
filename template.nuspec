@@ -9,6 +9,7 @@
     <iconUrl><%- iconUrl %></iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description><%- description %></description>
+    <copyright><%- copyright %></copyright>
   </metadata>
   <files>
     <file src="locales\**" target="lib\net45\locales" />

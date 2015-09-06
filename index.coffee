@@ -49,6 +49,7 @@ module.exports = (grunt) ->
     metadata.owners ?= metadata.authors
     metadata.title ?= metadata.productName ? metadata.name
     metadata.version = metadata.version.replace(/-.*$/, '')
+    metadata.copyright ?= 'Copyright © ' + new Date().getFullYear() + ' ' + metadata.authors
 
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
     nuspecContent = template(metadata)
