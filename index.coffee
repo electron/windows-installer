@@ -48,7 +48,6 @@ module.exports = (grunt) ->
     metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico'
     metadata.owners ?= metadata.authors
     metadata.title ?= metadata.productName ? metadata.name
-    metadata.version = metadata.version.replace(/-.*$/, '')
     metadata.copyright ?= "Copyright © #{new Date().getFullYear()} #{metadata.authors ? metadata.owners}"
 
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
