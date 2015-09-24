@@ -48,6 +48,13 @@ module.exports = (grunt) ->
     metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico'
     metadata.owners ?= metadata.authors
     metadata.title ?= metadata.productName ? metadata.name
+
+    # NuGet allows pre-release version-numbers, but the pre-release name cannot
+    # have a dot in it. See:
+    # https://docs.nuget.org/create/versioning#user-content-prerelease-versions
+    [versionPrefix, versionSuffix] = metadata.version.split('-')
+    metadata.version = [versionPrefix, versionSuffix.replace('.', '')].join('-')
+
     metadata.copyright ?= "Copyright © #{new Date().getFullYear()} #{metadata.authors ? metadata.owners}"
 
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
