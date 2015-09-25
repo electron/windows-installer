@@ -50,10 +50,9 @@ module.exports = (grunt) ->
     metadata.title ?= metadata.productName ? metadata.name
 
     # NuGet allows pre-release version-numbers, but the pre-release name cannot
-    # have a dot in it. See:
+    # have a dot in it. See the docs:
     # https://docs.nuget.org/create/versioning#user-content-prerelease-versions
-    [versionPrefix, versionSuffix] = metadata.version.split('-')
-    metadata.version = [versionPrefix, versionSuffix.replace('.', '')].join('-')
+    metadata.version = metadata.version.replace(/\.(\d+)$/, '$1')
 
     metadata.copyright ?= "Copyright © #{new Date().getFullYear()} #{metadata.authors ? metadata.owners}"
 
