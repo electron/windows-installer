@@ -49,10 +49,7 @@ module.exports = (grunt) ->
     metadata.owners ?= metadata.authors
     metadata.title ?= metadata.productName ? metadata.name
 
-    # NuGet allows pre-release version-numbers, but the pre-release name cannot
-    # have a dot in it. See the docs:
-    # https://docs.nuget.org/create/versioning#user-content-prerelease-versions
-    metadata.version = metadata.version.replace(/\.(\d+)$/, '$1')
+    metadata.version = convertVersion(metadata.version)
 
     metadata.copyright ?= "Copyright © #{new Date().getFullYear()} #{metadata.authors ? metadata.owners}"
 
@@ -121,3 +118,15 @@ module.exports = (grunt) ->
             fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
 
           done()
+
+# NuGet allows pre-release version-numbers, but the pre-release name cannot
+# have a dot in it. See the docs:
+# https://docs.nuget.org/create/versioning#user-content-prerelease-versions
+convertVersion = (version) ->
+  [mainVersion, prerelease] = version.split('-')
+  if prerelease?
+    [mainVersion, prerelease?.replace(/\./g, '')].join('-')
+  else
+    mainVersion
+
+module.exports.convertVersion = convertVersion
