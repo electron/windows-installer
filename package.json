@@ -1,6 +1,6 @@
 {
   "name": "grunt-electron-installer",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Grunt task to generate Windows installers for Electron apps",
   "main": "./tasks/index.js",
   "license": "MIT",
