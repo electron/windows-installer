@@ -123,9 +123,10 @@ module.exports = (grunt) ->
 # have a dot in it. See the docs:
 # https://docs.nuget.org/create/versioning#user-content-prerelease-versions
 convertVersion = (version) ->
-  [mainVersion, prerelease] = version.split('-')
-  if prerelease?
-    [mainVersion, prerelease?.replace(/\./g, '')].join('-')
+  parts = version.split('-')
+  mainVersion = parts.shift()
+  if parts.length > 0
+    [mainVersion, parts.join('-').replace(/\./g, '')].join('-')
   else
     mainVersion
 
