@@ -115,7 +115,9 @@ module.exports = (grunt) ->
 
           if metadata.productName
             setupPath = path.join(outputDirectory, "#{metadata.productName}Setup.exe")
+            setupMsiPath = path.join(outputDirectory, "#{metadata.productName}Setup.msi")
             fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
+            fs.renameSync(path.join(outputDirectory, 'Setup.msi'), setupMsiPath)
 
           done()
 
