@@ -56,7 +56,7 @@ module.exports = (grunt) ->
     template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
     nuspecContent = template(metadata)
 
-    nugetOutput = temp.mkdirSync('squirrel-installer-')
+    nugetOutput = temp.mkdirSync('si')
 
     targetNuspecPath = path.join(nugetOutput, "#{metadata.name}.nuspec")
     grunt.file.write(targetNuspecPath, nuspecContent)
@@ -115,7 +115,9 @@ module.exports = (grunt) ->
 
           if metadata.productName
             setupPath = path.join(outputDirectory, "#{metadata.productName}Setup.exe")
+            setupMsiPath = path.join(outputDirectory, "#{metadata.productName}Setup.msi")
             fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
+            fs.renameSync(path.join(outputDirectory, 'Setup.msi'), setupMsiPath)
 
           done()
 
