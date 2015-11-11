@@ -20,11 +20,14 @@ module.exports = (grunt) ->
   grunt.registerMultiTask 'create-windows-installer', 'Create the Windows installer', ->
     @requiresConfig("#{@name}.#{@target}.appDirectory")
     
+    console.log "Starting!"
+    
     useMono = false
     [monoExe, wineExe] = _.map(['mono', 'wine'], locateExecutableInPath)
     
     unless process.platform is 'win32'
       useMono = true
+      console.log "wine: #{wineExe}, mono: #{monoExe}"
       throw new Error("You must install both Mono and Wine on non-Windows") unless wineExe and monoExe
 
     done = @async()
@@ -44,6 +47,7 @@ module.exports = (grunt) ->
 
     {certificateFile, certificatePassword, remoteReleases, signWithParams} = config
 
+    console.log "ASARing!"
     asarFile = path.join(appDirectory, 'resources', 'app.asar')
     if fs.existsSync(asarFile)
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'))
