@@ -13,8 +13,22 @@ module.exports = (grunt) ->
       grunt.log.error(stderr) if stderr
       callback(error)
 
+  locateExecutableInPath = (name) ->
+    haystack = _.map process.env.PATH.split(/[:;]/), (x) -> path.join(x, name)
+    _.find haystack, (needle) -> fs.existsSync(needle)
+
   grunt.registerMultiTask 'create-windows-installer', 'Create the Windows installer', ->
     @requiresConfig("#{@name}.#{@target}.appDirectory")
+
+    useMono = false
+    [monoExe, wineExe] = _.map(['mono', 'wine'], locateExecutableInPath)
+
+    unless process.platform is 'win32'
+      useMono = true
+      throw new Error("You must install both Mono and Wine on non-Windows") unless wineExe and monoExe
+
+      grunt.verbose.ok "Using Mono: '#{monoExe}'"
+      grunt.verbose.ok "Using Wine: '#{wineExe}'"
 
     done = @async()
 
@@ -72,10 +86,19 @@ module.exports = (grunt) ->
       '-NoDefaultExcludes'
     ]
 
+    if useMono
+      args.unshift(cmd)
+      cmd = monoExe
+
     syncReleases = (cb) ->
       if remoteReleases?
         cmd = path.resolve(__dirname, '..', 'vendor', 'SyncReleases.exe')
         args = ['-u', remoteReleases, '-r', outputDirectory]
+
+        if useMono
+          args.unshift(cmd)
+          cmd = monoExe
+
         exec {cmd, args}, cb
       else
         process.nextTick -> cb()
@@ -98,6 +121,10 @@ module.exports = (grunt) ->
           loadingGif
         ]
 
+        if useMono
+          args.unshift(path.resolve(__dirname, '..', 'vendor', 'Update-Mono.exe'))
+          cmd = monoExe
+
         if signWithParams?
           args.push '--signWithParams'
           args.push signWithParams
@@ -117,7 +144,9 @@ module.exports = (grunt) ->
             setupPath = path.join(outputDirectory, "#{metadata.productName}Setup.exe")
             setupMsiPath = path.join(outputDirectory, "#{metadata.productName}Setup.msi")
             fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
-            fs.renameSync(path.join(outputDirectory, 'Setup.msi'), setupMsiPath)
+
+            if fs.existsSync(path.join(outputDirectory, 'Setup.msi'))
+              fs.renameSync(path.join(outputDirectory, 'Setup.msi'), setupMsiPath)
 
           done()
 
