@@ -136,6 +136,9 @@ module.exports = (grunt) ->
           setupIconPath = path.resolve(config.setupIcon)
           args.push '--setupIcon'
           args.push setupIconPath
+          
+        if config.noMsi
+          args.push '--no-msi'
 
         exec {cmd, args}, (error) ->
           return done(error) if error?
