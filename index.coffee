@@ -7,6 +7,21 @@ _ = require 'underscore'
 
 temp.track()
 
+consoleLogger =
+  error: (args...) ->
+    console.error.apply(null, args)
+  warn: (args...) ->
+    console.warn.apply(null, args)
+  info: (args...) ->
+    console.info.apply(null, args)
+  debug: ->
+
+nullLogger =
+  error: ->
+  warn: ->
+  info: ->
+  debug: ->
+
 module.exports = (grunt) ->
   exec = (options, callback) ->
     ChildProcess.execFile options.cmd, options.args, (error, stdout, stderr) ->
@@ -136,7 +151,7 @@ module.exports = (grunt) ->
           setupIconPath = path.resolve(config.setupIcon)
           args.push '--setupIcon'
           args.push setupIconPath
-          
+
         if config.noMsi
           args.push '--no-msi'
 
