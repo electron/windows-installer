@@ -13,9 +13,10 @@
     "test": "grunt test"
   },
   "dependencies": {
+    "asar": "~0.8.0",
+    "fs-jetpack": "^0.7.1",
     "temp": "^0.8.1",
-    "underscore": "^1.7.0",
-    "asar": "~0.8.0"
+    "underscore": "^1.7.0"
   },
   "devDependencies": {
     "coffeelint": "^1.13.1",

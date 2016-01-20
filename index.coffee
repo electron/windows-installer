@@ -1,9 +1,8 @@
 ChildProcess = require 'child_process'
-fs = require 'fs'
 asar = require 'asar'
-path = require 'path'
 temp = require 'temp'
 _ = require 'underscore'
+jetpack = require 'fs-jetpack'
 
 temp.track()
 
@@ -29,8 +28,8 @@ module.exports = (grunt) ->
       callback(error)
 
   locateExecutableInPath = (name) ->
-    haystack = _.map process.env.PATH.split(/[:;]/), (x) -> path.join(x, name)
-    _.find haystack, (needle) -> fs.existsSync(needle)
+    haystack = _.map process.env.PATH.split(/[:;]/), (x) -> jetpack.path(x, name)
+    _.find haystack, (needle) -> jetpack.exists(needle)
 
   grunt.registerMultiTask 'create-windows-installer', 'Create the Windows installer', ->
     @requiresConfig("#{@name}.#{@target}.appDirectory")
@@ -49,25 +48,27 @@ module.exports = (grunt) ->
 
     config = grunt.config("#{@name}.#{@target}")
 
-    appDirectory = path.resolve(config.appDirectory)
+    appDirectory = jetpack.cwd(config.appDirectory)
+    vendorDirectory = jetpack.cwd(__dirname, '..', 'vendor')
+    resourcesDirectory = jetpack.cwd(__dirname, '..', 'resources')
 
     # Bundle Update.exe with the app
-    grunt.file.copy(path.resolve(__dirname, '..', 'vendor', 'Update.exe'), path.join(appDirectory, 'Update.exe'))
+    vendorDirectory.copy('Update.exe', appDirectory.path('Update.exe'))
 
     outputDirectory = config.outputDirectory ? 'installer'
-    outputDirectory = path.resolve(outputDirectory)
+    outputDirectory = jetpack.cwd(outputDirectory)
 
-    loadingGif = config.loadingGif ? path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
-    loadingGif = path.resolve(loadingGif)
+    loadingGif = config.loadingGif ? resourcesDirectory.path('install-spinner.gif')
+    loadingGif = jetpack.path(loadingGif)
 
     {certificateFile, certificatePassword, remoteReleases, signWithParams} = config
 
-    asarFile = path.join(appDirectory, 'resources', 'app.asar')
-    if fs.existsSync(asarFile)
+    asarFile = appDirectory.path('resources', 'app.asar')
+    if jetpack.exists(asarFile)
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'))
     else
-      appResourcesDirectory = path.join(appDirectory, 'resources', 'app')
-      appMetadata = grunt.file.readJSON(path.join(appResourcesDirectory, 'package.json'))
+      appResourcesDirectory = appDirectory.cwd('resources', 'app')
+      appMetadata = appResourcesDirectory.read(appResourcesDirectory.path('package.json'), 'json')
 
     metadata = _.extend({}, appMetadata, config)
 
@@ -82,20 +83,20 @@ module.exports = (grunt) ->
 
     metadata.copyright ?= "Copyright © #{new Date().getFullYear()} #{metadata.authors ? metadata.owners}"
 
-    template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
+    template = _.template(jetpack.read(jetpack.path(__dirname, '..', 'template.nuspec')))
     nuspecContent = template(metadata)
 
     nugetOutput = temp.mkdirSync('si')
 
-    targetNuspecPath = path.join(nugetOutput, "#{metadata.name}.nuspec")
-    grunt.file.write(targetNuspecPath, nuspecContent)
+    targetNuspecPath = jetpack.path(nugetOutput, "#{metadata.name}.nuspec")
+    jetpack.write(targetNuspecPath, nuspecContent)
 
-    cmd = path.resolve(__dirname, '..', 'vendor', 'nuget.exe')
+    cmd = jetpack.path(__dirname, '..', 'vendor', 'nuget.exe')
     args = [
       'pack'
       targetNuspecPath
       '-BasePath'
-      appDirectory
+      appDirectory.path()
       '-OutputDirectory'
       nugetOutput
       '-NoDefaultExcludes'
@@ -107,8 +108,8 @@ module.exports = (grunt) ->
 
     syncReleases = (cb) ->
       if remoteReleases?
-        cmd = path.resolve(__dirname, '..', 'vendor', 'SyncReleases.exe')
-        args = ['-u', remoteReleases, '-r', outputDirectory]
+        cmd = jetpack.path(__dirname, '..', 'vendor', 'SyncReleases.exe')
+        args = ['-u', remoteReleases, '-r', outputDirectory.path()]
 
         if useMono
           args.unshift(cmd)
@@ -121,23 +122,23 @@ module.exports = (grunt) ->
     exec {cmd, args}, (error) ->
       return done(error) if error?
 
-      nupkgPath = path.join(nugetOutput, "#{metadata.name}.#{metadata.version}.nupkg")
+      nupkgPath = jetpack.path(nugetOutput, "#{metadata.name}.#{metadata.version}.nupkg")
 
       syncReleases (error) ->
         return done(error) if error?
 
-        cmd = path.resolve(__dirname, '..', 'vendor', 'Update.com')
+        cmd = jetpack.path(__dirname, '..', 'vendor', 'Update.com')
         args = [
           '--releasify'
           nupkgPath
           '--releaseDir'
-          outputDirectory
+          outputDirectory.path()
           '--loadingGif'
           loadingGif
         ]
 
         if useMono
-          args.unshift(path.resolve(__dirname, '..', 'vendor', 'Update-Mono.exe'))
+          args.unshift(jetpack.path(__dirname, '..', 'vendor', 'Update-Mono.exe'))
           cmd = monoExe
 
         if signWithParams?
@@ -145,10 +146,10 @@ module.exports = (grunt) ->
           args.push signWithParams
         else if certificateFile? and certificatePassword?
           args.push '--signWithParams'
-          args.push "/a /f \"#{path.resolve(certificateFile)}\" /p \"#{certificatePassword}\""
+          args.push "/a /f \"#{jetpack.path(certificateFile)}\" /p \"#{certificatePassword}\""
 
         if config.setupIcon
-          setupIconPath = path.resolve(config.setupIcon)
+          setupIconPath = jetpack.path(config.setupIcon)
           args.push '--setupIcon'
           args.push setupIconPath
 
@@ -159,12 +160,10 @@ module.exports = (grunt) ->
           return done(error) if error?
 
           if metadata.productName
-            setupPath = path.join(outputDirectory, "#{metadata.productName}Setup.exe")
-            setupMsiPath = path.join(outputDirectory, "#{metadata.productName}Setup.msi")
-            fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
+            outputDirectory.rename('Setup.exe', "#{metadata.productName}Setup.exe")
 
-            if fs.existsSync(path.join(outputDirectory, 'Setup.msi'))
-              fs.renameSync(path.join(outputDirectory, 'Setup.msi'), setupMsiPath)
+            if outputDirectory.exists('Setup.msi')
+              outputDirectory.rename('Setup.msi', "#{metadata.productName}Setup.msi")
 
           done()
 
