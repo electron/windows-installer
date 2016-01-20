@@ -1,47 +1,38 @@
-# Electron Installer Grunt Plugin
+# Electron Installer
 
 [![Build status](https://ci.appveyor.com/api/projects/status/nxhep80va4d7afjb?svg=true)](https://ci.appveyor.com/project/kevinsawicki/windows-installer)
 
 
-Grunt plugin that builds Windows installers for
+NPM module that builds Windows installers for
 [Electron](https://github.com/atom/electron) apps using
 [Squirrel](https://github.com/Squirrel/Squirrel.Windows).
 
 ## Installing
 
 ```sh
-npm install --save-dev grunt-electron-installer
+npm install --save-dev electron-installer-windows
 ```
 
-## Configuring
+## Usage
 
-In your `Gruntfile.coffee` or `Gruntfile.js` add the following:
+Require the package:
 
 ```js
-grunt.loadNpmTasks('grunt-electron-installer')
+var electronInstaller = require('electron-installer-windows');
 ```
 
-Then assuming you have an Electron app built at the given `appDirectory`,
-you can configure the installer task like so:
+Then do a build like so..
 
 ```js
-'create-windows-installer': {
-  x64: {
+electronInstaller.build({
     appDirectory: '/tmp/build/my-app-64',
     outputDirectory: '/tmp/build/installer64',
     authors: 'My App Inc.',
     exe: 'myapp.exe'
-  },
-  ia32: {
-    appDirectory: '/tmp/build/my-app-32',
-    outputDirectory: '/tmp/build/installer32',
-    authors: 'My App Inc.',
-    exe: 'myapp.exe'
-  }
-}
+  }, done);
 ```
 
-Then run `grunt create-windows-installer` and you will have an `.nupkg`, a
+After running you will have an `.nupkg`, a
 `RELEASES` file, and a `.exe` installer file in the `outputDirectory` folder
 for each multi task target given under the config entry.
 

@@ -1,12 +1,12 @@
 {
-  "name": "grunt-electron-installer",
-  "version": "1.2.1",
-  "description": "Grunt task to generate Windows installers for Electron apps",
+  "name": "electron-installer-windows",
+  "version": "0.0.1",
+  "description": "Module to generate Windows installers for Electron apps",
   "main": "./tasks/index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/atom/grunt-electron-installer.git"
+    "url": "https://github.com/electronjs/electron-installer-windows.git"
   },
   "scripts": {
     "prepublish": "grunt clean lint coffee",
