@@ -26,8 +26,5 @@
     "grunt-contrib-coffee": "^0.11.1",
     "grunt-shell": "^1.1.1",
     "jasmine-focused": "^1.0.5"
-  },
-  "peerDependencies": {
-    "grunt": "~0.4.0"
   }
 }
