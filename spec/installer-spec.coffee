@@ -1,38 +1,29 @@
 fs = require 'fs'
 path = require 'path'
-
-grunt = require 'grunt'
+jetpack = require 'fs-jetpack'
 temp = require 'temp'
+{build} = require '../index'
 
 describe 'create-windows-installer task', ->
+
+  appDirectory = jetpack.cwd(__dirname, 'fixtures', 'app')
+
   beforeEach ->
-    updateExePath = path.join(__dirname, 'fixtures', 'app', 'Update.exe')
-    fs.unlinkSync(updateExePath) if fs.existsSync(updateExePath)
+    updateExePath = appDirectory.path('Update.exe')
+    jetpack.remove(updateExePath) if jetpack.exists(updateExePath)
 
   it 'creates a nuget package and installer', ->
-    outputDirectory = temp.mkdirSync('grunt-electron-installer-')
+    outputDirectory = jetpack.cwd(temp.mkdirSync('electron-installer-windows'))
 
-    grunt.config.init
-      pkg: grunt.file.readJSON(path.join(__dirname, 'fixtures', 'app', 'resources', 'app', 'package.json'))
+    config =
+          appDirectory: appDirectory.path()
+          outputDirectory: outputDirectory.path()
 
-      'create-windows-installer':
-        config:
-          appDirectory: path.join(__dirname, 'fixtures', 'app')
-          outputDirectory: outputDirectory
-
-    grunt.loadTasks(path.resolve(__dirname, '..', 'tasks'))
-
-    tasksDone = false
-    grunt.registerTask 'done', 'done',  -> tasksDone = true
-    grunt.task.run(['create-windows-installer', 'done']).start()
-
-    waitsFor 30000, -> tasksDone
-
-    runs ->
-      expect(fs.existsSync(path.join(outputDirectory, 'myapp-1.0.0-full.nupkg'))).toBe true
-      expect(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.exe'))).toBe true
+    build config, () ->
+      expect(outputDirectory.exists('myapp-1.0.0-full.nupkg')).toBe true
+      expect(outputDirectory.exists('MyAppSetup.exe')).toBe true
 
       if process.platform is 'win32'
-        expect(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.msi'))).toBe true
+        expect(outputDirectory.exists('MyAppSetup.msi')).toBe true
 
-      expect(fs.existsSync(path.join(__dirname, 'fixtures', 'app', 'Update.exe'))).toBe true
+      expect(appDirectory.exists('Update.exe')).toBe true

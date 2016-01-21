@@ -2,7 +2,7 @@
   "name": "electron-installer-windows",
   "version": "0.0.1",
   "description": "Module to generate Windows installers for Electron apps",
-  "main": "./tasks/index.js",
+  "main": "./index.js",
   "license": "MIT",
   "repository": {
     "type": "git",

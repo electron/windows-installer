@@ -51,8 +51,8 @@ module.exports.build = (config, done) ->
     log.debug "Using Wine: '#{wineExe}'"
 
   appDirectory = jetpack.cwd(config.appDirectory)
-  vendorDirectory = jetpack.cwd(__dirname, '..', 'vendor')
-  resourcesDirectory = jetpack.cwd(__dirname, '..', 'resources')
+  vendorDirectory = jetpack.cwd(__dirname, 'vendor')
+  resourcesDirectory = jetpack.cwd(__dirname, 'resources')
 
   # Bundle Update.exe with the app
   vendorDirectory.copy('Update.exe', appDirectory.path('Update.exe'))
@@ -85,7 +85,7 @@ module.exports.build = (config, done) ->
 
   metadata.copyright ?= "Copyright © #{new Date().getFullYear()} #{metadata.authors ? metadata.owners}"
 
-  template = _.template(jetpack.read(jetpack.path(__dirname, '..', 'template.nuspec')))
+  template = _.template(jetpack.read(jetpack.path(__dirname, 'template.nuspec')))
   nuspecContent = template(metadata)
 
   nugetOutput = temp.mkdirSync('si')
@@ -93,7 +93,7 @@ module.exports.build = (config, done) ->
   targetNuspecPath = jetpack.path(nugetOutput, "#{metadata.name}.nuspec")
   jetpack.write(targetNuspecPath, nuspecContent)
 
-  cmd = jetpack.path(__dirname, '..', 'vendor', 'nuget.exe')
+  cmd = vendorDirectory.path('nuget.exe')
   args = [
     'pack'
     targetNuspecPath
@@ -110,7 +110,7 @@ module.exports.build = (config, done) ->
 
   syncReleases = (cb) ->
     if remoteReleases?
-      cmd = jetpack.path(__dirname, '..', 'vendor', 'SyncReleases.exe')
+      cmd = vendorDirectory.path('SyncReleases.exe')
       args = ['-u', remoteReleases, '-r', outputDirectory.path()]
 
       if useMono
@@ -129,7 +129,7 @@ module.exports.build = (config, done) ->
     syncReleases (error) ->
       return done(error) if error?
 
-      cmd = jetpack.path(__dirname, '..', 'vendor', 'Update.com')
+      cmd = vendorDirectory.path('Update.com')
       args = [
         '--releasify'
         nupkgPath
@@ -140,7 +140,7 @@ module.exports.build = (config, done) ->
       ]
 
       if useMono
-        args.unshift(jetpack.path(__dirname, '..', 'vendor', 'Update-Mono.exe'))
+        args.unshift(vendorDirectory.path('Update-Mono.exe'))
         cmd = monoExe
 
       if signWithParams?
