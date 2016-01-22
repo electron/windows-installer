@@ -56,6 +56,7 @@ There are several configuration settings supported:
 | `setupIcon`           | No       | The ICO file to use as the icon for the generated Setup.exe |
 | `noMsi`               | No       | Should Squirrel.Windows create an MSI installer? |
 | `remoteReleases`      | No       | A URL to your existing updates. If given, these will be downloaded to create delta updates |
+| `log`                 | No       | By default, logging at info and above goes to console. The value `false` will stop all logging. An object with the functions `error`, `warn`, `info`, `debug` will use those for logging. | 
 
 ## Sign your installer or else bad things will happen
 
