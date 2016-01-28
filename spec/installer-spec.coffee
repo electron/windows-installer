@@ -13,13 +13,13 @@ describe 'create-windows-installer task', ->
     jetpack.remove(updateExePath) if jetpack.exists(updateExePath)
 
   it 'creates a nuget package and installer', ->
-    outputDirectory = jetpack.cwd(temp.mkdirSync('electron-installer-windows'))
+    outputDirectory = jetpack.cwd(temp.mkdirSync('electron-winstaller'))
 
     config =
-          appDirectory: appDirectory.path()
-          outputDirectory: outputDirectory.path()
+      appDirectory: appDirectory.path()
+      outputDirectory: outputDirectory.path()
 
-    build config, () ->
+    build config, ->
       expect(outputDirectory.exists('myapp-1.0.0-full.nupkg')).toBe true
       expect(outputDirectory.exists('MyAppSetup.exe')).toBe true
 

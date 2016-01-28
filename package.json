@@ -1,12 +1,12 @@
 {
-  "name": "electron-installer-windows",
+  "name": "electron-winstaller",
   "version": "1.0.0",
   "description": "Module to generate Windows installers for Electron apps",
   "main": "./index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/electronjs/electron-installer-windows.git"
+    "url": "https://github.com/electronjs/windows-installer.git"
   },
   "scripts": {
     "prepublish": "grunt clean lint coffee",

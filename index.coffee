@@ -8,11 +8,11 @@ temp.track()
 
 consoleLogger =
   error: (args...) ->
-    console.error.apply(null, args)
+    console.error(args...)
   warn: (args...) ->
-    console.warn.apply(null, args)
+    console.warn(args...)
   info: (args...) ->
-    console.info.apply(null, args)
+    console.info(args...)
   debug: ->
 
 nullLogger =
@@ -22,7 +22,10 @@ nullLogger =
   debug: ->
 
 module.exports.build = (config, done) ->
-  log = config.log || config.log == false ? nullLogger : consoleLogger
+  if config.log is false
+    log = nullLogger
+  else
+    log = config.log ? consoleLogger
 
   error = (msg) ->
     log.error(msg)
