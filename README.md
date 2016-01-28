@@ -1,6 +1,7 @@
 # Electron Installer Grunt Plugin
 
-[![Build status](https://ci.appveyor.com/api/projects/status/yd1ybqg3eq397i26/branch/master?svg=true)](https://ci.appveyor.com/project/kevinsawicki/grunt-electron-installer/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/nxhep80va4d7afjb?svg=true)](https://ci.appveyor.com/project/kevinsawicki/windows-installer)
+
 
 Grunt plugin that builds Windows installers for
 [Electron](https://github.com/atom/electron) apps using
