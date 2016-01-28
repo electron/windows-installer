@@ -31,7 +31,7 @@ describe 'create-windows-installer task', ->
     runs ->
       expect(fs.existsSync(path.join(outputDirectory, 'myapp-1.0.0-full.nupkg'))).toBe true
       expect(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.exe'))).toBe true
-      
+
       if process.platform is 'win32'
         expect(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.msi'))).toBe true
 
