@@ -11,7 +11,7 @@
   "scripts": {
     "compile": "babel -d lib/ src/",
     "prepublish": "eslint && npm run compile",
-    "test": "mocha --compilers js:babel-register ./test/*"
+    "test": "mocha --compilers js:babel-register ./spec/*.js"
   },
   "dependencies": {
     "asar": "~0.8.0",
