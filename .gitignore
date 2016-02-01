@@ -1,6 +1,7 @@
 node_modules/
 build/
 tasks/
+lib/
 npm-debug.log
 SquirrelSetup.log
 .node-version
