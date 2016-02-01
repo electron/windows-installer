@@ -1,5 +1,7 @@
 const spawnOg = require('child_process').spawn;
 
+const d = require('debug')('electron-windows-installer:spawn');
+
 // Public: Maps a process's output into an {Observable}
 //
 // exe - The program to execute
@@ -12,6 +14,7 @@ export default function spawn(exe, params, opts=null) {
   return new Promise((resolve, reject) => {
     let proc = null;
 
+    d(`Spawning ${exe} ${params.join(' ')}`);
     if (!opts) {
       proc = spawnOg(exe, params);
     } else {

@@ -14,7 +14,7 @@ const isWindows = process.platform === 'win32';
 
 temp.track();
 
-function p(strings, ...values) {
+export function p(strings, ...values) {
   let newPath = String.raw(strings, ...values);
   let parts = _.map(newPath.split(/[\\\/]/), (x) => x || '/');
 
@@ -82,13 +82,12 @@ export async function createWindowsInstaller(options) {
     d(`Using Mono: '${monoExe}'`);
     d(`Using Wine: '${wineExe}'`);
   }
-
+  let { appDirectory, outputDirectory, loadingGif } = options;
+  outputDirectory = p`${outputDirectory || 'installer'}`;
+  
   await fs.copy(
     p`${__dirname}/../vendor/Update.exe`,
     p`${appDirectory}/Update.exe`);
-
-  let { appDirectory, outputDirectory, loadingGif } = options;
-  outputDirectory = p`${outputDirectory || 'installer'}`;
 
   let defaultLoadingGif = p`${__dirname}/../resources/install-spinner.gif`;
   loadingGif = loadingGif ? p`${loadingGif}` : defaultLoadingGif;
@@ -104,7 +103,7 @@ export async function createWindowsInstaller(options) {
   }
   
   let defaults = {
-    description: '',
+    description: appMetadata.description || '',
     exe: `${appMetadata.name}.exe`,
     iconUrl: 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico',
     title: appMetadata.productName || appMetadata.name
@@ -128,9 +127,11 @@ export async function createWindowsInstaller(options) {
   let templateStamper = _.template(await fs.readFile(p`${__dirname}/../template.nuspec`));
   let nuspecContent = templateStamper(metadata);
   
+  d(`Created NuSpec file:\n${nuspecContent}`);
+  
   let nugetOutput = temp.mkdirSync('si');
   let targetNuspecPath = p`${nugetOutput}/${metadata.name}.nuspec`;
-  await fs.writefile(targetNuspecPath, nuspecContent);
+  await fs.writeFile(targetNuspecPath, nuspecContent);
   
   let cmd = p`${__dirname}/../vendor/nuget.exe`;
   let args = [
@@ -147,7 +148,7 @@ export async function createWindowsInstaller(options) {
   
   // Call NuGet to create our package
   d(await spawn(cmd, args));
-  let nupkgPath = p`${nugetOutput}/#{metadata.name}.#{metadata.version}.nupkg`;
+  let nupkgPath = p`${nugetOutput}/${metadata.name}.${metadata.version}.nupkg`;
   
   if (remoteReleases) {
     cmd = p`${__dirname}/../vendor/SyncReleases.exe`;
@@ -194,6 +195,7 @@ export async function createWindowsInstaller(options) {
   d(await spawn(cmd, args));
   
   if (metadata.productName) {
+    d('Fixing up paths');
     let setupPath = p`${outputDirectory}/${metadata.productName}Setup.exe`;
     let setupMsiPath = p`${outputDirectory}/${metadata.productName}Setup.msi`;
     
