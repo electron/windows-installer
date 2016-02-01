@@ -84,7 +84,7 @@ export async function createWindowsInstaller(options) {
   }
   let { appDirectory, outputDirectory, loadingGif } = options;
   outputDirectory = p`${outputDirectory || 'installer'}`;
-  
+
   await fs.copy(
     p`${__dirname}/../vendor/Update.exe`,
     p`${appDirectory}/Update.exe`);
@@ -101,16 +101,16 @@ export async function createWindowsInstaller(options) {
   } else {
     appMetadata = JSON.parse(await fs.readFile(p`${appDirectory}/resources/app/package.json`, 'utf8'));
   }
-  
+
   let defaults = {
     description: appMetadata.description || '',
     exe: `${appMetadata.name}.exe`,
     iconUrl: 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico',
     title: appMetadata.productName || appMetadata.name
   };
-  
+
   let metadata = _.assign({}, appMetadata, options, defaults);
-  
+
   if (!metadata.authors) {
     if (typeof(metadata.author) === 'string') {
       metadata.authors = metadata.author;
@@ -118,21 +118,21 @@ export async function createWindowsInstaller(options) {
       metadata.authors = (metadata.authors || {}).name || '';
     }
   }
-  
+
   metadata.owners = metadata.owners || metadata.authors;
   metadata.version = convertVersion(metadata.version);
-  metadata.copyright = metadata.copyright || 
+  metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
-    
+
   let templateStamper = _.template(await fs.readFile(p`${__dirname}/../template.nuspec`));
   let nuspecContent = templateStamper(metadata);
-  
+
   d(`Created NuSpec file:\n${nuspecContent}`);
-  
+
   let nugetOutput = temp.mkdirSync('si');
   let targetNuspecPath = p`${nugetOutput}/${metadata.name}.nuspec`;
   await fs.writeFile(targetNuspecPath, nuspecContent);
-  
+
   let cmd = p`${__dirname}/../vendor/nuget.exe`;
   let args = [
     'pack', targetNuspecPath,
@@ -140,28 +140,28 @@ export async function createWindowsInstaller(options) {
     '-OutputDirectory', nugetOutput,
     '-NoDefaultExcludes'
   ];
-  
+
   if (useMono) {
     args.unshift(cmd);
     cmd = monoExe;
   }
-  
+
   // Call NuGet to create our package
   d(await spawn(cmd, args));
   let nupkgPath = p`${nugetOutput}/${metadata.name}.${metadata.version}.nupkg`;
-  
+
   if (remoteReleases) {
     cmd = p`${__dirname}/../vendor/SyncReleases.exe`;
     args = ['-u', remoteReleases, '-r', outputDirectory];
-    
+
     if (useMono) {
       args.unshift(cmd);
       cmd = monoExe;
     }
-    
+
     d(await spawn(cmd, args));
   }
-  
+
   cmd = p`${__dirname}/../vendor/Update.com`;
   args = [
     '--releasify', nupkgPath,
@@ -191,18 +191,18 @@ export async function createWindowsInstaller(options) {
   if (options.noMsi) {
     args.push('--no-msi');
   }
-  
+
   d(await spawn(cmd, args));
-  
+
   if (metadata.productName) {
     d('Fixing up paths');
     let setupPath = p`${outputDirectory}/${metadata.productName}Setup.exe`;
     let setupMsiPath = p`${outputDirectory}/${metadata.productName}Setup.msi`;
-    
-    await fs.rename(p`${outputDirectory}/Setup.exe`, setupPath);
 
-    if (await fs.exists(p`${outputDirectory}/Setup.msi`)) {
-      await fs.rename(p`${outputDirectory}/Setup.msi`, setupMsiPath);
+    sfs.renameSync(p`${outputDirectory}/Setup.exe`, setupPath);
+
+    if (sfs.existsSync(p`${outputDirectory}/Setup.msi`)) {
+      sfs.renameSync(p`${outputDirectory}/Setup.msi`, setupMsiPath);
     }
   }
 }
