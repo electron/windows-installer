@@ -29,6 +29,9 @@ export default function spawn(exe, params, opts=null) {
     proc.on('error', (e) => reject(e));
 
     proc.on('close', (code) => {
+      // NB: Close fires before stdout fully flushes (i.e. you'll get 'data' 
+      // after 'close'), but there is no notification as to when data is fully
+      // flushed.
       setTimeout(() => {
         if (code === 0) {
           resolve(stdout);
