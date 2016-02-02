@@ -1,157 +1,176 @@
 ChildProcess = require 'child_process'
-fs = require 'fs'
 asar = require 'asar'
-path = require 'path'
 temp = require 'temp'
 _ = require 'underscore'
+jetpack = require 'fs-jetpack'
 
 temp.track()
 
-module.exports = (grunt) ->
+consoleLogger =
+  error: (args...) ->
+    console.error(args...)
+  warn: (args...) ->
+    console.warn(args...)
+  info: (args...) ->
+    console.info(args...)
+  debug: ->
+
+nullLogger =
+  error: ->
+  warn: ->
+  info: ->
+  debug: ->
+
+module.exports.build = (config, done) ->
+  if config.log is false
+    log = nullLogger
+  else
+    log = config.log ? consoleLogger
+
+  error = (msg) ->
+    log.error(msg)
+    done(new Error(msg))
+
   exec = (options, callback) ->
     ChildProcess.execFile options.cmd, options.args, (error, stdout, stderr) ->
-      grunt.log.error(stderr) if stderr
+      log.error(stderr) if stderr
       callback(error)
 
   locateExecutableInPath = (name) ->
-    haystack = _.map process.env.PATH.split(/[:;]/), (x) -> path.join(x, name)
-    _.find haystack, (needle) -> fs.existsSync(needle)
+    haystack = _.map process.env.PATH.split(/[:;]/), (x) -> jetpack.path(x, name)
+    _.find haystack, (needle) -> jetpack.exists(needle)
 
-  grunt.registerMultiTask 'create-windows-installer', 'Create the Windows installer', ->
-    @requiresConfig("#{@name}.#{@target}.appDirectory")
+  if !config.appDirectory
+    return error('appDirectory is required configuration')
 
-    useMono = false
-    [monoExe, wineExe] = _.map(['mono', 'wine'], locateExecutableInPath)
+  useMono = false
+  [monoExe, wineExe] = _.map(['mono', 'wine'], locateExecutableInPath)
 
-    unless process.platform is 'win32'
-      useMono = true
-      throw new Error("You must install both Mono and Wine on non-Windows") unless wineExe and monoExe
+  unless process.platform is 'win32'
+    useMono = true
+    return error("You must install both Mono and Wine on non-Windows") unless wineExe and monoExe
 
-      grunt.verbose.ok "Using Mono: '#{monoExe}'"
-      grunt.verbose.ok "Using Wine: '#{wineExe}'"
+    log.debug "Using Mono: '#{monoExe}'"
+    log.debug "Using Wine: '#{wineExe}'"
 
-    done = @async()
+  appDirectory = jetpack.cwd(config.appDirectory)
+  vendorDirectory = jetpack.cwd(__dirname, 'vendor')
+  resourcesDirectory = jetpack.cwd(__dirname, 'resources')
 
-    config = grunt.config("#{@name}.#{@target}")
+  # Bundle Update.exe with the app
+  vendorDirectory.copy('Update.exe', appDirectory.path('Update.exe'))
 
-    appDirectory = path.resolve(config.appDirectory)
+  outputDirectory = config.outputDirectory ? 'installer'
+  outputDirectory = jetpack.cwd(outputDirectory)
 
-    # Bundle Update.exe with the app
-    grunt.file.copy(path.resolve(__dirname, '..', 'vendor', 'Update.exe'), path.join(appDirectory, 'Update.exe'))
+  loadingGif = config.loadingGif ? resourcesDirectory.path('install-spinner.gif')
+  loadingGif = jetpack.path(loadingGif)
 
-    outputDirectory = config.outputDirectory ? 'installer'
-    outputDirectory = path.resolve(outputDirectory)
+  {certificateFile, certificatePassword, remoteReleases, signWithParams} = config
 
-    loadingGif = config.loadingGif ? path.resolve(__dirname, '..', 'resources', 'install-spinner.gif')
-    loadingGif = path.resolve(loadingGif)
+  asarFile = appDirectory.path('resources', 'app.asar')
+  if jetpack.exists(asarFile)
+    appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'))
+  else
+    appResourcesDirectory = appDirectory.cwd('resources', 'app')
+    appMetadata = appResourcesDirectory.read(appResourcesDirectory.path('package.json'), 'json')
 
-    {certificateFile, certificatePassword, remoteReleases, signWithParams} = config
+  metadata = _.extend({}, appMetadata, config)
 
-    asarFile = path.join(appDirectory, 'resources', 'app.asar')
-    if fs.existsSync(asarFile)
-      appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'))
+  metadata.authors ?= metadata.author?.name ? metadata.author ? ''
+  metadata.description ?= ''
+  metadata.exe ?= "#{metadata.name}.exe"
+  metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico'
+  metadata.owners ?= metadata.authors
+  metadata.title ?= metadata.productName ? metadata.name
+
+  metadata.version = convertVersion(metadata.version)
+
+  metadata.copyright ?= "Copyright © #{new Date().getFullYear()} #{metadata.authors ? metadata.owners}"
+
+  template = _.template(jetpack.read(jetpack.path(__dirname, 'template.nuspec')))
+  nuspecContent = template(metadata)
+
+  nugetOutput = temp.mkdirSync('si')
+
+  targetNuspecPath = jetpack.path(nugetOutput, "#{metadata.name}.nuspec")
+  jetpack.write(targetNuspecPath, nuspecContent)
+
+  cmd = vendorDirectory.path('nuget.exe')
+  args = [
+    'pack'
+    targetNuspecPath
+    '-BasePath'
+    appDirectory.path()
+    '-OutputDirectory'
+    nugetOutput
+    '-NoDefaultExcludes'
+  ]
+
+  if useMono
+    args.unshift(cmd)
+    cmd = monoExe
+
+  syncReleases = (cb) ->
+    if remoteReleases?
+      cmd = vendorDirectory.path('SyncReleases.exe')
+      args = ['-u', remoteReleases, '-r', outputDirectory.path()]
+
+      if useMono
+        args.unshift(cmd)
+        cmd = monoExe
+
+      exec {cmd, args}, cb
     else
-      appResourcesDirectory = path.join(appDirectory, 'resources', 'app')
-      appMetadata = grunt.file.readJSON(path.join(appResourcesDirectory, 'package.json'))
+      process.nextTick -> cb()
 
-    metadata = _.extend({}, appMetadata, config)
+  exec {cmd, args}, (error) ->
+    return done(error) if error?
 
-    metadata.authors ?= metadata.author?.name ? metadata.author ? ''
-    metadata.description ?= ''
-    metadata.exe ?= "#{metadata.name}.exe"
-    metadata.iconUrl ?= 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico'
-    metadata.owners ?= metadata.authors
-    metadata.title ?= metadata.productName ? metadata.name
+    nupkgPath = jetpack.path(nugetOutput, "#{metadata.name}.#{metadata.version}.nupkg")
 
-    metadata.version = convertVersion(metadata.version)
-
-    metadata.copyright ?= "Copyright © #{new Date().getFullYear()} #{metadata.authors ? metadata.owners}"
-
-    template = _.template(grunt.file.read(path.resolve(__dirname, '..', 'template.nuspec')))
-    nuspecContent = template(metadata)
-
-    nugetOutput = temp.mkdirSync('si')
-
-    targetNuspecPath = path.join(nugetOutput, "#{metadata.name}.nuspec")
-    grunt.file.write(targetNuspecPath, nuspecContent)
-
-    cmd = path.resolve(__dirname, '..', 'vendor', 'nuget.exe')
-    args = [
-      'pack'
-      targetNuspecPath
-      '-BasePath'
-      appDirectory
-      '-OutputDirectory'
-      nugetOutput
-      '-NoDefaultExcludes'
-    ]
-
-    if useMono
-      args.unshift(cmd)
-      cmd = monoExe
-
-    syncReleases = (cb) ->
-      if remoteReleases?
-        cmd = path.resolve(__dirname, '..', 'vendor', 'SyncReleases.exe')
-        args = ['-u', remoteReleases, '-r', outputDirectory]
-
-        if useMono
-          args.unshift(cmd)
-          cmd = monoExe
-
-        exec {cmd, args}, cb
-      else
-        process.nextTick -> cb()
-
-    exec {cmd, args}, (error) ->
+    syncReleases (error) ->
       return done(error) if error?
 
-      nupkgPath = path.join(nugetOutput, "#{metadata.name}.#{metadata.version}.nupkg")
+      cmd = vendorDirectory.path('Update.com')
+      args = [
+        '--releasify'
+        nupkgPath
+        '--releaseDir'
+        outputDirectory.path()
+        '--loadingGif'
+        loadingGif
+      ]
 
-      syncReleases (error) ->
+      if useMono
+        args.unshift(vendorDirectory.path('Update-Mono.exe'))
+        cmd = monoExe
+
+      if signWithParams?
+        args.push '--signWithParams'
+        args.push signWithParams
+      else if certificateFile? and certificatePassword?
+        args.push '--signWithParams'
+        args.push "/a /f \"#{jetpack.path(certificateFile)}\" /p \"#{certificatePassword}\""
+
+      if config.setupIcon
+        setupIconPath = jetpack.path(config.setupIcon)
+        args.push '--setupIcon'
+        args.push setupIconPath
+
+      if config.noMsi
+        args.push '--no-msi'
+
+      exec {cmd, args}, (error) ->
         return done(error) if error?
 
-        cmd = path.resolve(__dirname, '..', 'vendor', 'Update.com')
-        args = [
-          '--releasify'
-          nupkgPath
-          '--releaseDir'
-          outputDirectory
-          '--loadingGif'
-          loadingGif
-        ]
+        if metadata.productName
+          outputDirectory.rename('Setup.exe', "#{metadata.productName}Setup.exe")
 
-        if useMono
-          args.unshift(path.resolve(__dirname, '..', 'vendor', 'Update-Mono.exe'))
-          cmd = monoExe
+          if outputDirectory.exists('Setup.msi')
+            outputDirectory.rename('Setup.msi', "#{metadata.productName}Setup.msi")
 
-        if signWithParams?
-          args.push '--signWithParams'
-          args.push signWithParams
-        else if certificateFile? and certificatePassword?
-          args.push '--signWithParams'
-          args.push "/a /f \"#{path.resolve(certificateFile)}\" /p \"#{certificatePassword}\""
-
-        if config.setupIcon
-          setupIconPath = path.resolve(config.setupIcon)
-          args.push '--setupIcon'
-          args.push setupIconPath
-          
-        if config.noMsi
-          args.push '--no-msi'
-
-        exec {cmd, args}, (error) ->
-          return done(error) if error?
-
-          if metadata.productName
-            setupPath = path.join(outputDirectory, "#{metadata.productName}Setup.exe")
-            setupMsiPath = path.join(outputDirectory, "#{metadata.productName}Setup.msi")
-            fs.renameSync(path.join(outputDirectory, 'Setup.exe'), setupPath)
-
-            if fs.existsSync(path.join(outputDirectory, 'Setup.msi'))
-              fs.renameSync(path.join(outputDirectory, 'Setup.msi'), setupMsiPath)
-
-          done()
+        done()
 
 # NuGet allows pre-release version-numbers, but the pre-release name cannot
 # have a dot in it. See the docs:
