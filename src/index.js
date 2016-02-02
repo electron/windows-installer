@@ -96,10 +96,10 @@ export async function createWindowsInstaller(options) {
 
   let appMetadata = null;
   let asarFile = p`${appDirectory}/resources/app.asar`;
-  if (await fs.exists(asarFile)) {
+  if (sfs.existsSync(asarFile)) {
     appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
   } else {
-    appMetadata = JSON.parse(await fs.readFile(p`${appDirectory}/resources/app/package.json`, 'utf8'));
+    appMetadata = JSON.parse(sfs.readFileSync(p`${appDirectory}/resources/app/package.json`, 'utf8'));
   }
 
   let defaults = {
