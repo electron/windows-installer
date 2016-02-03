@@ -117,7 +117,7 @@ module.exports.build = (config, done) ->
       args = ['-u', remoteReleases, '-r', outputDirectory.path()]
 
       if remoteToken?
-        args.push '-t' remoteToken
+        args.push '-t', remoteToken
 
       if useMono
         args.unshift(cmd)
