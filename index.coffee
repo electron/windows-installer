@@ -66,7 +66,7 @@ module.exports.build = (config, done) ->
   loadingGif = config.loadingGif ? resourcesDirectory.path('install-spinner.gif')
   loadingGif = jetpack.path(loadingGif)
 
-  {certificateFile, certificatePassword, remoteReleases, signWithParams} = config
+  {certificateFile, certificatePassword, remoteReleases, remoteToken, signWithParams} = config
 
   asarFile = appDirectory.path('resources', 'app.asar')
   if jetpack.exists(asarFile)
@@ -115,6 +115,9 @@ module.exports.build = (config, done) ->
     if remoteReleases?
       cmd = vendorDirectory.path('SyncReleases.exe')
       args = ['-u', remoteReleases, '-r', outputDirectory.path()]
+
+      if remoteToken?
+        args.push '-t', remoteToken
 
       if useMono
         args.unshift(cmd)
