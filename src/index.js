@@ -5,9 +5,7 @@ import spawn from './spawn-promise';
 import asar from 'asar';
 import path from 'path';
 import temp from 'temp';
-import sfs from 'fs';
-
-import { fs } from './promisify';
+import jetpack from 'fs-jetpack';
 
 const d = require('debug')('electron-windows-installer:main');
 const isWindows = process.platform === 'win32';
@@ -25,15 +23,15 @@ export function p(strings, ...values) {
   }
 }
 
-function statSyncNoException(file) {
+async function statNoException(file) {
   try {
-    return sfs.statSync(file);
+    return await jetpack.statAsync(file);
   } catch (e) {
     return null;
   }
 }
 
-function locateExecutableInPath(exe) {
+async function locateExecutableInPath(exe) {
   // NB: Windows won't search PATH looking for executables in spawn like
   // Posix does
 
@@ -44,7 +42,7 @@ function locateExecutableInPath(exe) {
   }
 
   let target = path.join('.', exe);
-  if (statSyncNoException(target)) {
+  if (await statNoException(target)) {
     d(`Found executable in currect directory: ${target}`);
     return target;
   }
@@ -52,7 +50,7 @@ function locateExecutableInPath(exe) {
   let haystack = process.env.PATH.split(isWindows ? ';' : ':');
   for (let p of haystack) {
     let needle = path.join(p, exe);
-    if (statSyncNoException(needle)) return needle;
+    if (await statNoException(needle)) return needle;
   }
 
   d('Failed to find executable anywhere in path');
@@ -71,7 +69,8 @@ export function convertVersion(version) {
 
 export async function createWindowsInstaller(options) {
   let useMono = false;
-  let [monoExe, wineExe] = _.map(['mono', 'wine'], locateExecutableInPath);
+  let monoExe = await locateExecutableInPath('mono');
+  let wineExe = await locateExecutableInPath('wine');
 
   if (process.platform !== 'win32') {
     useMono = true;
@@ -85,7 +84,7 @@ export async function createWindowsInstaller(options) {
   let { appDirectory, outputDirectory, loadingGif } = options;
   outputDirectory = p`${outputDirectory || 'installer'}`;
 
-  await fs.copy(
+  await jetpack.copyAsync(
     p`${__dirname}/../vendor/Update.exe`,
     p`${appDirectory}/Update.exe`);
 
@@ -96,10 +95,10 @@ export async function createWindowsInstaller(options) {
 
   let appMetadata = null;
   let asarFile = p`${appDirectory}/resources/app.asar`;
-  if (sfs.existsSync(asarFile)) {
+  if (await jetpack.existsAsync(asarFile)) {
     appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
   } else {
-    appMetadata = JSON.parse(sfs.readFileSync(p`${appDirectory}/resources/app/package.json`, 'utf8'));
+    appMetadata = JSON.parse(await jetpack.readFileAsync(p`${appDirectory}/resources/app/package.json`, 'utf8'));
   }
 
   let defaults = {
@@ -124,14 +123,14 @@ export async function createWindowsInstaller(options) {
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 
-  let templateStamper = _.template(await fs.readFile(p`${__dirname}/../template.nuspec`));
+  let templateStamper = _.template(await jetpack.readAsync(p`${__dirname}/../template.nuspec`));
   let nuspecContent = templateStamper(metadata);
 
   d(`Created NuSpec file:\n${nuspecContent}`);
 
   let nugetOutput = temp.mkdirSync('si');
   let targetNuspecPath = p`${nugetOutput}/${metadata.name}.nuspec`;
-  await fs.writeFile(targetNuspecPath, nuspecContent);
+  await jetpack.writeAsync(targetNuspecPath, nuspecContent);
 
   let cmd = p`${__dirname}/../vendor/nuget.exe`;
   let args = [
@@ -199,10 +198,10 @@ export async function createWindowsInstaller(options) {
     let setupPath = p`${outputDirectory}/${metadata.productName}Setup.exe`;
     let setupMsiPath = p`${outputDirectory}/${metadata.productName}Setup.msi`;
 
-    sfs.renameSync(p`${outputDirectory}/Setup.exe`, setupPath);
+    await jetpack.renameAsync(p`${outputDirectory}/Setup.exe`, setupPath);
 
-    if (sfs.existsSync(p`${outputDirectory}/Setup.msi`)) {
-      sfs.renameSync(p`${outputDirectory}/Setup.msi`, setupMsiPath);
+    if (await jetpack.existsAsync(p`${outputDirectory}/Setup.msi`)) {
+      await jetpack.renameAsync(p`${outputDirectory}/Setup.msi`, setupMsiPath);
     }
   }
 }
