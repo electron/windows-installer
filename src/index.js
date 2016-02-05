@@ -25,8 +25,10 @@ export function p(strings, ...values) {
 
 async function statNoException(file) {
   try {
-    return await jetpack.statAsync(file);
+    d(file);
+    return await jetpack.inspectAsync(file);
   } catch (e) {
+    d(e.message);
     return null;
   }
 }
@@ -98,7 +100,7 @@ export async function createWindowsInstaller(options) {
   if (await jetpack.existsAsync(asarFile)) {
     appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
   } else {
-    appMetadata = JSON.parse(await jetpack.readFileAsync(p`${appDirectory}/resources/app/package.json`, 'utf8'));
+    appMetadata = JSON.parse(await jetpack.readAsync(p`${appDirectory}/resources/app/package.json`, 'utf8'));
   }
 
   let defaults = {
