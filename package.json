@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "asar": "~0.8.0",
+    "babel-polyfill": "^6.3.0",
     "debug": "^2.2.0",
     "fs-extra": "^0.26.5",
     "fs-jetpack": "^0.7.1",
