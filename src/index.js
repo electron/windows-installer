@@ -94,7 +94,7 @@ export async function createWindowsInstaller(options) {
   let defaultLoadingGif = p`${__dirname}/../resources/install-spinner.gif`;
   loadingGif = loadingGif ? p`${loadingGif}` : defaultLoadingGif;
 
-  let {certificateFile, certificatePassword, remoteReleases, signWithParams} = options;
+  let {certificateFile, certificatePassword, remoteReleases, signWithParams, githubToken} = options;
 
   let appMetadata = null;
   let asarFile = p`${appDirectory}/resources/app.asar`;
@@ -159,6 +159,10 @@ export async function createWindowsInstaller(options) {
     if (useMono) {
       args.unshift(cmd);
       cmd = monoExe;
+    }
+
+    if (githubToken) {
+      args.push('-t', githubToken);
     }
 
     d(await spawn(cmd, args));
