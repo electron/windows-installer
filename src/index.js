@@ -6,6 +6,7 @@ import asar from 'asar';
 import path from 'path';
 import temp from 'temp';
 import jetpack from 'fs-jetpack';
+import fs from 'fs';
 
 const d = require('debug')('electron-windows-installer:main');
 const isWindows = process.platform === 'win32';
@@ -200,10 +201,13 @@ export async function createWindowsInstaller(options) {
     let setupPath = p`${outputDirectory}/${metadata.productName}Setup.exe`;
     let setupMsiPath = p`${outputDirectory}/${metadata.productName}Setup.msi`;
 
-    await jetpack.renameAsync(p`${outputDirectory}/Setup.exe`, setupPath);
+    // NB: When you give jetpack two absolute paths, it acts as if './' is appended
+    // to the target and mkdirps the entire path
+    d(`Renaming ${outputDirectory}/Setup.exe => ${setupPath}`);
+    fs.renameSync(p`${outputDirectory}/Setup.exe`, setupPath);
 
-    if (await jetpack.existsAsync(p`${outputDirectory}/Setup.msi`)) {
-      await jetpack.renameAsync(p`${outputDirectory}/Setup.msi`, setupMsiPath);
+    if (jetpack.exists(p`${outputDirectory}/Setup.msi`)) {
+      fs.renameSync(p`${outputDirectory}/Setup.msi`, setupMsiPath);
     }
   }
 }
