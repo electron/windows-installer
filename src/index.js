@@ -50,7 +50,7 @@ async function locateExecutableInPath(exe) {
     return target;
   }
 
-  let haystack = process.env.PATH.split(isWindows ? ';' : ':');
+  let haystack = process.env.PATH.split(path.delimiter);
   for (let p of haystack) {
     let needle = path.join(p, exe);
     if (await statNoException(needle)) return needle;
