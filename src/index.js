@@ -9,7 +9,6 @@ import jetpack from 'fs-jetpack';
 import fs from 'fs';
 
 const d = require('debug')('electron-windows-installer:main');
-const isWindows = process.platform === 'win32';
 
 temp.track();
 
