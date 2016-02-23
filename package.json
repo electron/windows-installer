@@ -2,29 +2,35 @@
   "name": "electron-winstaller",
   "version": "1.0.0",
   "description": "Module to generate Windows installers for Electron apps",
-  "main": "./index.js",
+  "main": "./lib/index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/electronjs/windows-installer.git"
+    "url": "https://github.com/electronjs/windows-installer"
   },
   "scripts": {
-    "prepublish": "grunt clean lint coffee",
-    "test": "grunt test"
+    "compile": "babel -d lib/ src/",
+    "prepublish": "eslint src && npm run compile",
+    "test": "eslint spec && mocha --compilers js:babel-register ./spec/*.js"
   },
   "dependencies": {
     "asar": "~0.8.0",
+    "babel-polyfill": "^6.3.0",
+    "debug": "^2.2.0",
+    "fs-extra": "^0.26.5",
     "fs-jetpack": "^0.7.1",
-    "temp": "^0.8.1",
-    "underscore": "^1.7.0"
+    "lodash": "^4.0.0",
+    "temp": "^0.8.1"
   },
   "devDependencies": {
-    "coffeelint": "^1.13.1",
-    "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
-    "grunt-coffeelint": "0.0.13",
-    "grunt-contrib-coffee": "^0.11.1",
-    "grunt-shell": "^1.1.1",
-    "jasmine-focused": "^1.0.5"
+    "babel-cli": "^6.4.5",
+    "babel-eslint": "^4.1.7",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "babel-register": "^6.3.13",
+    "chai": "^3.4.1",
+    "chai-as-promised": "^5.2.0",
+    "eslint": "^1.10.3",
+    "mocha": "^2.3.4"
   }
 }
