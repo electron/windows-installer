@@ -24,7 +24,7 @@ var electronInstaller = require('electron-winstaller');
 Then do a build like so..
 
 ```js
-electronInstaller.build({
+electronInstaller.createWindowsInstaller({
     appDirectory: '/tmp/build/my-app-64',
     outputDirectory: '/tmp/build/installer64',
     authors: 'My App Inc.',
