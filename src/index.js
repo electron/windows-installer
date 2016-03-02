@@ -105,7 +105,7 @@ export async function createWindowsInstaller(options) {
     if (typeof(metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
-      metadata.authors = (metadata.authors || {}).name || '';
+      metadata.authors = (metadata.author || {}).name || '';
     }
   }
 
