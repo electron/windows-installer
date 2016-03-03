@@ -1,13 +1,11 @@
-import _ from 'lodash';
 import path from 'path';
 
 export default function p(strings, ...values) {
-  let newPath = String.raw(strings, ...values);
-  let parts = _.map(newPath.split(/[\\\/]/), (x) => x || '/');
+  const newPath = String.raw(strings, ...values).split(/[\\\/]/).join('/');
 
   try {
-    return path.resolve(...parts);
+    return path.resolve(newPath);
   } catch(e) {
-    return path.join(...parts);
+    return path.join(newPath);
   }
 }
