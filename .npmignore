@@ -1,6 +1,7 @@
 spec
-*.coffee
+src
 appveyor.yml
 .travis.yml
 .npmignore
-coffeelint.json
+.babelrc
+.eslintrc
