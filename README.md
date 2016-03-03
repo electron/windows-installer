@@ -122,3 +122,11 @@ if (handleStartupEvent()) {
   return;
 }
 ```
+
+## Debugging this package
+
+You can get debug messages from this package by running with the environment variable `DEBUG=electron-windows-installer:main` e.g.
+
+```
+DEBUG=electron-windows-installer:main node tasks/electron-winstaller.js
+```
