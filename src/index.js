@@ -7,7 +7,6 @@ import path from 'path';
 import temp from 'temp';
 import jetpack from 'fs-jetpack';
 import fs from 'fs';
-import p from './path-helper';
 
 const d = require('debug')('electron-windows-installer:main');
 
@@ -66,31 +65,33 @@ export async function createWindowsInstaller(options) {
   if (process.platform !== 'win32') {
     useMono = true;
     if (!wineExe || !monoExe) {
-      throw new Error("You must install both Mono and Wine on non-Windows");
+      throw new Error('You must install both Mono and Wine on non-Windows');
     }
 
     d(`Using Mono: '${monoExe}'`);
     d(`Using Wine: '${wineExe}'`);
   }
   let { appDirectory, outputDirectory, loadingGif } = options;
-  outputDirectory = p`${outputDirectory || 'installer'}`;
+  outputDirectory = path.resolve(outputDirectory || 'installer');
 
+  const vendorPath = path.join(__dirname, '..', 'vendor');
   await jetpack.copyAsync(
-    p`${__dirname}/../vendor/Update.exe`,
-    p`${appDirectory}/Update.exe`,
+    path.join(vendorPath, 'Update.exe'),
+    path.join(appDirectory, 'Update.exe'),
     { overwrite: true });
 
-  let defaultLoadingGif = p`${__dirname}/../resources/install-spinner.gif`;
-  loadingGif = loadingGif ? p`${loadingGif}` : defaultLoadingGif;
+  let defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
+  loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
   let {certificateFile, certificatePassword, remoteReleases, signWithParams, githubToken} = options;
 
   let appMetadata = null;
-  let asarFile = p`${appDirectory}/resources/app.asar`;
+  const appResources = path.join(appDirectory, 'resources');
+  let asarFile = path.join(appResources, 'app.asar');
   if (await jetpack.existsAsync(asarFile)) {
     appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
   } else {
-    appMetadata = JSON.parse(await jetpack.readAsync(p`${appDirectory}/resources/app/package.json`, 'utf8'));
+    appMetadata = JSON.parse(await jetpack.readAsync(path.join(appResources, 'app', 'package.json'), 'utf8'));
   }
 
   let defaults = {
@@ -115,16 +116,16 @@ export async function createWindowsInstaller(options) {
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 
-  let templateStamper = _.template(await jetpack.readAsync(p`${__dirname}/../template.nuspec`));
+  let templateStamper = _.template(await jetpack.readAsync(path.join(__dirname, '..', 'template.nuspec')));
   let nuspecContent = templateStamper(metadata);
 
   d(`Created NuSpec file:\n${nuspecContent}`);
 
   let nugetOutput = temp.mkdirSync('si');
-  let targetNuspecPath = p`${nugetOutput}/${metadata.name}.nuspec`;
+  let targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
   await jetpack.writeAsync(targetNuspecPath, nuspecContent);
 
-  let cmd = p`${__dirname}/../vendor/nuget.exe`;
+  let cmd = path.join(vendorPath, 'nuget.exe');
   let args = [
     'pack', targetNuspecPath,
     '-BasePath', appDirectory,
@@ -139,10 +140,10 @@ export async function createWindowsInstaller(options) {
 
   // Call NuGet to create our package
   d(await spawn(cmd, args));
-  let nupkgPath = p`${nugetOutput}/${metadata.name}.${metadata.version}.nupkg`;
+  let nupkgPath = path.join(nugetOutput, `${metadata.name}.${metadata.version}.nupkg`);
 
   if (remoteReleases) {
-    cmd = p`${__dirname}/../vendor/SyncReleases.exe`;
+    cmd = path.join(vendorPath, 'SyncReleases.exe');
     args = ['-u', remoteReleases, '-r', outputDirectory];
 
     if (useMono) {
@@ -157,7 +158,7 @@ export async function createWindowsInstaller(options) {
     d(await spawn(cmd, args));
   }
 
-  cmd = p`${__dirname}/../vendor/Update.com`;
+  cmd = path.join(vendorPath, 'Update.com');
   args = [
     '--releasify', nupkgPath,
     '--releaseDir', outputDirectory,
@@ -165,7 +166,7 @@ export async function createWindowsInstaller(options) {
   ];
 
   if (useMono) {
-    args.unshift(p`${__dirname}/../vendor/Update-Mono.exe`);
+    args.unshift(path.join(vendorPath, 'Update-Mono.exe'));
     cmd = monoExe;
   }
 
@@ -178,7 +179,7 @@ export async function createWindowsInstaller(options) {
   }
 
   if (options.setupIcon) {
-    let setupIconPath = p`${options.setupIcon}`;
+    let setupIconPath = path.resolve(options.setupIcon);
     args.push('--setupIcon');
     args.push(setupIconPath);
   }
@@ -191,16 +192,18 @@ export async function createWindowsInstaller(options) {
 
   if (metadata.productName) {
     d('Fixing up paths');
-    let setupPath = p`${outputDirectory}/${metadata.productName}Setup.exe`;
-    let setupMsiPath = p`${outputDirectory}/${metadata.productName}Setup.msi`;
+    const setupPath = path.join(outputDirectory, `${metadata.productName}Setup.exe`);
+    const setupMsiPath = path.join(outputDirectory, `${metadata.productName}Setup.msi`);
 
     // NB: When you give jetpack two absolute paths, it acts as if './' is appended
     // to the target and mkdirps the entire path
-    d(`Renaming ${outputDirectory}/Setup.exe => ${setupPath}`);
-    fs.renameSync(p`${outputDirectory}/Setup.exe`, setupPath);
+    const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
+    d(`Renaming ${unfixedSetupPath} => ${setupPath}`);
+    fs.renameSync(unfixedSetupPath, setupPath);
 
-    if (jetpack.exists(p`${outputDirectory}/Setup.msi`)) {
-      fs.renameSync(p`${outputDirectory}/Setup.msi`, setupMsiPath);
+    const msiPath = path.join(outputDirectory, 'Setup.msi');
+    if (jetpack.exists(msiPath)) {
+      fs.renameSync(msiPath, setupMsiPath);
     }
   }
 }
