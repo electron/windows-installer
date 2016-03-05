@@ -99,7 +99,7 @@ export async function createWindowsInstaller(options) {
     title: appMetadata.productName || appMetadata.name
   };
 
-  let metadata = _.assign({}, appMetadata, options, defaults);
+  let metadata = _.defaults({}, options, defaults, appMetadata);
 
   if (!metadata.authors) {
     if (typeof(metadata.author) === 'string') {
