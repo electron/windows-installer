@@ -77,7 +77,8 @@ export async function createWindowsInstaller(options) {
 
   await jetpack.copyAsync(
     p`${__dirname}/../vendor/Update.exe`,
-    p`${appDirectory}/Update.exe`);
+    p`${appDirectory}/Update.exe`,
+    { overwrite: true });
 
   let defaultLoadingGif = p`${__dirname}/../resources/install-spinner.gif`;
   loadingGif = loadingGif ? p`${loadingGif}` : defaultLoadingGif;
