@@ -16,10 +16,12 @@ install:
   - npm install npm
   - .\node_modules\.bin\npm install
 
-
 build: off
 
 test_script:
   - node --version
   - .\node_modules\.bin\npm --version
   - .\node_modules\.bin\npm test
+
+cache:
+  - node_modules -> package.json
