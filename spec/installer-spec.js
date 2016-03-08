@@ -1,9 +1,9 @@
 import temp from 'temp';
 import jetpack from 'fs-jetpack';
 import sfs from 'fs';
+import path from 'path';
 
 import { createWindowsInstaller } from '../src/index.js';
-import p from '../src/path-helper';
 
 temp.track();
 
@@ -11,7 +11,7 @@ const d = require('debug')('electron-windows-installer:spec');
 
 describe('create-windows-installer task', function() {
   beforeEach(async function() {
-    let updateExePath = p`${__dirname}/fixtures/app/Update.exe`;
+    let updateExePath = path.join(__dirname, 'fixtures', 'app', 'Update.exe');
     if (await jetpack.existsAsync(updateExePath)) {
       // NB: Jetpack doesn't have unlink?
       sfs.unlinkSync(updateExePath);
@@ -24,7 +24,7 @@ describe('create-windows-installer task', function() {
     let outputDirectory = temp.mkdirSync('ei-');
 
     let options = {
-      appDirectory: p`${__dirname}/fixtures/app`,
+      appDirectory: path.join(__dirname, 'fixtures/app'),
       outputDirectory: outputDirectory
     };
 
@@ -32,14 +32,14 @@ describe('create-windows-installer task', function() {
 
     d(`Verifying assertions on ${outputDirectory}`);
     d(JSON.stringify(sfs.readdirSync(outputDirectory)));
-    expect(await jetpack.existsAsync(p`${outputDirectory}/myapp-1.0.0-full.nupkg`)).to.be.ok;
-    expect(await jetpack.existsAsync(p`${outputDirectory}/MyAppSetup.exe`)).to.be.ok;
+    expect(await jetpack.existsAsync(path.join(outputDirectory, 'myapp-1.0.0-full.nupkg'))).to.be.ok;
+    expect(await jetpack.existsAsync(path.join(outputDirectory, 'MyAppSetup.exe'))).to.be.ok;
 
     if (process.platform === 'win32') {
-      expect(await jetpack.existsAsync(p`${outputDirectory}/MyAppSetup.msi`)).to.be.ok;
+      expect(await jetpack.existsAsync(path.join(outputDirectory, 'MyAppSetup.msi'))).to.be.ok;
     }
 
     d('Verifying Update.exe');
-    expect(await jetpack.existsAsync(p`${__dirname}/fixtures/app/Update.exe`)).to.be.ok;
+    expect(await jetpack.existsAsync(path.join(__dirname, 'fixtures', 'app', 'Update.exe'))).to.be.ok;
   });
 });
