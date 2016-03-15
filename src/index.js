@@ -190,7 +190,7 @@ export async function createWindowsInstaller(options) {
 
   d(await spawn(cmd, args));
 
-  if (metadata.productName) {
+  if (options.fixUpPaths !== false && metadata.productName) {
     d('Fixing up paths');
     const setupPath = path.join(outputDirectory, `${metadata.productName}Setup.exe`);
     const setupMsiPath = path.join(outputDirectory, `${metadata.productName}Setup.msi`);
