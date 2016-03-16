@@ -85,23 +85,29 @@ export async function createWindowsInstaller(options) {
 
   let {certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken} = options;
 
-  let appMetadata = null;
-  const appResources = path.join(appDirectory, 'resources');
-  let asarFile = path.join(appResources, 'app.asar');
-  if (await jetpack.existsAsync(asarFile)) {
-    appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
-  } else {
-    appMetadata = JSON.parse(await jetpack.readAsync(path.join(appResources, 'app', 'package.json'), 'utf8'));
-  }
-
-  let defaults = {
-    description: appMetadata.description || '',
-    exe: `${appMetadata.name}.exe`,
-    iconUrl: 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico',
-    title: appMetadata.productName || appMetadata.name
+  const metadata = {
+    description: '',
+    iconUrl: 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico'
   };
 
-  let metadata = _.defaults({}, options, defaults, appMetadata);
+  if (options.usePackageJson !== false) {
+    const appResources = path.join(appDirectory, 'resources');
+    let asarFile = path.join(appResources, 'app.asar');
+    let appMetadata;
+    if (await jetpack.existsAsync(asarFile)) {
+      appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
+    }
+    else {
+      appMetadata = JSON.parse(await jetpack.readAsync(path.join(appResources, 'app', 'package.json'), 'utf8'));
+    }
+
+    Object.assign(metadata, {
+      exe: `${appMetadata.name}.exe`,
+      title: appMetadata.productName || appMetadata.name
+    }, appMetadata);
+  }
+
+  Object.assign(metadata, options);
 
   if (!metadata.authors) {
     if (typeof(metadata.author) === 'string') {
