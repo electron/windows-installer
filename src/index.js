@@ -1,5 +1,3 @@
-import './babel-maybefill';
-
 import _ from 'lodash';
 import spawn from './spawn-promise';
 import asar from 'asar';
@@ -7,8 +5,10 @@ import path from 'path';
 import temp from 'temp';
 import jetpack from 'fs-jetpack';
 import fs from 'fs';
+import { Promise } from 'bluebird';
 
 const d = require('debug')('electron-windows-installer:main');
+const createTempDir = Promise.promisify(temp.mkdir);
 
 temp.track();
 async function statNoException(file) {
@@ -59,8 +59,8 @@ export function convertVersion(version) {
 
 export async function createWindowsInstaller(options) {
   let useMono = false;
-  let monoExe = await locateExecutableInPath('mono');
-  let wineExe = await locateExecutableInPath('wine');
+  const monoExe = await locateExecutableInPath('mono');
+  const wineExe = await locateExecutableInPath('wine');
 
   if (process.platform !== 'win32') {
     useMono = true;
@@ -127,7 +127,7 @@ export async function createWindowsInstaller(options) {
 
   d(`Created NuSpec file:\n${nuspecContent}`);
 
-  let nugetOutput = temp.mkdirSync('si');
+  let nugetOutput = await createTempDir('si-');
   let targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
   await jetpack.writeAsync(targetNuspecPath, nuspecContent);
 
@@ -146,7 +146,7 @@ export async function createWindowsInstaller(options) {
 
   // Call NuGet to create our package
   d(await spawn(cmd, args));
-  let nupkgPath = path.join(nugetOutput, `${metadata.name}.${metadata.version}.nupkg`);
+  const nupkgPath = path.join(nugetOutput, `${metadata.name}.${metadata.version}.nupkg`);
 
   if (remoteReleases) {
     cmd = path.join(vendorPath, 'SyncReleases.exe');
@@ -185,9 +185,8 @@ export async function createWindowsInstaller(options) {
   }
 
   if (options.setupIcon) {
-    let setupIconPath = path.resolve(options.setupIcon);
     args.push('--setupIcon');
-    args.push(setupIconPath);
+    args.push(path.resolve(options.setupIcon));
   }
 
   if (options.noMsi) {
