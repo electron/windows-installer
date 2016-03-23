@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import template from 'lodash.template';
 import spawn from './spawn-promise';
 import asar from 'asar';
 import path from 'path';
@@ -122,8 +122,11 @@ export async function createWindowsInstaller(options) {
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 
-  let templateStamper = _.template(await jetpack.readAsync(path.join(__dirname, '..', 'template.nuspec')));
-  let nuspecContent = templateStamper(metadata);
+  let templateData = await jetpack.readAsync(path.join(__dirname, '..', 'template.nuspec'));
+  if (path.sep === '/') {
+    templateData = templateData.replace(/\\/g, '/');
+  }
+  const nuspecContent = template(templateData)(metadata);
 
   d(`Created NuSpec file:\n${nuspecContent}`);
 
