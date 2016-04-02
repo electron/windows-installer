@@ -6,16 +6,6 @@ import * as fsUtils from './fs-utils';
 
 const log = require('debug')('electron-windows-installer:main');
 
-async function statNoException(file) {
-  try {
-    log(file);
-    return await fsUtils.inspectAsync(file);
-  } catch (e) {
-    log(e.message);
-    return null;
-  }
-}
-
 async function locateExecutableInPath(exe) {
   // NB: Windows won't search PATH looking for executables in spawn like
   // Posix does
@@ -27,7 +17,7 @@ async function locateExecutableInPath(exe) {
   }
 
   const target = path.join('.', exe);
-  if (await statNoException(target)) {
+  if (await fsUtils.fileExists(target)) {
     log(`Found executable in currect directory: ${target}`);
     return target;
   }
@@ -35,7 +25,7 @@ async function locateExecutableInPath(exe) {
   const haystack = process.env.PATH.split(path.delimiter);
   for (let p of haystack) {
     const needle = path.join(p, exe);
-    if (await statNoException(needle)) {
+    if (await fsUtils.fileExists(needle)) {
       return needle;
     }
   }
@@ -95,10 +85,10 @@ export async function createWindowsInstaller(options) {
     const asarFile = path.join(appResources, 'app.asar');
     let appMetadata;
 
-    if (await fsUtils.existsFileAsync(asarFile)) {
+    if (await fsUtils.fileExists(asarFile)) {
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
     } else {
-      appMetadata = JSON.parse(await fsUtils.readFileAsync(path.join(appResources, 'app', 'package.json'), 'utf8'));
+      appMetadata = JSON.parse(await fsUtils.readFile(path.join(appResources, 'app', 'package.json'), 'utf8'));
     }
 
     Object.assign(metadata, {
@@ -122,7 +112,7 @@ export async function createWindowsInstaller(options) {
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 
-  let templateData = await fsUtils.readFileAsync(path.join(__dirname, '..', 'template.nuspec'), 'utf8');
+  let templateData = await fsUtils.readFile(path.join(__dirname, '..', 'template.nuspec'), 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
   }
@@ -133,7 +123,7 @@ export async function createWindowsInstaller(options) {
   const nugetOutput = await fsUtils.createTempDir('si-');
   const targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
 
-  await fsUtils.writeFileAsync(targetNuspecPath, nuspecContent);
+  await fsUtils.writeFile(targetNuspecPath, nuspecContent);
 
   let cmd = path.join(vendorPath, 'nuget.exe');
   let args = [
@@ -208,11 +198,11 @@ export async function createWindowsInstaller(options) {
 
     log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
 
-    await fsUtils.renameAsync(unfixedSetupPath, setupPath);
+    await fsUtils.rename(unfixedSetupPath, setupPath);
 
     const msiPath = path.join(outputDirectory, 'Setup.msi');
-    if (await fsUtils.existsFileAsync(msiPath)) {
-      await fsUtils.renameAsync(msiPath, setupMsiPath);
+    if (await fsUtils.fileExists(msiPath)) {
+      await fsUtils.rename(msiPath, setupMsiPath);
     }
   }
 }
