@@ -1,41 +1,40 @@
+import test from 'ava';
 import path from 'path';
 import { createTempDir, fileExists, unlink, readDir } from '../src/fs-utils';
 import { createWindowsInstaller } from '../src/index.js';
 
-const d = require('debug')('electron-windows-installer:spec');
+const log = require('debug')('electron-windows-installer:spec');
 
-describe('create-windows-installer task', function() {
-  beforeEach(async function() {
-    const updateExePath = path.join(__dirname, 'fixtures', 'app', 'Update.exe');
-    if (await fileExists(updateExePath)) {
+const appDirectory = path.join(__dirname, 'fixtures/app');
 
-      await unlink(updateExePath);
-    }
-  });
+test.beforeEach(async () => {
+  const updateExePath = path.join(appDirectory, 'Update.exe');
 
-  it('creates a nuget package and installer', async function() {
-    this.timeout(30*1000);
+  if (await fileExists(updateExePath)) {
+    await unlink(updateExePath);
+  }
+});
 
-    const outputDirectory = await createTempDir('ei-');
+test('creates a nuget package and installer', async t => {
+  const outputDirectory = await createTempDir('ei-');
 
-    const options = {
-      appDirectory: path.join(__dirname, 'fixtures/app'),
-      outputDirectory: outputDirectory
-    };
+  const options = {
+    appDirectory: appDirectory,
+    outputDirectory: outputDirectory
+  };
 
-    await createWindowsInstaller(options);
+  await createWindowsInstaller(options);
 
-    d(`Verifying assertions on ${outputDirectory}`);
-    d(JSON.stringify(await readDir(outputDirectory)));
+  log(`Verifying assertions on ${outputDirectory}`);
+  log(JSON.stringify(await readDir(outputDirectory)));
 
-    expect(await fileExists(path.join(outputDirectory, 'myapp-1.0.0-full.nupkg'))).to.be.ok;
-    expect(await fileExists(path.join(outputDirectory, 'MyAppSetup.exe'))).to.be.ok;
+  t.true(await fileExists(path.join(outputDirectory, 'myapp-1.0.0-full.nupkg')));
+  t.true(await fileExists(path.join(outputDirectory, 'MyAppSetup.exe')));
 
-    if (process.platform === 'win32') {
-      expect(await fileExists(path.join(outputDirectory, 'MyAppSetup.msi'))).to.be.ok;
-    }
+  if (process.platform === 'win32') {
+    t.true(await fileExists(path.join(outputDirectory, 'MyAppSetup.msi')));
+  }
 
-    d('Verifying Update.exe');
-    expect(await fileExists(path.join(__dirname, 'fixtures', 'app', 'Update.exe'))).to.be.ok;
-  });
+  log('Verifying Update.exe');
+  t.true(await fileExists(path.join(appDirectory, 'Update.exe')));
 });
