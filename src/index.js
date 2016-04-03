@@ -2,24 +2,9 @@ import template from 'lodash.template';
 import spawn from './spawn-promise';
 import asar from 'asar';
 import path from 'path';
-import temp from 'temp';
-import jetpack from 'fs-jetpack';
-import fs from 'fs';
-import { Promise } from 'bluebird';
+import * as fsUtils from './fs-utils';
 
-const d = require('debug')('electron-windows-installer:main');
-const createTempDir = Promise.promisify(temp.mkdir);
-
-temp.track();
-async function statNoException(file) {
-  try {
-    d(file);
-    return await jetpack.inspectAsync(file);
-  } catch (e) {
-    d(e.message);
-    return null;
-  }
-}
+const log = require('debug')('electron-windows-installer:main');
 
 async function locateExecutableInPath(exe) {
   // NB: Windows won't search PATH looking for executables in spawn like
@@ -27,29 +12,32 @@ async function locateExecutableInPath(exe) {
 
   // Files with any directory path don't get this applied
   if (exe.match(/[\\\/]/)) {
-    d('Path has slash in directory, bailing');
+    log('Path has slash in directory, bailing');
     return exe;
   }
 
-  let target = path.join('.', exe);
-  if (await statNoException(target)) {
-    d(`Found executable in currect directory: ${target}`);
+  const target = path.join('.', exe);
+  if (await fsUtils.fileExists(target)) {
+    log(`Found executable in currect directory: ${target}`);
     return target;
   }
 
-  let haystack = process.env.PATH.split(path.delimiter);
+  const haystack = process.env.PATH.split(path.delimiter);
   for (let p of haystack) {
-    let needle = path.join(p, exe);
-    if (await statNoException(needle)) return needle;
+    const needle = path.join(p, exe);
+    if (await fsUtils.fileExists(needle)) {
+      return needle;
+    }
   }
 
-  d('Failed to find executable anywhere in path');
+  log('Failed to find executable anywhere in path');
   return null;
 }
 
 export function convertVersion(version) {
-  let parts = version.split('-');
-  let mainVersion = parts.shift();
+  const parts = version.split('-');
+  const mainVersion = parts.shift();
+
   if (parts.length > 0) {
     return [mainVersion, parts.join('-').replace(/\./g, '')].join('-');
   } else {
@@ -59,6 +47,7 @@ export function convertVersion(version) {
 
 export async function createWindowsInstaller(options) {
   let useMono = false;
+
   const monoExe = await locateExecutableInPath('mono');
   const wineExe = await locateExecutableInPath('wine');
 
@@ -68,19 +57,20 @@ export async function createWindowsInstaller(options) {
       throw new Error('You must install both Mono and Wine on non-Windows');
     }
 
-    d(`Using Mono: '${monoExe}'`);
-    d(`Using Wine: '${wineExe}'`);
+    log(`Using Mono: '${monoExe}'`);
+    log(`Using Wine: '${wineExe}'`);
   }
+
   let { appDirectory, outputDirectory, loadingGif } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
   const vendorPath = path.join(__dirname, '..', 'vendor');
-  await jetpack.copyAsync(
-    path.join(vendorPath, 'Update.exe'),
-    path.join(appDirectory, 'Update.exe'),
-    { overwrite: true });
+  const vendorUpdate = path.join(vendorPath, 'Update.exe');
+  const appUpdate = path.join(appDirectory, 'Update.exe');
 
-  let defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
+  await fsUtils.copy(vendorUpdate, appUpdate);
+
+  const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
   let {certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken} = options;
@@ -92,13 +82,13 @@ export async function createWindowsInstaller(options) {
 
   if (options.usePackageJson !== false) {
     const appResources = path.join(appDirectory, 'resources');
-    let asarFile = path.join(appResources, 'app.asar');
+    const asarFile = path.join(appResources, 'app.asar');
     let appMetadata;
-    if (await jetpack.existsAsync(asarFile)) {
+
+    if (await fsUtils.fileExists(asarFile)) {
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
-    }
-    else {
-      appMetadata = JSON.parse(await jetpack.readAsync(path.join(appResources, 'app', 'package.json'), 'utf8'));
+    } else {
+      appMetadata = JSON.parse(await fsUtils.readFile(path.join(appResources, 'app', 'package.json'), 'utf8'));
     }
 
     Object.assign(metadata, {
@@ -122,17 +112,18 @@ export async function createWindowsInstaller(options) {
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 
-  let templateData = await jetpack.readAsync(path.join(__dirname, '..', 'template.nuspec'));
+  let templateData = await fsUtils.readFile(path.join(__dirname, '..', 'template.nuspec'), 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
   }
   const nuspecContent = template(templateData)(metadata);
 
-  d(`Created NuSpec file:\n${nuspecContent}`);
+  log(`Created NuSpec file:\n${nuspecContent}`);
 
-  let nugetOutput = await createTempDir('si-');
-  let targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
-  await jetpack.writeAsync(targetNuspecPath, nuspecContent);
+  const nugetOutput = await fsUtils.createTempDir('si-');
+  const targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
+
+  await fsUtils.writeFile(targetNuspecPath, nuspecContent);
 
   let cmd = path.join(vendorPath, 'nuget.exe');
   let args = [
@@ -148,7 +139,7 @@ export async function createWindowsInstaller(options) {
   }
 
   // Call NuGet to create our package
-  d(await spawn(cmd, args));
+  log(await spawn(cmd, args));
   const nupkgPath = path.join(nugetOutput, `${metadata.name}.${metadata.version}.nupkg`);
 
   if (remoteReleases) {
@@ -164,7 +155,7 @@ export async function createWindowsInstaller(options) {
       args.push('-t', remoteToken);
     }
 
-    d(await spawn(cmd, args));
+    log(await spawn(cmd, args));
   }
 
   cmd = path.join(vendorPath, 'Update.com');
@@ -196,22 +187,22 @@ export async function createWindowsInstaller(options) {
     args.push('--no-msi');
   }
 
-  d(await spawn(cmd, args));
+  log(await spawn(cmd, args));
 
   if (options.fixUpPaths !== false && metadata.productName) {
-    d('Fixing up paths');
+    log('Fixing up paths');
+
     const setupPath = path.join(outputDirectory, `${metadata.productName}Setup.exe`);
     const setupMsiPath = path.join(outputDirectory, `${metadata.productName}Setup.msi`);
-
-    // NB: When you give jetpack two absolute paths, it acts as if './' is appended
-    // to the target and mkdirps the entire path
     const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
-    d(`Renaming ${unfixedSetupPath} => ${setupPath}`);
-    fs.renameSync(unfixedSetupPath, setupPath);
+
+    log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
+
+    await fsUtils.rename(unfixedSetupPath, setupPath);
 
     const msiPath = path.join(outputDirectory, 'Setup.msi');
-    if (jetpack.exists(msiPath)) {
-      fs.renameSync(msiPath, setupMsiPath);
+    if (await fsUtils.fileExists(msiPath)) {
+      await fsUtils.rename(msiPath, setupMsiPath);
     }
   }
 }

@@ -1,4 +1,5 @@
-const spawnOg = require('child_process').spawn;
+import { spawn as spawnOg } from 'child_process';
+import { Promise } from 'bluebird';
 
 const d = require('debug')('electron-windows-installer:spawn');
 
@@ -10,7 +11,7 @@ const d = require('debug')('electron-windows-installer:spawn');
 //
 // Returns an {Observable} with a single value, that is the output of the
 // spawned process
-export default function spawn(exe, params, opts=null) {
+export default function spawn(exe, params, opts = null) {
   return new Promise((resolve, reject) => {
     let proc = null;
 
@@ -20,14 +21,14 @@ export default function spawn(exe, params, opts=null) {
     } else {
       proc = spawnOg(exe, params, opts);
     }
-    
+
     // We need to wait until all three events have happened:
     // * stdout's pipe is closed
     // * stderr's pipe is closed
     // * We've got an exit code
     let rejected = false;
     let refCount = 3;
-    let release = () => { 
+    let release = () => {
       if (--refCount <= 0 && !rejected) resolve(stdout);
     };
 
@@ -36,20 +37,20 @@ export default function spawn(exe, params, opts=null) {
       let chunk = b.toString();
       stdout += chunk;
     };
-    
+
     proc.stdout.on('data', bufHandler);
     proc.stdout.once('close', release);
     proc.stderr.on('data', bufHandler);
     proc.stderr.once('close', release);
     proc.on('error', (e) => reject(e));
 
-    proc.on('close', (code) => {
+    proc.on('close', code => {
       if (code === 0) {
         release();
       } else {
         rejected = true;
         reject(new Error(`Failed with exit code: ${code}\nOutput:\n${stdout}`));
-      }      
+      }
     });
   });
 }
