@@ -69,6 +69,15 @@ export async function createWindowsInstaller(options) {
   const appUpdate = path.join(appDirectory, 'Update.exe');
 
   await fsUtils.copy(vendorUpdate, appUpdate);
+  if (options.setupIcon) {
+    let cmd = path.join(vendorPath, 'rcedit.exe');
+    let args = [
+      appUpdate,
+      '--set-icon', options.setupIcon
+    ];
+
+    await spawn(cmd, args);
+  }
 
   const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
