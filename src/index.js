@@ -192,7 +192,7 @@ export async function createWindowsInstaller(options) {
   if (options.fixUpPaths !== false && metadata.productName) {
     log('Fixing up paths');
 
-    const setupPath = path.join(outputDirectory, `${metadata.productName}Setup.exe`);
+    const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
     const setupMsiPath = path.join(outputDirectory, `${metadata.productName}Setup.msi`);
     const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
 

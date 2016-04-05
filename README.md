@@ -56,6 +56,7 @@ There are several configuration settings supported:
 | `signWithParams`      | No       | Params to pass to signtool.  Overrides `certificateFile` and `certificatePassword`. |
 | `iconUrl`             | No       | A URL to an ICO file to use as the application icon (displayed in Control Panel > Programs and Features). Defaults to the Atom icon. |
 | `setupIcon`           | No       | The ICO file to use as the icon for the generated Setup.exe |
+| `setupExe`            | No       | The name to use for the generated Setup.exe file |
 | `noMsi`               | No       | Should Squirrel.Windows create an MSI installer? |
 | `remoteReleases`      | No       | A URL to your existing updates. If given, these will be downloaded to create delta updates |
 | `remoteToken`      | No       | Authentication token for remote updates |
