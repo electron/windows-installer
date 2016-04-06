@@ -74,6 +74,14 @@ and uninstalls. it is **very** important that your app handle these events as _e
 as possible, and quit **immediately** after handling them. Squirrel will give your
 app a short amount of time (~15sec) to apply these operations and quit.
 
+The [electron-squirrel-startup](https://github.com/mongodb-js/electron-squirrel-startup) module will handle
+the most common events for you, such as managing desktop shortcuts.  Just
+add the following to the top of your `main.js` and you're good to go:
+
+```js
+if (require('electron-squirrel-startup')) return;
+```
+
 You should handle these events in your app's `main` entry point with something
 such as:
 
