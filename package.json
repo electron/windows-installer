@@ -10,8 +10,10 @@
   },
   "scripts": {
     "compile": "babel -d lib/ src/",
-    "prepublish": "eslint src && npm run compile",
-    "test": "eslint spec && mocha --compilers js:babel-register ./spec/*.js"
+    "prepublish": "npm run test && npm run compile",
+    "lint": "eslint src & eslint spec",
+    "test": "npm run lint && ava",
+    "tdd": "ava --watch"
   },
   "dependencies": {
     "asar": "~0.10.0",
@@ -22,17 +24,15 @@
     "temp": "^0.8.3"
   },
   "devDependencies": {
+    "ava": "^0.13.0",
     "babel-cli": "^6.6.5",
-    "babel-eslint": "^6.0.0-beta.6",
+    "babel-eslint": "^6.0.2",
     "babel-plugin-transform-async-to-module-method": "^6.7.0",
     "babel-plugin-transform-runtime": "^6.6.0",
     "babel-preset-es2015-node4": "^2.0.3",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
-    "chai": "^3.5.0",
-    "chai-as-promised": "^5.3.0",
-    "eslint": "^2.4.0",
-    "mocha": "^2.4.5"
+    "eslint": "^2.4.0"
   },
   "engines": {
     "node": ">=0.4.0"
@@ -51,5 +51,15 @@
         }
       ]
     ]
+  },
+  "ava": {
+    "files": [
+      "spec/*.js"
+    ],
+    "failFast": true,
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
   }
 }
