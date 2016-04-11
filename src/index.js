@@ -206,7 +206,7 @@ export async function createWindowsInstaller(options) {
   if (options.fixUpPaths !== false) {
     log('Fixing up paths');
 
-    if (options.setupExe || metadata.productName) {
+    if (metadata.productName || options.setupExe) {
       const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
       const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
 
