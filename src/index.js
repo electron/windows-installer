@@ -218,6 +218,7 @@ export async function createWindowsInstaller(options) {
       const setupMsiPath = path.join(outputDirectory, `${metadata.productName}Setup.msi`);
       const msiPath = path.join(outputDirectory, 'Setup.msi');
       if (await fsUtils.fileExists(msiPath)) {
+        log(`Renaming ${msiPath} => ${setupMsiPath}`);
         await fsUtils.rename(msiPath, setupMsiPath);
       }
     }
