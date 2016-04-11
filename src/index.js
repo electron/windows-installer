@@ -209,7 +209,6 @@ export async function createWindowsInstaller(options) {
     if (metadata.productName || options.setupExe) {
       const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
       const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
-
       log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
       await fsUtils.rename(unfixedSetupPath, setupPath);
     }
