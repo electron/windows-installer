@@ -203,20 +203,23 @@ export async function createWindowsInstaller(options) {
 
   log(await spawn(cmd, args));
 
-  if (options.fixUpPaths !== false && metadata.productName) {
+  if (options.fixUpPaths !== false) {
     log('Fixing up paths');
 
-    const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
-    const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
+    if (options.setupExe || metadata.productName) {
+      const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
+      const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
 
-    log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
+      log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
+      await fsUtils.rename(unfixedSetupPath, setupPath);
+    }
 
-    await fsUtils.rename(unfixedSetupPath, setupPath);
-
-    const msiPath = path.join(outputDirectory, 'Setup.msi');
-    if (await fsUtils.fileExists(msiPath)) {
+    if (metadata.productName) {
       const setupMsiPath = path.join(outputDirectory, `${metadata.productName}Setup.msi`);
-      await fsUtils.rename(msiPath, setupMsiPath);
+      const msiPath = path.join(outputDirectory, 'Setup.msi');
+      if (await fsUtils.fileExists(msiPath)) {
+        await fsUtils.rename(msiPath, setupMsiPath);
+      }
     }
   }
 }
