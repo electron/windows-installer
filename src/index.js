@@ -207,7 +207,6 @@ export async function createWindowsInstaller(options) {
     log('Fixing up paths');
 
     const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
-    const setupMsiPath = path.join(outputDirectory, `${metadata.productName}Setup.msi`);
     const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
 
     log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
@@ -216,6 +215,7 @@ export async function createWindowsInstaller(options) {
 
     const msiPath = path.join(outputDirectory, 'Setup.msi');
     if (await fsUtils.fileExists(msiPath)) {
+      const setupMsiPath = path.join(outputDirectory, `${metadata.productName}Setup.msi`);
       await fsUtils.rename(msiPath, setupMsiPath);
     }
   }
