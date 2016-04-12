@@ -76,6 +76,11 @@ export async function createWindowsInstaller(options) {
       '--set-icon', options.setupIcon
     ];
 
+    if (useMono) {
+      args.unshift(cmd);
+      cmd = wineExe;
+    }
+
     await spawn(cmd, args);
   }
 
