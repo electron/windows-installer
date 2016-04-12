@@ -69,7 +69,7 @@ export async function createWindowsInstaller(options) {
   const appUpdate = path.join(appDirectory, 'Update.exe');
 
   await fsUtils.copy(vendorUpdate, appUpdate);
-  if (options.setupIcon) {
+  if (options.setupIcon && (options.skipUpdateIcon !== true)) {
     let cmd = path.join(vendorPath, 'rcedit.exe');
     let args = [
       appUpdate,
