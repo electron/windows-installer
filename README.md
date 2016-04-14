@@ -86,47 +86,70 @@ You should handle these events in your app's `main` entry point with something
 such as:
 
 ```js
-var app = require('app');
+const app = require('app');
 
-var handleStartupEvent = function() {
-  if (process.platform !== 'win32') {
+const handleSetupEvent = function() {
+  if (process.argv.length === 1) {
     return false;
   }
 
-  var squirrelCommand = process.argv[1];
-  switch (squirrelCommand) {
+  const ChildProcess = require('child_process');
+  const path = require('path');
+
+  const appFolder = path.resolve(process.execPath, '..');
+  const rootAtomFolder = path.resolve(appFolder, '..');
+  const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
+  const exeName = path.basename(process.execPath);
+
+  const spawn = function(command, args) {
+    let spawnedProcess, error;
+
+    try {
+      spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
+    } catch (error) {}
+
+    return spawnedProcess;
+  };
+
+  const spawnUpdate = function(args) {
+    return spawn(updateDotExe, args);
+  };
+
+  const squirrelEvent = process.argv[1];
+  switch (squirrelEvent) {
     case '--squirrel-install':
     case '--squirrel-updated':
-
       // Optionally do things such as:
-      //
-      // - Install desktop and start menu shortcuts
       // - Add your .exe to the PATH
       // - Write to the registry for things like file associations and
       //   explorer context menus
 
-      // Always quit when done
-      app.quit();
+      // Install desktop and start menu shortcuts
+      spawnUpdate(['--createShortcut', exeName]);
 
+      setTimeout(app.quit, 1000);
       return true;
+
     case '--squirrel-uninstall':
       // Undo anything you did in the --squirrel-install and
       // --squirrel-updated handlers
 
-      // Always quit when done
-      app.quit();
+      // Remove desktop and start menu shortcuts
+      spawnUpdate(['--removeShortcut', exeName]);
 
+      setTimeout(app.quit, 1000);
       return true;
+
     case '--squirrel-obsolete':
       // This is called on the outgoing version of your app before
       // we update to the new version - it's the opposite of
       // --squirrel-updated
+
       app.quit();
       return true;
   }
 };
-
-if (handleStartupEvent()) {
+if (handleSetupEvent()) {
   return;
 }
 ```
