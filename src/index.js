@@ -6,34 +6,6 @@ import * as fsUtils from './fs-utils';
 
 const log = require('debug')('electron-windows-installer:main');
 
-async function locateExecutableInPath(exe) {
-  // NB: Windows won't search PATH looking for executables in spawn like
-  // Posix does
-
-  // Files with any directory path don't get this applied
-  if (exe.match(/[\\\/]/)) {
-    log('Path has slash in directory, bailing');
-    return exe;
-  }
-
-  const target = path.join('.', exe);
-  if (await fsUtils.fileExists(target)) {
-    log(`Found executable in currect directory: ${target}`);
-    return target;
-  }
-
-  const haystack = process.env.PATH.split(path.delimiter);
-  for (let p of haystack) {
-    const needle = path.join(p, exe);
-    if (await fsUtils.fileExists(needle)) {
-      return needle;
-    }
-  }
-
-  log('Failed to find executable anywhere in path');
-  return null;
-}
-
 export function convertVersion(version) {
   const parts = version.split('-');
   const mainVersion = parts.shift();
@@ -48,8 +20,8 @@ export function convertVersion(version) {
 export async function createWindowsInstaller(options) {
   let useMono = false;
 
-  const monoExe = await locateExecutableInPath('mono');
-  const wineExe = await locateExecutableInPath('wine');
+  const monoExe = 'mono';
+  const wineExe = 'wine';
 
   if (process.platform !== 'win32') {
     useMono = true;
