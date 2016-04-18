@@ -88,7 +88,13 @@ such as:
 ```js
 const app = require('app');
 
-const handleSetupEvent = function() {
+// this should be placed at top of main.js to handle setup events quickly
+if (handleSquirrelEvent()) {
+  // squirrel event handled and app will exit in 1000ms, so don't do anything else
+  return;
+}
+
+function handleSquirrelEvent() {
   if (process.argv.length === 1) {
     return false;
   }
@@ -149,9 +155,6 @@ const handleSetupEvent = function() {
       return true;
   }
 };
-if (handleSetupEvent()) {
-  return;
-}
 ```
 
 ## Debugging this package
