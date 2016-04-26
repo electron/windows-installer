@@ -16,23 +16,23 @@
     "tdd": "ava --watch"
   },
   "dependencies": {
-    "asar": "~0.10.0",
-    "bluebird": "^3.3.4",
+    "archiver": "^1.0.0",
+    "asar": "~0.11.0",
+    "bluebird": "^3.3.5",
     "debug": "^2.2.0",
-    "fs-extra": "^0.26.7",
-    "lodash.template": "^4.2.2",
-    "temp": "^0.8.3"
+    "fs-extra": "^0.28.0"
   },
   "devDependencies": {
-    "ava": "^0.13.0",
-    "babel-cli": "^6.6.5",
+    "ava": "^0.14.0",
+    "babel-cli": "^6.7.5",
     "babel-eslint": "^6.0.2",
     "babel-plugin-transform-async-to-module-method": "^6.7.0",
-    "babel-plugin-transform-runtime": "^6.6.0",
-    "babel-preset-es2015-node4": "^2.0.3",
+    "babel-plugin-transform-runtime": "^6.7.5",
+    "babel-preset-es2015-node4": "^2.1.0",
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.7.2",
-    "eslint": "^2.4.0"
+    "eslint": "^2.8.0",
+    "temp": "^0.8.3"
   },
   "engines": {
     "node": ">=0.4.0"

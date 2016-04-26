@@ -162,5 +162,5 @@ function handleSquirrelEvent() {
 You can get debug messages from this package by running with the environment variable `DEBUG=electron-windows-installer:main` e.g.
 
 ```
-DEBUG=electron-windows-installer:main node tasks/electron-winstaller.js
+DEBUG=electron-windows-installer node tasks/electron-winstaller.js
 ```

@@ -1,7 +1,13 @@
 import test from 'ava';
 import path from 'path';
-import { createTempDir, fileExists, unlink, readDir } from '../src/fs-utils';
+import { fileExists, unlink, readDir } from '../src/fs-utils';
 import { createWindowsInstaller } from '../src/index.js';
+import { Promise } from 'bluebird';
+import temp from 'temp';
+
+temp.track();
+
+const createTempDir = Promise.promisify(temp.mkdir);
 
 const log = require('debug')('electron-windows-installer:spec');
 
