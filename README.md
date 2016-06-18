@@ -157,6 +157,8 @@ function handleSquirrelEvent() {
 };
 ```
 
+Notice that the first time the installer launches your app, your app will see a ```--squirrel-firstrun``` flag. This allows you to do things like showing up a splash screen or presenting a settings UI. Another thing to be aware of is that, since the app is spawned by squirrel and squirrel acquires a file lock during installation, you won't be able to successfully check for app updates till a few seconds later when squirrel releases the lock.
+
 ## Debugging this package
 
 You can get debug messages from this package by running with the environment variable `DEBUG=electron-windows-installer:main` e.g.
