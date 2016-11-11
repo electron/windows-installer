@@ -17,11 +17,9 @@
     <file src="*.bin" target="lib\net45" />
     <file src="*.dll" target="lib\net45" />
     <file src="*.pak" target="lib\net45" />
-    <file src="*.txt" target="lib\net45" />
     <file src="Update.exe" target="lib\net45\squirrel.exe" />
     <file src="icudtl.dat" target="lib\net45\icudtl.dat" />
     <file src="LICENSE" target="lib\net45\LICENSE" />
-    <file src="LICENSES.chromium.html" target="lib\net45\LICENSES.chromium.html" />
     <file src="<%- exe %>" target="lib\net45\<%- exe %>" />
   </files>
 </package>
