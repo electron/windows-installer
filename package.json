@@ -1,6 +1,6 @@
 {
   "name": "electron-winstaller",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Module to generate Windows installers for Electron apps",
   "main": "./lib/index.js",
   "license": "MIT",
