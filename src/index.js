@@ -173,6 +173,10 @@ export async function createWindowsInstaller(options) {
     args.push('--no-msi');
   }
 
+  if (options.noDelta) {
+    args.push('--no-delta');
+  }
+
   log(await spawn(cmd, args));
 
   if (options.fixUpPaths !== false) {
