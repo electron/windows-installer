@@ -10,7 +10,7 @@
   },
   "scripts": {
     "compile": "babel -d lib/ src/",
-    "prepublish": "npm run test && npm run compile",
+    "prepublish": "npm run compile",
     "lint": "eslint src & eslint spec",
     "test": "npm run lint && ava",
     "tdd": "ava --watch"
