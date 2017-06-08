@@ -44,7 +44,7 @@ There are several configuration settings supported:
 | --------------------- | -------- | ----------- |
 | `appDirectory`        | Yes      | The folder path of your Electron app |
 | `outputDirectory`     | No       | The folder path to create the `.exe` installer in. Defaults to the `installer` folder at the project root. |
-| `loadingGif`          | No       | The local path to a `.gif` file to display during install. |
+| `loadingGif`          | No       | The local path to a `.gif` file to display during install. Defaults to the included install-spinner.gif. Set to `false` to disable. |
 | `authors`             | Yes      | The authors value for the nuget package metadata. Defaults to the `author` field from your app's package.json file when unspecified. |
 | `owners`              | No       | The owners value for the nuget package metadata. Defaults to the `authors` field when unspecified. |
 | `exe`                 | No       | The name of your app's main `.exe` file. This uses the `name` field in your app's package.json file with an added `.exe` extension when unspecified. |

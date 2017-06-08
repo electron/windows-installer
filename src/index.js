@@ -33,7 +33,7 @@ export async function createWindowsInstaller(options) {
     log(`Using Wine: '${wineExe}'`);
   }
 
-  let { appDirectory, outputDirectory, loadingGif } = options;
+  let { appDirectory, outputDirectory } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
   const vendorPath = path.join(__dirname, '..', 'vendor');
@@ -55,9 +55,6 @@ export async function createWindowsInstaller(options) {
 
     await spawn(cmd, args);
   }
-
-  const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
-  loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
   let {certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken} = options;
 
@@ -147,9 +144,15 @@ export async function createWindowsInstaller(options) {
   cmd = path.join(vendorPath, 'Update.com');
   args = [
     '--releasify', nupkgPath,
-    '--releaseDir', outputDirectory,
-    '--loadingGif', loadingGif
+    '--releaseDir', outputDirectory
   ];
+
+  if (options.loadingGif !== false) {
+    const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
+    const loadingGif = options.loadingGif ? path.resolve(options.loadingGif) : defaultLoadingGif;
+    args.push('--loadingGif');
+    args.push(loadingGif);
+  }
 
   if (useMono) {
     args.unshift(path.join(vendorPath, 'Update-Mono.exe'));
