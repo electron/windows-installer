@@ -57,6 +57,7 @@ There are several configuration settings supported:
 | `signWithParams`      | No       | Params to pass to signtool.  Overrides `certificateFile` and `certificatePassword`. |
 | `iconUrl`             | No       | A URL to an ICO file to use as the application icon (displayed in Control Panel > Programs and Features). Defaults to the Atom icon. |
 | `setupIcon`           | No       | The ICO file to use as the icon for the generated Setup.exe |
+| `skipUpdateIcon`      | No       | When set to true, prevents setupIcon-related error messages "This application could not be started" that may occur during installation. |
 | `setupExe`            | No       | The name to use for the generated Setup.exe file |
 | `setupMsi`            | No       | The name to use for the generated Setup.msi file |
 | `noMsi`               | No       | Should Squirrel.Windows create an MSI installer? |
