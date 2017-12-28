@@ -169,3 +169,11 @@ You can get debug messages from this package by running with the environment var
 ```
 DEBUG=electron-windows-installer:main node tasks/electron-winstaller.js
 ```
+
+## Common Issues
+
+### Icon URL is not Updating
+
+**Problem:** Changing the `iconUrl` parameter is not changing the icon from the default electron URL or to a new URL that you set.
+
+**Solution:** Simply restart your Windows Machine. Windows caches the URL that it uses, and so it doesn't provide the updated URL.
