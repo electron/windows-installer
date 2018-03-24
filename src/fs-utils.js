@@ -3,7 +3,7 @@ import { Promise } from 'bluebird';
 import temp from 'temp';
 import fs from 'fs';
 
-const log = require('debug')('electron-windows-installer:fs-utils');
+const log = require('debug')('electron-winstaller:fs-utils');
 
 temp.track();
 

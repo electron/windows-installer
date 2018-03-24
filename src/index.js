@@ -4,7 +4,7 @@ import asar from 'asar';
 import path from 'path';
 import * as fsUtils from './fs-utils';
 
-const log = require('debug')('electron-windows-installer:main');
+const log = require('debug')('electron-winstaller:main');
 
 export function convertVersion(version) {
   const parts = version.split('-');

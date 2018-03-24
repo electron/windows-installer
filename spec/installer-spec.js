@@ -3,7 +3,7 @@ import path from 'path';
 import { createTempDir, fileExists, unlink, readDir } from '../src/fs-utils';
 import { createWindowsInstaller } from '../src/index.js';
 
-const log = require('debug')('electron-windows-installer:spec');
+const log = require('debug')('electron-winstaller:spec');
 
 const appDirectory = path.join(__dirname, 'fixtures/app');
 
