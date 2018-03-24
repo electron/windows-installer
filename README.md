@@ -164,8 +164,8 @@ Notice that the first time the installer launches your app, your app will see a 
 
 ## Debugging this package
 
-You can get debug messages from this package by running with the environment variable `DEBUG=electron-windows-installer:main` e.g.
+You can get debug messages from this package by running with the environment variable `DEBUG=electron-winstaller:main` e.g.
 
 ```
-DEBUG=electron-windows-installer:main node tasks/electron-winstaller.js
+DEBUG=electron-winstaller:main node tasks/electron-winstaller.js
 ```

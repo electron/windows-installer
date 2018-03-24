@@ -1,7 +1,7 @@
 import { spawn as spawnOg } from 'child_process';
 import { Promise } from 'bluebird';
 
-const d = require('debug')('electron-windows-installer:spawn');
+const d = require('debug')('electron-winstaller:spawn');
 
 // Public: Maps a process's output into an {Observable}
 //
