@@ -64,6 +64,7 @@ There are several configuration settings supported:
 | `noDelta`             | No       | Should Squirrel.Windows delta packages? (disable only if necessary, they are a Good Thing) |
 | `remoteReleases`      | No       | A URL to your existing updates. If given, these will be downloaded to create delta updates |
 | `remoteToken`         | No       | Authentication token for remote updates |
+| `frameworkVersion`    | No       | Set the required .NET framework version, e.g. `net461` |
 
 ## Sign your installer or else bad things will happen
 
