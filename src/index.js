@@ -3,7 +3,7 @@ import spawn from './spawn-promise';
 import asar from 'asar';
 import path from 'path';
 import { createTempDir } from './fs-utils';
-import { copy, readFile, rename, pathExists, writeFile } from 'fs-extra';
+import fs from 'fs-extra';
 const log = require('debug')('electron-windows-installer:main');
 
 export function convertVersion(version) {
@@ -40,7 +40,7 @@ export async function createWindowsInstaller(options) {
   const vendorUpdate = path.join(vendorPath, 'Update.exe');
   const appUpdate = path.join(appDirectory, 'Update.exe');
 
-  await copy(vendorUpdate, appUpdate);
+  await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
     let cmd = path.join(vendorPath, 'rcedit.exe');
     let args = [
@@ -71,10 +71,10 @@ export async function createWindowsInstaller(options) {
     const asarFile = path.join(appResources, 'app.asar');
     let appMetadata;
 
-    if (await pathExists(asarFile)) {
+    if (await fs.pathExists(asarFile)) {
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
     } else {
-      appMetadata = JSON.parse(await readFile(path.join(appResources, 'app', 'package.json'), 'utf8'));
+      appMetadata = JSON.parse(await fs.readFile(path.join(appResources, 'app', 'package.json'), 'utf8'));
     }
 
     Object.assign(metadata, {
@@ -98,7 +98,7 @@ export async function createWindowsInstaller(options) {
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 
-  let templateData = await readFile(path.join(__dirname, '..', 'template.nuspectemplate'), 'utf8');
+  let templateData = await fs.readFile(path.join(__dirname, '..', 'template.nuspectemplate'), 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
   }
@@ -109,7 +109,7 @@ export async function createWindowsInstaller(options) {
   const nugetOutput = await createTempDir('si-');
   const targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
 
-  await writeFile(targetNuspecPath, nuspecContent);
+  await fs.writeFile(targetNuspecPath, nuspecContent);
 
   let cmd = path.join(vendorPath, 'nuget.exe');
   let args = [
@@ -186,15 +186,15 @@ export async function createWindowsInstaller(options) {
       const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
       const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
       log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
-      await rename(unfixedSetupPath, setupPath);
+      await fs.rename(unfixedSetupPath, setupPath);
     }
 
     if (metadata.productName || options.setupMsi) {
       const msiPath = path.join(outputDirectory, options.setupMsi || `${metadata.productName}Setup.msi`);
       const unfixedMsiPath = path.join(outputDirectory, 'Setup.msi');
-      if (await pathExists(unfixedMsiPath)) {
+      if (await fs.pathExists(unfixedMsiPath)) {
         log(`Renaming ${unfixedMsiPath} => ${msiPath}`);
-        await rename(unfixedMsiPath, msiPath);
+        await fs.rename(unfixedMsiPath, msiPath);
       }
     }
   }
