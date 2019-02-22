@@ -36,6 +36,20 @@
   "engines": {
     "node": ">=0.4.0"
   },
+  "babel": {
+    "presets": [
+      "babel-preset-node6"
+    ],
+    "plugins": [
+      [
+        "transform-async-to-module-method",
+        {
+          "module": "bluebird",
+          "method": "coroutine"
+        }
+      ]
+    ]
+  },
   "ava": {
     "files": [
       "spec/*.js"
