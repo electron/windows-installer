@@ -74,7 +74,7 @@ export async function createWindowsInstaller(options) {
     if (await fs.pathExists(asarFile)) {
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
     } else {
-      appMetadata = JSON.parse(await fs.readFile(path.join(appResources, 'app', 'package.json'), 'utf8'));
+      appMetadata = await fs.readJSON(path.join(appResources, 'app', 'package.json'), 'utf8');
     }
 
     Object.assign(metadata, {
