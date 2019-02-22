@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "asar": "^1.0.0",
-    "bluebird": "^3.3.4",
     "debug": "^2.2.0",
     "fs-extra": "^7.0.1",
     "lodash.template": "^4.2.2",
@@ -25,12 +24,14 @@
     "temp": "^0.8.3"
   },
   "devDependencies": {
-    "ava": "^0.13.0",
-    "babel-cli": "^6.6.5",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.3",
+    "@babel/plugin-transform-async-to-generator": "^7.2.0",
+    "@babel/polyfill": "^7.2.5",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/register": "^7.0.0",
+    "ava": "^1.2.1",
     "babel-eslint": "^6.0.2",
-    "babel-plugin-transform-async-to-module-method": "^6.7.0",
-    "babel-preset-node6": "^11.0.0",
-    "babel-register": "^6.7.2",
     "eslint": "^2.4.0"
   },
   "engines": {
@@ -38,16 +39,10 @@
   },
   "babel": {
     "presets": [
-      "babel-preset-node6"
+      "@babel/preset-env"
     ],
     "plugins": [
-      [
-        "transform-async-to-module-method",
-        {
-          "module": "bluebird",
-          "method": "coroutine"
-        }
-      ]
+      "@babel/plugin-transform-async-to-generator"
     ]
   },
   "ava": {
@@ -56,8 +51,18 @@
     ],
     "failFast": true,
     "require": [
-      "babel-register"
+      "@babel/register",
+      "@babel/polyfill"
     ],
-    "babel": "inherit"
+    "babel": {
+      "testOptions": {
+        "presets": [
+          "@babel/preset-env"
+        ],
+        "plugins": [
+          "@babel/plugin-transform-async-to-generator"
+        ]
+      }
+    }
   }
 }
