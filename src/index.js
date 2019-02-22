@@ -2,7 +2,7 @@ import template from 'lodash.template';
 import spawn from './spawn-promise';
 import asar from 'asar';
 import path from 'path';
-import { createTempDir } from './fs-utils';
+import { createTempDir } from './temp-utils';
 import fs from 'fs-extra';
 const log = require('debug')('electron-windows-installer:main');
 

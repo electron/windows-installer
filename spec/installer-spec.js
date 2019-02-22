@@ -1,6 +1,6 @@
 import test from 'ava';
 import path from 'path';
-import { createTempDir } from '../src/fs-utils';
+import { createTempDir } from '../src/temp-utils';
 import fs from 'fs-extra';
 import { createWindowsInstaller } from '../src/index.js';
 
