@@ -21,6 +21,7 @@
     "debug": "^2.2.0",
     "fs-extra": "^7.0.1",
     "lodash.template": "^4.2.2",
+    "pify": "^4.0.1",
     "temp": "^0.8.3"
   },
   "devDependencies": {
@@ -28,29 +29,12 @@
     "babel-cli": "^6.6.5",
     "babel-eslint": "^6.0.2",
     "babel-plugin-transform-async-to-module-method": "^6.7.0",
-    "babel-plugin-transform-runtime": "^6.6.0",
-    "babel-preset-es2015-node4": "^2.0.3",
-    "babel-preset-stage-0": "^6.5.0",
+    "babel-preset-node6": "^11.0.0",
     "babel-register": "^6.7.2",
     "eslint": "^2.4.0"
   },
   "engines": {
     "node": ">=0.4.0"
-  },
-  "babel": {
-    "presets": [
-      "stage-0",
-      "es2015-node4"
-    ],
-    "plugins": [
-      [
-        "transform-async-to-module-method",
-        {
-          "module": "bluebird",
-          "method": "coroutine"
-        }
-      ]
-    ]
   },
   "ava": {
     "files": [

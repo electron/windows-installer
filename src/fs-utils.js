@@ -1,8 +1,8 @@
-import { Promise } from 'bluebird';
+import pify from 'pify';
 import temp from 'temp';
 temp.track();
 
-const createTempDir = Promise.promisify(temp.mkdir);
+const createTempDir = pify(temp.mkdir);
 
 export {
   createTempDir
