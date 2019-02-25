@@ -2,8 +2,8 @@ import template from 'lodash.template';
 import spawn from './spawn-promise';
 import asar from 'asar';
 import path from 'path';
-import * as fsUtils from './fs-utils';
-
+import { createTempDir } from './temp-utils';
+import fs from 'fs-extra';
 const log = require('debug')('electron-windows-installer:main');
 
 export function convertVersion(version) {
@@ -40,7 +40,7 @@ export async function createWindowsInstaller(options) {
   const vendorUpdate = path.join(vendorPath, 'Update.exe');
   const appUpdate = path.join(appDirectory, 'Update.exe');
 
-  await fsUtils.copy(vendorUpdate, appUpdate);
+  await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
     let cmd = path.join(vendorPath, 'rcedit.exe');
     let args = [
@@ -59,7 +59,7 @@ export async function createWindowsInstaller(options) {
   const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
-  let {certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken} = options;
+  let { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
 
   const metadata = {
     description: '',
@@ -71,10 +71,10 @@ export async function createWindowsInstaller(options) {
     const asarFile = path.join(appResources, 'app.asar');
     let appMetadata;
 
-    if (await fsUtils.fileExists(asarFile)) {
+    if (await fs.pathExists(asarFile)) {
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
     } else {
-      appMetadata = JSON.parse(await fsUtils.readFile(path.join(appResources, 'app', 'package.json'), 'utf8'));
+      appMetadata = await fs.readJSON(path.join(appResources, 'app', 'package.json'), 'utf8');
     }
 
     Object.assign(metadata, {
@@ -86,7 +86,7 @@ export async function createWindowsInstaller(options) {
   Object.assign(metadata, options);
 
   if (!metadata.authors) {
-    if (typeof(metadata.author) === 'string') {
+    if (typeof (metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
       metadata.authors = (metadata.author || {}).name || '';
@@ -98,7 +98,7 @@ export async function createWindowsInstaller(options) {
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 
-  let templateData = await fsUtils.readFile(path.join(__dirname, '..', 'template.nuspectemplate'), 'utf8');
+  let templateData = await fs.readFile(path.join(__dirname, '..', 'template.nuspectemplate'), 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
   }
@@ -106,10 +106,10 @@ export async function createWindowsInstaller(options) {
 
   log(`Created NuSpec file:\n${nuspecContent}`);
 
-  const nugetOutput = await fsUtils.createTempDir('si-');
+  const nugetOutput = await createTempDir('si-');
   const targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
 
-  await fsUtils.writeFile(targetNuspecPath, nuspecContent);
+  await fs.writeFile(targetNuspecPath, nuspecContent);
 
   let cmd = path.join(vendorPath, 'nuget.exe');
   let args = [
@@ -186,15 +186,15 @@ export async function createWindowsInstaller(options) {
       const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
       const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
       log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
-      await fsUtils.rename(unfixedSetupPath, setupPath);
+      await fs.rename(unfixedSetupPath, setupPath);
     }
 
     if (metadata.productName || options.setupMsi) {
       const msiPath = path.join(outputDirectory, options.setupMsi || `${metadata.productName}Setup.msi`);
       const unfixedMsiPath = path.join(outputDirectory, 'Setup.msi');
-      if (await fsUtils.fileExists(unfixedMsiPath)) {
+      if (await fs.pathExists(unfixedMsiPath)) {
         log(`Renaming ${unfixedMsiPath} => ${msiPath}`);
-        await fsUtils.rename(unfixedMsiPath, msiPath);
+        await fs.rename(unfixedMsiPath, msiPath);
       }
     }
   }
