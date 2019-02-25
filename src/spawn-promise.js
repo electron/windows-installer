@@ -1,5 +1,4 @@
 import { spawn as spawnOg } from 'child_process';
-import { Promise } from 'bluebird';
 
 const d = require('debug')('electron-windows-installer:spawn');
 
