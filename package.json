@@ -53,16 +53,6 @@
     "require": [
       "@babel/register",
       "@babel/polyfill"
-    ],
-    "babel": {
-      "testOptions": {
-        "presets": [
-          "@babel/preset-env"
-        ],
-        "plugins": [
-          "@babel/plugin-transform-async-to-generator"
-        ]
-      }
-    }
+    ]
   }
 }
