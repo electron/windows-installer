@@ -158,7 +158,11 @@ export async function createWindowsInstaller(options) {
 
   if (signWithParams) {
     args.push('--signWithParams');
-    args.push(signWithParams);
+    if (!signWithParams.includes('/f') && !signWithParams.includes('/p') && certificateFile && certificatePassword) {
+      args.push(`${signWithParams} /a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+    } else {
+      args.push(signWithParams);
+    }
   } else if (certificateFile && certificatePassword) {
     args.push('--signWithParams');
     args.push(`/a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
