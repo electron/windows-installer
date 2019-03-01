@@ -9,13 +9,14 @@
     "url": "https://github.com/electronjs/windows-installer"
   },
   "scripts": {
-    "compile": "babel -d lib/ src/",
-    "prepublish": "npm run compile",
+    "build": "babel -d lib/ src/",
+    "prepublish": "npm run build",
     "lint": "eslint src spec",
     "test": "npm run lint && ava",
     "tdd": "ava --watch"
   },
   "dependencies": {
+    "@babel/runtime": "^7.3.4",
     "asar": "^1.0.0",
     "debug": "^4.1.1",
     "fs-extra": "^7.0.1",
@@ -27,6 +28,7 @@
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.3",
     "@babel/plugin-transform-async-to-generator": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.3.4",
     "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
@@ -42,7 +44,8 @@
       "@babel/preset-env"
     ],
     "plugins": [
-      "@babel/plugin-transform-async-to-generator"
+      "@babel/plugin-transform-async-to-generator",
+      "@babel/plugin-transform-runtime"
     ]
   },
   "ava": {
