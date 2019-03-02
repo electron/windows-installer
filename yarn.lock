@@ -689,19 +689,19 @@
   dependencies:
     arrify "^1.0.1"
 
-"@continous-auth/client@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@continous-auth/client/-/client-1.0.2.tgz#ad55a7b5afb0735deeff16c56a70904a8598cc1d"
-  integrity sha512-kjuZ2AdXlIbEwJD0fw4xPl8Fi/N5GX6slVk0GWQAV/6y5hXsW9KgCRc4RVUL2r1Y511ZmHQ49yVO8TSQsDUnaQ==
+"@continous-auth/client@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@continous-auth/client/-/client-1.0.3.tgz#2fe9cc8a52823b08762ca0ba712ee4322a7b2d41"
+  integrity sha512-qg/jkZwOndDmUfmXgyx5ITnSGYbLuc1eiOT+E3u04rCgczWXG7DDrLXdZBXLjkjPgM4MBfuk0Zb2EY3DI0oxQQ==
   dependencies:
     axios "^0.18.0"
 
-"@continous-auth/semantic-release-npm@1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@continous-auth/semantic-release-npm/-/semantic-release-npm-1.0.2.tgz#3bb09aae49de5f0daf0db8eb4c49b90480731041"
-  integrity sha512-m6aCNd+nmE4JRBw3RDTTP3A1wuftDHTP1UlCOfz/d7mL17uPXh4DUXUAP5FUULo84CIt/UCJpslDaNm/Qvk/MA==
+"@continous-auth/semantic-release-npm@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@continous-auth/semantic-release-npm/-/semantic-release-npm-1.0.3.tgz#59b1274fc71efa23980b150fb1b5382ed5676d2e"
+  integrity sha512-vtNuzL3X1Q49bE6kfBFdWshv2gymkjJ5V7QG9hMSvoc24iiiioaoXfAZmKQXWuZGjcAFIMPRvelxaz+Pcb00Yw==
   dependencies:
-    "@continous-auth/client" "^1.0.2"
+    "@continous-auth/client" "^1.0.3"
     "@semantic-release/error" "^2.2.0"
     aggregate-error "^2.0.0"
     execa "^1.0.0"
