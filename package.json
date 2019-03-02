@@ -1,6 +1,6 @@
 {
   "name": "electron-winstaller",
-  "version": "3.0.1",
+  "version": "0.0.0-development",
   "description": "Module to generate Windows installers for Electron apps",
   "main": "./lib/index.js",
   "license": "MIT",
@@ -13,7 +13,8 @@
     "prepublish": "npm run build",
     "lint": "eslint src spec",
     "test": "npm run lint && ava",
-    "tdd": "ava --watch"
+    "tdd": "ava --watch",
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "@babel/runtime": "^7.3.4",
@@ -32,9 +33,11 @@
     "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
+    "@continous-auth/semantic-release-npm": "^1.0.0",
     "ava": "^1.2.1",
     "babel-eslint": "^10.0.1",
-    "eslint": "^5.14.1"
+    "eslint": "^5.14.1",
+    "semantic-release": "^15.13.3"
   },
   "engines": {
     "node": ">=6.0.0"
