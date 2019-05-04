@@ -33,7 +33,7 @@
     "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
-    "@continous-auth/semantic-release-npm": "1.0.3",
+    "@continuous-auth/semantic-release-npm": "1.0.3",
     "ava": "^1.2.1",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.14.1",
