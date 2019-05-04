@@ -1,8 +1,8 @@
-import pify from 'pify';
 import temp from 'temp';
+import { promisify } from 'util';
 temp.track();
 
-const createTempDir = pify(temp.mkdir);
+const createTempDir = promisify(temp.mkdir);
 
 export {
   createTempDir
