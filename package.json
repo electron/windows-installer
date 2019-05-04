@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/electronjs/windows-installer"
+    "url": "https://github.com/electron/windows-installer"
   },
   "scripts": {
     "build": "babel -d lib/ src/",
