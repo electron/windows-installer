@@ -1,23 +1,28 @@
-import template from 'lodash.template';
-import spawn from './spawn-promise';
-import asar from 'asar';
-import path from 'path';
+import * as asar from 'asar';
 import { createTempDir } from './temp-utils';
-import fs from 'fs-extra';
+import * as fs from 'fs-extra';
+import { Metadata, Options, PersonMetadata } from './options';
+import * as path from 'path';
+import spawn from './spawn-promise';
+import template from 'lodash.template';
+
+export { Options } from './options';
+
 const log = require('debug')('electron-windows-installer:main');
 
-export function convertVersion(version) {
+export function convertVersion(version: string): string {
   const parts = version.split('-');
   const mainVersion = parts.shift();
 
   if (parts.length > 0) {
     return [mainVersion, parts.join('-').replace(/\./g, '')].join('-');
   } else {
-    return mainVersion;
+    return mainVersion as string;
   }
 }
 
-export async function createWindowsInstaller(options) {
+
+export async function createWindowsInstaller(options: Options) {
   let useMono = false;
 
   const monoExe = 'mono';
@@ -61,7 +66,7 @@ export async function createWindowsInstaller(options) {
 
   let { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
 
-  const metadata = {
+  const metadata: Metadata = {
     description: '',
     iconUrl: 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico'
   };
@@ -74,7 +79,7 @@ export async function createWindowsInstaller(options) {
     if (await fs.pathExists(asarFile)) {
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
     } else {
-      appMetadata = await fs.readJSON(path.join(appResources, 'app', 'package.json'), 'utf8');
+      appMetadata = await fs.readJson(path.join(appResources, 'app', 'package.json'));
     }
 
     Object.assign(metadata, {
@@ -89,12 +94,12 @@ export async function createWindowsInstaller(options) {
     if (typeof (metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
-      metadata.authors = (metadata.author || {}).name || '';
+      metadata.authors = (metadata.author || {} as PersonMetadata).name || '';
     }
   }
 
   metadata.owners = metadata.owners || metadata.authors;
-  metadata.version = convertVersion(metadata.version);
+  metadata.version = convertVersion(metadata.version as string);
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 

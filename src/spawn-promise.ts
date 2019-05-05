@@ -1,4 +1,4 @@
-import { spawn as spawnOg } from 'child_process';
+import { spawn as spawnOg, SpawnOptionsWithoutStdio } from 'child_process';
 
 const d = require('debug')('electron-windows-installer:spawn');
 
@@ -10,7 +10,7 @@ const d = require('debug')('electron-windows-installer:spawn');
 //
 // Returns an {Observable} with a single value, that is the output of the
 // spawned process
-export default function spawn(exe, params, opts = null) {
+export default function spawn(exe: string, params: string[], opts?: SpawnOptionsWithoutStdio) {
   return new Promise((resolve, reject) => {
     let proc = null;
 
@@ -32,7 +32,7 @@ export default function spawn(exe, params, opts = null) {
     };
 
     let stdout = '';
-    let bufHandler = (b) => {
+    let bufHandler = (b: Buffer) => {
       let chunk = b.toString();
       stdout += chunk;
     };
@@ -41,9 +41,9 @@ export default function spawn(exe, params, opts = null) {
     proc.stdout.once('close', release);
     proc.stderr.on('data', bufHandler);
     proc.stderr.once('close', release);
-    proc.on('error', (e) => reject(e));
+    proc.on('error', (e: Error) => reject(e));
 
-    proc.on('close', code => {
+    proc.on('close', (code: number) => {
       if (code === 0) {
         release();
       } else {

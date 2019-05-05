@@ -2,14 +2,14 @@
   "name": "electron-winstaller",
   "version": "0.0.0-development",
   "description": "Module to generate Windows installers for Electron apps",
-  "main": "./lib/index.js",
+  "main": "lib/index.js",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/electron/windows-installer"
   },
   "scripts": {
-    "build": "babel -d lib/ src/",
+    "build": "tsc",
     "prepublish": "npm run build",
     "lint": "eslint src spec",
     "test": "npm run lint && ava",
@@ -17,7 +17,6 @@
     "semantic-release": "semantic-release"
   },
   "dependencies": {
-    "@babel/runtime": "^7.3.4",
     "asar": "^2.0.1",
     "debug": "^4.1.1",
     "fs-extra": "^7.0.1",
@@ -25,37 +24,24 @@
     "temp": "^0.9.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.3.3",
-    "@babel/plugin-transform-runtime": "^7.3.4",
-    "@babel/polyfill": "^7.2.5",
-    "@babel/preset-env": "^7.3.1",
-    "@babel/register": "^7.0.0",
     "@continuous-auth/semantic-release-npm": "1.0.3",
+    "@types/fs-extra": "^5.0.5",
+    "@types/lodash.template": "^4.4.6",
+    "@types/node": "^12.0.0",
+    "@types/temp": "^0.8.34",
     "ava": "^1.2.1",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.14.1",
-    "semantic-release": "^15.13.3"
+    "semantic-release": "^15.13.3",
+    "typescript": "^3.4.5"
   },
   "engines": {
     "node": ">=8.0.0"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      "@babel/plugin-transform-runtime"
-    ]
   },
   "ava": {
     "files": [
       "spec/*.js"
     ],
-    "failFast": true,
-    "require": [
-      "@babel/register",
-      "@babel/polyfill"
-    ]
+    "failFast": true
   }
 }
