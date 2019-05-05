@@ -17,21 +17,24 @@ npm install --save-dev electron-winstaller
 
 Require the package:
 
-```js
-var electronInstaller = require('electron-winstaller');
+```javascript
+const electronInstaller = require('electron-winstaller');
 ```
 
 Then do a build like so..
 
-```js
-resultPromise = electronInstaller.createWindowsInstaller({
+```javascript
+try {
+  await electronInstaller.createWindowsInstaller({
     appDirectory: '/tmp/build/my-app-64',
     outputDirectory: '/tmp/build/installer64',
     authors: 'My App Inc.',
     exe: 'myapp.exe'
   });
-
-resultPromise.then(() => console.log("It worked!"), (e) => console.log(`No dice: ${e.message}`));
+  console.log('It worked!');
+} catch (e) {
+  console.log(`No dice: ${e.message}`);
+}
 ```
 
 After running you will have an `.nupkg`, a
@@ -80,17 +83,17 @@ as possible, and quit **immediately** after handling them. Squirrel will give yo
 app a short amount of time (~15sec) to apply these operations and quit.
 
 The [electron-squirrel-startup](https://github.com/mongodb-js/electron-squirrel-startup) module will handle
-the most common events for you, such as managing desktop shortcuts.  Just
-add the following to the top of your `main.js` and you're good to go:
+the most common events for you, such as managing desktop shortcuts. Add the following to the top
+of your `main.js` and you're good to go:
 
-```js
+```javascript
 if (require('electron-squirrel-startup')) return;
 ```
 
 You should handle these events in your app's `main` entry point with something
 such as:
 
-```js
+```javascript
 const app = require('app');
 
 // this should be placed at top of main.js to handle setup events quickly
@@ -162,12 +165,12 @@ function handleSquirrelEvent() {
 };
 ```
 
-Notice that the first time the installer launches your app, your app will see a ```--squirrel-firstrun``` flag. This allows you to do things like showing up a splash screen or presenting a settings UI. Another thing to be aware of is that, since the app is spawned by squirrel and squirrel acquires a file lock during installation, you won't be able to successfully check for app updates till a few seconds later when squirrel releases the lock.
+Notice that the first time the installer launches your app, your app will see a `--squirrel-firstrun` flag. This allows you to do things like showing up a splash screen or presenting a settings UI. Another thing to be aware of is that, since the app is spawned by squirrel and squirrel acquires a file lock during installation, you won't be able to successfully check for app updates till a few seconds later when squirrel releases the lock.
 
 ## Debugging this package
 
 You can get debug messages from this package by running with the environment variable `DEBUG=electron-windows-installer:main` e.g.
 
-```
+```shell
 DEBUG=electron-windows-installer:main node tasks/electron-winstaller.js
 ```
