@@ -1,10 +1,10 @@
 # Electron Installer
 
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/bq6c06suq5abb66s/branch/master?svg=true)](https://ci.appveyor.com/project/electron-bot/windows-installer/branch/master)
-[![Travis CI Build Status](https://travis-ci.org/electron/windows-installer.svg?branch=master)](https://travis-ci.org/electronjs/windows-installer)
+[![CircleCI](https://circleci.com/gh/electron/windows-installer.svg?style=svg)](https://circleci.com/gh/electron/windows-installer)
 
 NPM module that builds Windows installers for
-[Electron](https://github.com/atom/electron) apps using
+[Electron](https://github.com/electron/electron) apps using
 [Squirrel](https://github.com/Squirrel/Squirrel.Windows).
 
 ## Installing
