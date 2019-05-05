@@ -22,7 +22,7 @@ export function convertVersion(version: string): string {
 }
 
 
-export async function createWindowsInstaller(options: Options) {
+export default async function createWindowsInstaller(options: Options): Promise<void> {
   let useMono = false;
 
   const monoExe = 'mono';
@@ -94,7 +94,8 @@ export async function createWindowsInstaller(options: Options) {
     if (typeof (metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
-      metadata.authors = (metadata.author || {} as PersonMetadata).name || '';
+      // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
+      metadata.authors = (metadata.author || ({} as PersonMetadata)).name || '';
     }
   }
 

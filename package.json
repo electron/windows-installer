@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc",
     "prepublish": "npm run build",
-    "lint": "eslint src spec",
+    "lint": "eslint --ext .ts src spec",
     "test": "npm run lint && ava",
     "tdd": "ava --watch",
     "semantic-release": "semantic-release"
@@ -29,8 +29,9 @@
     "@types/lodash.template": "^4.4.6",
     "@types/node": "^12.0.0",
     "@types/temp": "^0.8.34",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "@typescript-eslint/parser": "^1.7.0",
     "ava": "^1.2.1",
-    "babel-eslint": "^10.0.1",
     "eslint": "^5.14.1",
     "semantic-release": "^15.13.3",
     "typescript": "^3.4.5"
@@ -40,7 +41,7 @@
   },
   "ava": {
     "files": [
-      "spec/*.js"
+      "spec/*.ts"
     ],
     "failFast": true
   }

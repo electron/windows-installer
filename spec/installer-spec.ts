@@ -8,7 +8,7 @@ const log = require('debug')('electron-windows-installer:spec');
 
 const appDirectory = path.join(__dirname, 'fixtures/app');
 
-test.beforeEach(async () => {
+test.beforeEach(async (): void => {
   const updateExePath = path.join(appDirectory, 'Squirrel.exe');
 
   if (await fs.pathExists(updateExePath)) {
@@ -16,7 +16,7 @@ test.beforeEach(async () => {
   }
 });
 
-test('creates a nuget package and installer', async t => {
+test('creates a nuget package and installer', async (t): void => {
   const outputDirectory = await createTempDir('ei-');
 
   const options = {

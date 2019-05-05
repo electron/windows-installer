@@ -120,7 +120,7 @@ export interface Options {
 
   fixUpPaths?: boolean;
 
-  skipUpdateIcon?: boolean
+  skipUpdateIcon?: boolean;
 }
 
 export interface PersonMetadata {
