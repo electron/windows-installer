@@ -8,6 +8,7 @@
     "sourceMap": true,
     "strict": true,
     "outDir": "lib",
+    "declaration": true,
     "esModuleInterop": true,
     "types": [
       "node"

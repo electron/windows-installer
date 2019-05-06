@@ -3,6 +3,7 @@
   "version": "0.0.0-development",
   "description": "Module to generate Windows installers for Electron apps",
   "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
