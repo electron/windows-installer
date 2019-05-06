@@ -2,13 +2,13 @@ import test from 'ava';
 import path from 'path';
 import { createTempDir } from '../src/temp-utils';
 import fs from 'fs-extra';
-import { createWindowsInstaller } from '../src/index.js';
+import { createWindowsInstaller } from '../src';
 
 const log = require('debug')('electron-windows-installer:spec');
 
 const appDirectory = path.join(__dirname, 'fixtures/app');
 
-test.beforeEach(async (): void => {
+test.beforeEach(async (): Promise<void> => {
   const updateExePath = path.join(appDirectory, 'Squirrel.exe');
 
   if (await fs.pathExists(updateExePath)) {
@@ -16,7 +16,7 @@ test.beforeEach(async (): void => {
   }
 });
 
-test('creates a nuget package and installer', async (t): void => {
+test('creates a nuget package and installer', async (t): Promise<void> => {
   const outputDirectory = await createTempDir('ei-');
 
   const options = {

@@ -22,7 +22,7 @@ export function convertVersion(version: string): string {
 }
 
 
-export default async function createWindowsInstaller(options: Options): Promise<void> {
+export async function createWindowsInstaller(options: Options): Promise<void> {
   let useMono = false;
 
   const monoExe = 'mono';
