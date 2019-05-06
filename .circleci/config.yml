@@ -11,9 +11,11 @@ steps-test: &steps-test
         command: |
           case "$(uname)" in
             Linux)
+              sudo apt-get -qq update
+              sudo apt-get install --no-install-recommends -y wine-development mono-devel
               sudo dpkg --add-architecture i386
-              sudo apt-get update
-              sudo apt-get install --no-install-recommends -y wine32-development wine-development mono-devel
+              sudo apt-get -qq update
+              sudo apt-get install --no-install-recommends -y wine32-development
             ;;
             Darwin)
               brew install wine mono
