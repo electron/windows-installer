@@ -18,13 +18,13 @@ jobs:
             sudo apt-get install -y wine32-development
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}
-            - v1-dependencies-
+            - v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
+            - v1-dependencies-{{ arch }}-
       - run: yarn install --ignore-engines
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
+          key: v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
       - run: yarn test
   release:
     docker:
@@ -33,8 +33,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "yarn.lock" }}
-            - v1-dependencies-
+            - v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
+            - v1-dependencies-{{ arch }}-
       - run: yarn install
       - run: yarn build
       - run: npx semantic-release
