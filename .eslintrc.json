@@ -1,8 +1,12 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "@typescript-eslint",
+    "ava"
+  ],
   "extends": [
     "plugin:@typescript-eslint/recommended",
+    "plugin:ava/recommended",
     "eslint:recommended"
   ],
   "rules": {
