@@ -1,4 +1,4 @@
-import { spawn as spawnOg } from 'child_process';
+import { spawn as spawnOg, SpawnOptionsWithoutStdio } from 'child_process';
 
 const d = require('debug')('electron-windows-installer:spawn');
 
@@ -10,8 +10,8 @@ const d = require('debug')('electron-windows-installer:spawn');
 //
 // Returns an {Observable} with a single value, that is the output of the
 // spawned process
-export default function spawn(exe, params, opts = null) {
-  return new Promise((resolve, reject) => {
+export default function spawn(exe: string, params: string[], opts?: SpawnOptionsWithoutStdio): Promise<string> {
+  return new Promise((resolve, reject): void => {
     let proc = null;
 
     d(`Spawning ${exe} ${params.join(' ')}`);
@@ -27,12 +27,13 @@ export default function spawn(exe, params, opts = null) {
     // * We've got an exit code
     let rejected = false;
     let refCount = 3;
-    let release = () => {
+    let stdout = '';
+
+    let release = (): void => {
       if (--refCount <= 0 && !rejected) resolve(stdout);
     };
 
-    let stdout = '';
-    let bufHandler = (b) => {
+    let bufHandler = (b: Buffer): void => {
       let chunk = b.toString();
       stdout += chunk;
     };
@@ -41,9 +42,9 @@ export default function spawn(exe, params, opts = null) {
     proc.stdout.once('close', release);
     proc.stderr.on('data', bufHandler);
     proc.stderr.once('close', release);
-    proc.on('error', (e) => reject(e));
+    proc.on('error', (e: Error): void => reject(e));
 
-    proc.on('close', code => {
+    proc.on('close', (code: number): void => {
       if (code === 0) {
         release();
       } else {

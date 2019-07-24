@@ -1,0 +1,29 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "ava"
+  ],
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:ava/recommended",
+    "eslint:recommended"
+  ],
+  "rules": {
+    "strict": 0,
+    "@typescript-eslint/indent": [
+      2,
+      2
+    ],
+    "semi": [
+      2,
+      "always"
+    ],
+    "no-console": 0,
+    "quotes": [2, "single", "avoid-escape"]
+  },
+  "env": {
+    "es6": true,
+    "node": true
+  }
+}
