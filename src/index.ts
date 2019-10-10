@@ -5,6 +5,7 @@ import { Metadata, Options, PersonMetadata } from './options';
 import * as path from 'path';
 import spawn from './spawn-promise';
 import template from 'lodash.template';
+import { lookpath } from 'lookpath';
 
 export { Options } from './options';
 
@@ -25,11 +26,14 @@ export function convertVersion(version: string): string {
 export async function createWindowsInstaller(options: Options): Promise<void> {
   let useMono = false;
 
-  const monoExe = 'mono';
-  const wineExe = 'wine';
+  let wineExe = 'wine';
+  let monoExe = 'mono';
 
   if (process.platform !== 'win32') {
     useMono = true;
+
+    monoExe = await lookpath(monoExe);
+    wineExe = await lookpath(wineExe);
     if (!wineExe || !monoExe) {
       throw new Error('You must install both Mono and Wine on non-Windows');
     }
