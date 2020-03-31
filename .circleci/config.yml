@@ -83,6 +83,11 @@ jobs:
     macos:
       xcode: "11.1.0"
     <<: *steps-mac
+  test-windows:
+    executor:
+      name: win/vs2019
+      shell: bash.exe
+    <<: *steps-linux-win
 
   release:
     docker:
@@ -99,10 +104,12 @@ workflows:
     jobs:
       - test-linux
       - test-mac
+      - test-windows
       - release:
           requires:
             - test-linux
             - test-mac
+            - test-windows
           filters:
             branches:
               only:
