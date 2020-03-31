@@ -26,7 +26,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
   let useMono = false;
 
   const monoExe = 'mono';
-  const wineExe = 'wine';
+  const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
 
   if (process.platform !== 'win32') {
     useMono = true;
