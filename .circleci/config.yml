@@ -73,7 +73,9 @@ steps-mac: &steps-mac
     - *step-save-cache
     - run: yarn test
 
-version: 2
+version: 2.1
+orbs:
+  win: circleci/windows@1.0.0
 jobs:
   test-linux:
     docker:
