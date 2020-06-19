@@ -45,7 +45,6 @@ step-install-os-dependencies: &step-install-os-dependencies
           wine64 hostname
         ;;
         Darwin)
-          brew untap homebrew/cask-versions
           brew cask install xquartz wine-stable
           brew install mono
           wine64 hostname
