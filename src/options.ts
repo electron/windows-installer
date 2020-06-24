@@ -81,6 +81,8 @@ export interface Options {
   signWithParams?: string;
   /**
    * A URL to an ICO file to use as the application icon (displayed in Control Panel > Programs and Features).
+   * Accessed at install time; must be a publicly accessible, fully qualified URL (eg: 'https://github.com/appIcon.ico')
+   * Will not accept local files.
    *
    * Defaults to the Atom icon.
    */
