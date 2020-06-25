@@ -68,7 +68,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
 
   const metadata: Metadata = {
     description: '',
-    iconUrl: 'https://raw.githubusercontent.com/atom/electron/master/atom/browser/resources/win/atom.ico'
+    iconUrl: 'https://raw.githubusercontent.com/electron/electron/master/shell/browser/resources/win/electron.ico'
   };
 
   if (options.usePackageJson !== false) {
