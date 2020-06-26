@@ -86,7 +86,7 @@ export interface Options {
    *
    * Does not accept `file:` URLs.
    *
-   * Defaults to the Atom icon.
+   * Defaults to the Electron icon.
    */
   iconUrl?: string;
   /**
