@@ -272,19 +272,19 @@
   dependencies:
     arrify "^1.0.1"
 
-"@continuous-auth/client@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@continuous-auth/client/-/client-1.0.3.tgz#ebfe2ad4d90dddb707527f17bf9d7667949309c9"
-  integrity sha512-zDRkM+cpXq6VMsRAitUtTLuWMruDGwHHVr3J/46hBM51Bv9JzssziuUVD0lVa+t0D2TsJG4CYV3LqLeTi8Ezgw==
+"@continuous-auth/client@^1.1.0":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@continuous-auth/client/-/client-1.2.3.tgz#2c99879c1e40b3cc3421286b355303b3fef49e48"
+  integrity sha512-5Fgq6KOdTp9ZoMme/Xirk2GLEOgN5iOgFdVofA5eXgqcIG+JPz8lQceH7r6BBxkppvxwQfnIuEqKEtJqysQUog==
   dependencies:
     axios "^0.18.0"
 
-"@continuous-auth/semantic-release-npm@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@continuous-auth/semantic-release-npm/-/semantic-release-npm-1.0.3.tgz#8939e7c7c52aac90d191ca467a484f9040b3e077"
-  integrity sha512-Xq2Ycnu4XgSD6ezeA65meRiYQuJGIpJsR8Aoauga7S+vkLcKWn/P43FadykXIba5w8siZRgCutu1IAwFF+n2+Q==
+"@continuous-auth/semantic-release-npm@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@continuous-auth/semantic-release-npm/-/semantic-release-npm-2.0.0.tgz#3813b9bdf6f4b86df2ea018ae10c8a518f8b6ae9"
+  integrity sha512-NEFIgTcNZf3myZva8swBiNs71cQrEsXd+BJhExW3jIrxYVhSoQWxP0IYzEB7qC5CL1zJ7FtHeNiwwjI9a3beAA==
   dependencies:
-    "@continuous-auth/client" "^1.0.3"
+    "@continuous-auth/client" "^1.1.0"
     "@semantic-release/error" "^2.2.0"
     aggregate-error "^2.0.0"
     execa "^1.0.0"
@@ -4701,7 +4701,6 @@ npm@^6.8.0:
     cmd-shim "^3.0.3"
     columnify "~1.5.4"
     config-chain "^1.1.12"
-    debuglog "*"
     detect-indent "~5.0.0"
     detect-newline "^2.1.0"
     dezalgo "~1.0.3"
@@ -4716,7 +4715,6 @@ npm@^6.8.0:
     has-unicode "~2.0.1"
     hosted-git-info "^2.8.8"
     iferr "^1.0.2"
-    imurmurhash "*"
     infer-owner "^1.0.4"
     inflight "~1.0.6"
     inherits "^2.0.4"
@@ -4735,14 +4733,8 @@ npm@^6.8.0:
     libnpx "^10.2.2"
     lock-verify "^2.1.0"
     lockfile "^1.0.4"
-    lodash._baseindexof "*"
     lodash._baseuniq "~4.6.0"
-    lodash._bindcallback "*"
-    lodash._cacheindexof "*"
-    lodash._createcache "*"
-    lodash._getnative "*"
     lodash.clonedeep "~4.5.0"
-    lodash.restparam "*"
     lodash.union "~4.6.0"
     lodash.uniq "~4.5.0"
     lodash.without "~4.4.0"
