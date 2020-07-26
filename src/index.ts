@@ -104,7 +104,8 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
 
-  let templateData = await fs.readFile(path.join(__dirname, '..', 'template.nuspectemplate'), 'utf8');
+  let templatePath = options.nuspecTemplate || path.join(__dirname, '..', 'template.nuspectemplate');
+  let templateData = await fs.readFile(templatePath, 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
   }

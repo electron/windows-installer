@@ -14,6 +14,12 @@ export interface Options {
    */
   outputDirectory?: string;
   /**
+   * The path to the .nuspectemplate file used by Squirrel.exe.
+   *
+   * Defaults to the bundled template.nuspectemplate.
+   */
+  nuspecTemplate?: string;
+  /**
    * The local path to a `.gif` file to display during install.
    */
   loadingGif?: string;
