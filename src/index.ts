@@ -125,7 +125,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
 
   log(`Created NuSpec file:\n${nuspecContent}`);
 
-  const nugetOutput = await createTempDir('si-');
+  const nugetOutput = await createTempDir('electron-winstaller-nuget-');
   const targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
 
   await fs.writeFile(targetNuspecPath, nuspecContent);
