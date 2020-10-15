@@ -75,11 +75,11 @@ steps-mac: &steps-mac
 
 version: 2.1
 orbs:
-  win: circleci/windows@1.0.0
+  win: circleci/windows@2.4.0
 jobs:
   test-linux:
     docker:
-      - image: circleci/node@sha256:44c6136b6b55003fa12321aa1eb790a5a6482edb461227cb56daf488178d04dc
+      - image: circleci/node:10
     <<: *steps-linux-win
   test-mac:
     macos:
@@ -87,13 +87,13 @@ jobs:
     <<: *steps-mac
   test-windows:
     executor:
-      name: win/vs2019
+      name: win/default
       shell: bash.exe
     <<: *steps-linux-win
 
   release:
     docker:
-      - image: circleci/node:10.15
+      - image: circleci/node:10
     steps:
       - checkout
       - *step-restore-cache
