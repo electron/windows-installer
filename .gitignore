@@ -7,6 +7,7 @@ npm-debug.log
 SquirrelSetup.log
 .node-version
 .DS_Store
+spec/fixtures/app/Squirrel.exe
 spec/fixtures/app/Update.exe
 vendor/7z.dll
 vendor/7z.exe
