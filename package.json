@@ -10,6 +10,7 @@
     "url": "https://github.com/electron/windows-installer"
   },
   "scripts": {
+    "postinstall": "node ./script/select-7z-arch.js",
     "build": "tsc",
     "prepublish": "npm run build",
     "lint": "eslint --ext .ts src spec",
