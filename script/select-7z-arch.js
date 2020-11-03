@@ -1,5 +1,5 @@
-import * as fs from 'fs';
-import * as os from 'os';
+const fs = require('fs');
+const os = require('os');
 
 /**
  * Even if we're cross-compiling for a different arch like arm64,

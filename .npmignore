@@ -5,3 +5,5 @@ appveyor.yml
 .npmignore
 .babelrc
 .eslintrc
+vendor/7z.dll
+vendor/7z.exe
