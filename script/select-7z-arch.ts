@@ -1,5 +1,11 @@
-const fs = require('fs');
-const arch = process.env.npm_config_arch || process.arch;
+import * as fs from 'fs';
+import * as os from 'os';
+
+/**
+ * Even if we're cross-compiling for a different arch like arm64,
+ * we still need to use the 7-Zip executable for the host arch
+ */
+const arch = os.arch;
 
 console.log('Selecting 7-Zip for arch ' + arch);
 

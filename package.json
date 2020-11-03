@@ -10,7 +10,7 @@
     "url": "https://github.com/electron/windows-installer"
   },
   "scripts": {
-    "install": "node ./script/select-7z-arch.js",
+    "install": "ts-node ./script/select-7z-arch.ts",
     "build": "tsc",
     "prepublish": "npm run build",
     "lint": "eslint --ext .ts src spec",
