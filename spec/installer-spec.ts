@@ -1,11 +1,12 @@
-import test from 'ava';
-import path from 'path';
 import { createTempDir } from '../src/temp-utils';
-import fs from 'fs-extra';
 import { createWindowsInstaller } from '../src';
+import debug from 'debug';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 import spawn from '../src/spawn-promise';
+import test from 'ava';
 
-const log = require('debug')('electron-windows-installer:spec');
+const log = debug('electron-windows-installer:spec');
 
 const fixtureAppDirectory = path.join(__dirname, 'fixtures/app');
 

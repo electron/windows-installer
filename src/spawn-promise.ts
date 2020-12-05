@@ -1,6 +1,7 @@
+import debug from 'debug';
 import { spawn as spawnOg, SpawnOptionsWithoutStdio } from 'child_process';
 
-const d = require('debug')('electron-windows-installer:spawn');
+const d = debug('electron-windows-installer:spawn');
 
 // Public: Maps a process's output into an {Observable}
 //
@@ -29,12 +30,12 @@ export default function spawn(exe: string, params: string[], opts?: SpawnOptions
     let refCount = 3;
     let stdout = '';
 
-    let release = (): void => {
+    const release = (): void => {
       if (--refCount <= 0 && !rejected) resolve(stdout);
     };
 
-    let bufHandler = (b: Buffer): void => {
-      let chunk = b.toString();
+    const bufHandler = (b: Buffer): void => {
+      const chunk = b.toString();
       stdout += chunk;
     };
 

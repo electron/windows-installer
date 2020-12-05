@@ -1,5 +1,6 @@
 import * as asar from 'asar';
 import { createTempDir } from './temp-utils';
+import debug from 'debug';
 import * as fs from 'fs-extra';
 import { Metadata, Options, PersonMetadata } from './options';
 import * as path from 'path';
@@ -8,7 +9,7 @@ import template from 'lodash.template';
 
 export { Options } from './options';
 
-const log = require('debug')('electron-windows-installer:main');
+const log = debug('electron-windows-installer:main');
 
 export function convertVersion(version: string): string {
   const parts = version.split('-');
@@ -38,7 +39,8 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
     log(`Using Wine: '${wineExe}'`);
   }
 
-  let { appDirectory, outputDirectory, loadingGif } = options;
+  const { appDirectory } = options;
+  let { outputDirectory, loadingGif } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
   const vendorPath = path.join(__dirname, '..', 'vendor');
@@ -48,7 +50,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
   await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
     let cmd = path.join(vendorPath, 'rcedit.exe');
-    let args = [
+    const args = [
       appUpdate,
       '--set-icon', options.setupIcon
     ];
@@ -64,7 +66,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
   const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
-  let { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
+  const { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
 
   const metadata: Metadata = {
     description: '',
@@ -94,7 +96,6 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
     if (typeof (metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
       metadata.authors = (metadata.author || ({} as PersonMetadata)).name || '';
     }
   }
