@@ -60,8 +60,6 @@ step-install-os-dependencies: &step-install-os-dependencies
           nvm install 10.22.0
           nvm use 10.22.0
           nvm list
-          nvm root
-          echo $PATH
           npm.cmd install -g yarn
           ;;
       esac
