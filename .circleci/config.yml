@@ -45,10 +45,21 @@ step-install-os-dependencies: &step-install-os-dependencies
           wine64 hostname
         ;;
         Darwin)
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install 10
+          nvm alias default 10
+          echo 'export NVM_DIR=${HOME}/.nvm' >> $BASH_ENV
+          echo "[ -s '${NVM_DIR}/nvm.sh' ] && . '${NVM_DIR}/nvm.sh'" >> $BASH_ENV
           brew install --cask xquartz wine-stable
           brew install mono
           wine64 hostname
         ;;
+        Windows*|CYGWIN*|MINGW*|MSYS*)
+          nvm install 10.22.0
+          nvm use 10.22.0
+          ;;
       esac
 
 steps-linux-win: &steps-linux-win
