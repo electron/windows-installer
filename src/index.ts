@@ -4,6 +4,7 @@ import debug from 'debug';
 import * as fs from 'fs-extra';
 import { Metadata, Options, PersonMetadata } from './options';
 import * as path from 'path';
+import rcedit from 'rcedit';
 import spawn from './spawn-promise';
 import template from 'lodash.template';
 
@@ -49,18 +50,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
 
   await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
-    let cmd = path.join(vendorPath, 'rcedit.exe');
-    const args = [
-      appUpdate,
-      '--set-icon', options.setupIcon
-    ];
-
-    if (useMono) {
-      args.unshift(cmd);
-      cmd = wineExe;
-    }
-
-    await spawn(cmd, args);
+    await rcedit(appUpdate, { icon: options.setupIcon });
   }
 
   const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
