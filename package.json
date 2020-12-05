@@ -32,7 +32,7 @@
     "@types/node": "^14.14.10",
     "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
-    "ava": "^2.0.0",
+    "ava": "^3.13.0",
     "eslint": "^7.14.0",
     "eslint-plugin-ava": "^11.0.0",
     "semantic-release": "^17.3.0",
@@ -43,7 +43,6 @@
     "node": ">=10.17.0"
   },
   "ava": {
-    "compileEnhancements": false,
     "extensions": [
       "ts"
     ],
