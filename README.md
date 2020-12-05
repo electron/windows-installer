@@ -1,10 +1,9 @@
 # Electron Installer
 
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/bq6c06suq5abb66s/branch/master?svg=true)](https://ci.appveyor.com/project/electron-bot/windows-installer/branch/master)
 [![CircleCI](https://circleci.com/gh/electron/windows-installer.svg?style=svg)](https://circleci.com/gh/electron/windows-installer)
 
 NPM module that builds Windows installers for
-[Electron](https://github.com/electron/electron) apps using
+[Electron](https://electronjs.org) apps using
 [Squirrel](https://github.com/Squirrel/Squirrel.Windows).
 
 ## Installing
@@ -24,8 +23,8 @@ const electronInstaller = require('electron-winstaller');
 Then do a build like so..
 
 ```javascript
-// NB: Use this syntax within an async function, Node does not have support for
-//     top-level await as of Node 12.
+// Note: top-level await exists in Node >= 14.8.0. In earlier versions of Node, please wrap in an
+// async function.
 try {
   await electronInstaller.createWindowsInstaller({
     appDirectory: '/tmp/build/my-app-64',
