@@ -36,7 +36,7 @@
     "eslint": "^7.14.0",
     "eslint-plugin-ava": "^11.0.0",
     "semantic-release": "^17.3.0",
-    "ts-node": "^8.1.0",
+    "ts-node": "^9.1.0",
     "typescript": "^3.4.5"
   },
   "engines": {
