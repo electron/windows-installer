@@ -59,6 +59,9 @@ step-install-os-dependencies: &step-install-os-dependencies
         Windows*|CYGWIN*|MINGW*|MSYS*)
           nvm install 10.22.0
           nvm use 10.22.0
+          nvm list
+          nvm root
+          echo $PATH
           npm.cmd install -g yarn
           ;;
       esac
