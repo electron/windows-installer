@@ -20,11 +20,11 @@
   },
   "dependencies": {
     "asar": "^3.0.3",
-    "cross-spawn-windows-exe": "^0.1.0",
+    "cross-spawn-windows-exe": "^1.0.0",
     "debug": "^4.1.1",
     "fs-extra": "^9.0.1",
     "lodash.template": "^4.2.2",
-    "rcedit": "^2.3.0"
+    "rcedit": "^3.0.0"
   },
   "devDependencies": {
     "@continuous-auth/semantic-release-npm": "^2.0.0",
