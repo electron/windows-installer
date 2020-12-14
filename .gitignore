@@ -7,4 +7,4 @@ npm-debug.log
 SquirrelSetup.log
 .node-version
 .DS_Store
-spec/fixtures/app/Update.exe
+spec/fixtures/app/Squirrel.exe
