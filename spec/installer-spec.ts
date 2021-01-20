@@ -7,23 +7,25 @@ import spawn from '../src/spawn-promise';
 
 const log = require('debug')('electron-windows-installer:spec');
 
-const appDirectory = path.join(__dirname, 'fixtures/app');
+const fixtureAppDirectory = path.join(__dirname, 'fixtures/app');
 
-test.beforeEach(async (): Promise<void> => {
-  const updateExePath = path.join(appDirectory, 'Squirrel.exe');
+function spawn7z(args: string[]): Promise<string> {
+  const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
+  return process.platform !== 'win32'
+    ? spawn(process.arch === 'x64' ? 'wine64' : 'wine', [sevenZipPath, ...args])
+    : spawn(sevenZipPath, args);
+}
 
-  if (await fs.pathExists(updateExePath)) {
-    await fs.unlink(updateExePath);
-  }
-});
+async function createTempAppDirectory(): Promise<string> {
+  const appDirectory = await createTempDir('ad-');
+  await fs.copy(fixtureAppDirectory, appDirectory);
+  return appDirectory;
+}
 
 test('creates a nuget package and installer', async (t): Promise<void> => {
   const outputDirectory = await createTempDir('ei-');
-
-  const options = {
-    appDirectory: appDirectory,
-    outputDirectory: outputDirectory
-  };
+  const appDirectory = await createTempAppDirectory();
+  const options = { appDirectory, outputDirectory };
 
   await createWindowsInstaller(options);
 
@@ -43,17 +45,31 @@ test('creates a nuget package and installer', async (t): Promise<void> => {
   t.true(await fs.pathExists(path.join(appDirectory, 'Squirrel.exe')));
 
   log('Verifying contents of .nupkg');
-  const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
-  let cmd = sevenZipPath;
-  const args = ['l', nupkgPath];
 
-  if (process.platform !== 'win32') {
-    args.unshift(cmd);
-    const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
-    cmd = wineExe;
-  }
+  const packageContents = await spawn7z(['l', nupkgPath]);
 
-  const packageContents = await spawn(cmd, args);
   t.true(packageContents.includes('lib\\net45\\vk_swiftshader_icd.json'));
   t.true(packageContents.includes('lib\\net45\\swiftshader\\libEGL.dll'));
+});
+
+test('creates an installer when swiftshader files are missing', async (t): Promise<void> => {
+  const appDirectory = await createTempAppDirectory();
+  const outputDirectory = await createTempDir('ei-');
+  const options = { appDirectory, outputDirectory };
+
+  // Remove swiftshader folder and swiftshader json file, simulating Electron < 10.0
+  await fs.remove(path.join(appDirectory, 'swiftshader', 'libEGL.dll'));
+  await fs.remove(path.join(appDirectory, 'swiftshader', 'libGLESv2.dll'));
+  await fs.rmdir(path.join(appDirectory, 'swiftshader'));
+  await fs.remove(path.join(appDirectory, 'vk_swiftshader_icd.json'));
+
+  await createWindowsInstaller(options);
+
+  const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
+
+  log('Verifying contents of .nupkg');
+
+  const packageContents = await spawn7z(['l', nupkgPath]);
+  t.false(packageContents.includes('vk_swiftshader_icd.json'));
+  t.false(packageContents.includes('swiftshader\\'));
 });
