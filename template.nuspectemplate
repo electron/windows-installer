@@ -23,5 +23,8 @@
     <file src="Squirrel.exe" target="lib\net45\squirrel.exe" />
     <file src="LICENSE" target="lib\net45\LICENSE" />
     <file src="<%- exe %>" target="lib\net45\<%- exe %>" />
+    <% additionalFiles.forEach(function(f) { %>
+    <file src="<%- f.src %>" target="<%- f.target %>" />
+    <% }); %>
   </files>
 </package>

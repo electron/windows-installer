@@ -103,10 +103,23 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
   metadata.version = convertVersion(metadata.version as string);
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
+  metadata.additionalFiles = metadata.additionalFiles || [];
+
+  if (await fs.pathExists(path.join(appDirectory, 'swiftshader'))) {
+    metadata.additionalFiles.push({ src: "swiftshader\\**", target: 'lib\\net45\\swiftshader' });
+  }
+
+  if (await fs.pathExists(path.join(appDirectory, 'vk_swiftshader_icd.json'))) {
+    metadata.additionalFiles.push({ src: "vk_swiftshader_icd.json", target: 'lib\\net45' });
+  }
 
   let templateData = await fs.readFile(path.join(__dirname, '..', 'template.nuspectemplate'), 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
+    metadata.additionalFiles.forEach(f => {
+      f.src = f.src.replace(/\\/g, '/');
+      f.target = f.target.replace(/\\/g, '/');
+    });
   }
   const nuspecContent = template(templateData)(metadata);
 

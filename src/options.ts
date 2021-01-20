@@ -133,6 +133,11 @@ export interface PersonMetadata {
   url?: string;
 }
 
+export interface AdditionalFile {
+  src: string;
+  target: string;
+}
+
 export interface Metadata {
   name?: string;
   productName?: string;
@@ -143,4 +148,5 @@ export interface Metadata {
   owners?: string | PersonMetadata[];
   description?: string;
   iconUrl?: string;
+  additionalFiles?: AdditionalFile[];
 }
