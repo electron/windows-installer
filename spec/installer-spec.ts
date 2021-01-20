@@ -45,7 +45,7 @@ test('creates a nuget package and installer', async (t): Promise<void> => {
   log('Verifying contents of .nupkg');
   const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
   let cmd = sevenZipPath;
-  const args = ['-l', nupkgPath];
+  const args = ['l', nupkgPath];
 
   if (process.platform !== 'win32') {
     args.unshift(cmd);
