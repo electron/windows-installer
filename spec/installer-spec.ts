@@ -44,7 +44,16 @@ test('creates a nuget package and installer', async (t): Promise<void> => {
 
   log('Verifying contents of .nupkg');
   const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
-  const packageContents = await spawn(sevenZipPath, ['l', nupkgPath]);
+  let cmd = sevenZipPath
+  const args = ['-l', nupkgPath]
+
+  if (process.platform !== "win32") {
+    args.unshift(cmd);
+    const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
+    cmd = wineExe;
+  }
+
+  const packageContents = await spawn(cmd, args)
   t.true(packageContents.includes('lib\\net45\\vk_swiftshader_icd.json'));
   t.true(packageContents.includes('lib\\net45\\swiftshader\\libEGL.dll'));
 });
