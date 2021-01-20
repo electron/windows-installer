@@ -3,6 +3,7 @@ import path from 'path';
 import { createTempDir } from '../src/temp-utils';
 import fs from 'fs-extra';
 import { createWindowsInstaller } from '../src';
+import spawn from '../src/spawn-promise';
 
 const log = require('debug')('electron-windows-installer:spec');
 
@@ -29,7 +30,9 @@ test('creates a nuget package and installer', async (t): Promise<void> => {
   log(`Verifying assertions on ${outputDirectory}`);
   log(JSON.stringify(await fs.readdir(outputDirectory)));
 
-  t.true(await fs.pathExists(path.join(outputDirectory, 'myapp-1.0.0-full.nupkg')));
+  const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
+
+  t.true(await fs.pathExists(nupkgPath));
   t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.exe')));
 
   if (process.platform === 'win32') {
@@ -38,4 +41,10 @@ test('creates a nuget package and installer', async (t): Promise<void> => {
 
   log('Verifying Update.exe');
   t.true(await fs.pathExists(path.join(appDirectory, 'Squirrel.exe')));
+
+  log('Verifying contents of .nupkg');
+  const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
+  const packageContents = await spawn(sevenZipPath, ['l', nupkgPath]);
+  t.true(packageContents.includes('lib\\net45\\vk_swiftshader_icd.json'));
+  t.true(packageContents.includes('lib\\net45\\swiftshader\\libEGL.dll'));
 });
