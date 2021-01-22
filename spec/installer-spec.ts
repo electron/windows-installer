@@ -11,8 +11,9 @@ const fixtureAppDirectory = path.join(__dirname, 'fixtures/app');
 
 function spawn7z(args: string[]): Promise<string> {
   const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
+  const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
   return process.platform !== 'win32'
-    ? spawn(process.arch === 'x64' ? 'wine64' : 'wine', [sevenZipPath, ...args])
+    ? spawn(wineExe, [sevenZipPath, ...args])
     : spawn(sevenZipPath, args);
 }
 
