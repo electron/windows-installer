@@ -18,7 +18,7 @@ function spawn7z(args: string[]): Promise<string> {
 }
 
 async function createTempAppDirectory(): Promise<string> {
-  const appDirectory = await createTempDir('ad-');
+  const appDirectory = await createTempDir('electron-winstaller-ad-');
   await fs.copy(fixtureAppDirectory, appDirectory);
   return appDirectory;
 }
@@ -55,7 +55,7 @@ test('creates a nuget package and installer', async (t): Promise<void> => {
 
 test('creates an installer when swiftshader files are missing', async (t): Promise<void> => {
   const appDirectory = await createTempAppDirectory();
-  const outputDirectory = await createTempDir('ei-');
+  const outputDirectory = await createTempDir('electron-winstaller-test-');
   const options = { appDirectory, outputDirectory };
 
   // Remove swiftshader folder and swiftshader json file, simulating Electron < 10.0
