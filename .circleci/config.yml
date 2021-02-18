@@ -79,7 +79,7 @@ orbs:
 jobs:
   test-linux:
     docker:
-      - image: circleci/node:8
+      - image: circleci/node@sha256:44c6136b6b55003fa12321aa1eb790a5a6482edb461227cb56daf488178d04dc
     <<: *steps-linux-win
   test-mac:
     macos:
