@@ -62,7 +62,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
         const rcEditPath = path.join(vendorPath, 'rcedit.exe');
 
         await fs.remove(rcEditPath);
-        await fs.symlink(x64EditPath, rcEditPath);
+        await fs.copy(x64EditPath, rcEditPath);
       }
     }
 
