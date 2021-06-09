@@ -66,7 +66,7 @@ There are several configuration settings supported:
 | `setupExe`            | No       | The name to use for the generated Setup.exe file |
 | `setupMsi`            | No       | The name to use for the generated Setup.msi file |
 | `noMsi`               | No       | Should Squirrel.Windows create an MSI installer? |
-| `noDelta`             | No       | Should Squirrel.Windows generate delta packages? (disable only if necessary, they are a Good Thing) |
+| `noDelta`             | No       | Should Squirrel.Windows create delta packages? (disable only if necessary, they are a Good Thing) |
 | `remoteReleases`      | No       | A URL to your existing updates. If given, these will be downloaded to create delta updates |
 | `remoteToken`         | No       | Authentication token for remote updates |
 | `frameworkVersion`    | No       | Set the required .NET framework version, e.g. `net461` |
