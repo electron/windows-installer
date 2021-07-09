@@ -175,16 +175,16 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
     cmd = monoExe;
   }
 
-  if (signWithParams) {
+  if (signWithParams || (certificateFile && certificatePassword)) {
     args.push('--signWithParams');
-    if (!signWithParams.includes('/f') && !signWithParams.includes('/p') && certificateFile && certificatePassword) {
-      args.push(`${signWithParams} /a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
-    } else {
-      args.push(signWithParams);
+    let param = signWithParams || '';
+    if (certificateFile && certificatePassword) {
+      param += ` /a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`;
     }
-  } else if (certificateFile && certificatePassword) {
-    args.push('--signWithParams');
-    args.push(`/a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+    if (!param.includes('/fd ')) {
+      param += ' /fd SHA256';
+    }
+    args.push(param);
   }
 
   if (options.setupIcon) {

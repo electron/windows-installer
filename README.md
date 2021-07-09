@@ -59,7 +59,7 @@ There are several configuration settings supported:
 | `name`                | No      | Windows Application Model ID (appId). Defaults to the `name` field in your app's package.json file. |
 | `certificateFile`     | No       | The path to an Authenticode Code Signing Certificate |
 | `certificatePassword` | No       | The password to decrypt the certificate given in `certificateFile` |
-| `signWithParams`      | No       | Params to pass to signtool.  Overrides `certificateFile` and `certificatePassword`. |
+| `signWithParams`      | No       | Extra params to pass to signtool. |
 | `iconUrl`             | No       | A URL to an ICO file to use as the application icon (displayed in Control Panel > Programs and Features). Defaults to the Atom icon. |
 | `setupIcon`           | No       | The ICO file to use as the icon for the generated Setup.exe |
 | `skipUpdateIcon`      | No       | Disables setting the icon of `Update.exe`. This can solve installation errors with the following message: "This application could not be started", when the setup is built on a non-Windows system. |
