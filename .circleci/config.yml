@@ -117,12 +117,12 @@ workflows:
   test_and_release:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
-      # - test-linux
+      - test-linux
       - test-mac
       - test-windows
       - release:
           requires:
-            # - test-linux
+            - test-linux
             - test-mac
             - test-windows
           filters:
