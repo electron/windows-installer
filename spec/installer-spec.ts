@@ -3,19 +3,16 @@ import { createWindowsInstaller } from '../src';
 import debug from 'debug';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import spawn from '../src/spawn-promise';
+import { spawnExe } from 'cross-spawn-windows-exe';
 import test from 'ava';
 
 const log = debug('electron-windows-installer:spec');
 
 const fixtureAppDirectory = path.join(__dirname, 'fixtures/app');
 
-function spawn7z(args: string[]): Promise<string> {
+async function spawn7z(args: string[]): Promise<string> {
   const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
-  const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
-  return process.platform !== 'win32'
-    ? spawn(wineExe, [sevenZipPath, ...args])
-    : spawn(sevenZipPath, args);
+  return spawnExe(sevenZipPath, args);
 }
 
 async function createTempAppDirectory(): Promise<string> {
