@@ -44,6 +44,10 @@
   "engines": {
     "node": ">=10.17.0"
   },
+  "resolutions": {
+    "semantic-release/@semantic-release/github": "7.2.1",
+    "semantic-release/@semantic-release/npm": "7.1.1"
+  },
   "ava": {
     "extensions": [
       "ts"
