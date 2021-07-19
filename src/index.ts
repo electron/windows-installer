@@ -1,14 +1,16 @@
 import * as asar from 'asar';
 import { createTempDir } from './temp-utils';
+import debug from 'debug';
 import * as fs from 'fs-extra';
 import { Metadata, Options, PersonMetadata } from './options';
 import * as path from 'path';
-import spawn from './spawn-promise';
+import rcedit from 'rcedit';
+import { canRunWindowsExeNatively, spawnDotNet } from 'cross-spawn-windows-exe';
 import template from 'lodash.template';
 
 export { Options } from './options';
 
-const log = require('debug')('electron-windows-installer:main');
+const log = debug('electron-windows-installer:main');
 
 export function convertVersion(version: string): string {
   const parts = version.split('-');
@@ -21,24 +23,9 @@ export function convertVersion(version: string): string {
   }
 }
 
-
 export async function createWindowsInstaller(options: Options): Promise<void> {
-  let useMono = false;
-
-  const monoExe = 'mono';
-  const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
-
-  if (process.platform !== 'win32') {
-    useMono = true;
-    if (!wineExe || !monoExe) {
-      throw new Error('You must install both Mono and Wine on non-Windows');
-    }
-
-    log(`Using Mono: '${monoExe}'`);
-    log(`Using Wine: '${wineExe}'`);
-  }
-
-  let { appDirectory, outputDirectory, loadingGif } = options;
+  const { appDirectory } = options;
+  let { outputDirectory, loadingGif } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
   const vendorPath = path.join(__dirname, '..', 'vendor');
@@ -47,24 +34,13 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
 
   await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
-    let cmd = path.join(vendorPath, 'rcedit.exe');
-    let args = [
-      appUpdate,
-      '--set-icon', options.setupIcon
-    ];
-
-    if (useMono) {
-      args.unshift(cmd);
-      cmd = wineExe;
-    }
-
-    await spawn(cmd, args);
+    await rcedit(appUpdate, { icon: options.setupIcon });
   }
 
   const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
-  let { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
+  const { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
 
   const metadata: Metadata = {
     description: '',
@@ -94,7 +70,6 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
     if (typeof (metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
       metadata.authors = (metadata.author || ({} as PersonMetadata)).name || '';
     }
   }
@@ -125,87 +100,68 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
 
   log(`Created NuSpec file:\n${nuspecContent}`);
 
-  const nugetOutput = await createTempDir('si-');
-  const targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
+  const nugetOutputDir = await createTempDir('electron-winstaller-nuget-');
+  const targetNuspecPath = path.join(nugetOutputDir, metadata.name + '.nuspec');
 
   await fs.writeFile(targetNuspecPath, nuspecContent);
 
-  let cmd = path.join(vendorPath, 'nuget.exe');
-  let args = [
+  // Call NuGet to create our package
+  log(await spawnDotNet(path.join(vendorPath, 'nuget.exe'), [
     'pack', targetNuspecPath,
     '-BasePath', appDirectory,
-    '-OutputDirectory', nugetOutput,
+    '-OutputDirectory', nugetOutputDir,
     '-NoDefaultExcludes'
-  ];
-
-  if (useMono) {
-    args.unshift(cmd);
-    cmd = monoExe;
-  }
-
-  // Call NuGet to create our package
-  log(await spawn(cmd, args));
-  const nupkgPath = path.join(nugetOutput, `${metadata.name}.${metadata.version}.nupkg`);
+  ]));
+  const nupkgPath = path.join(nugetOutputDir, `${metadata.name}.${metadata.version}.nupkg`);
 
   if (remoteReleases) {
-    cmd = path.join(vendorPath, 'SyncReleases.exe');
-    args = ['-u', remoteReleases, '-r', outputDirectory];
-
-    if (useMono) {
-      args.unshift(cmd);
-      cmd = monoExe;
-    }
+    const syncReleasesArgs = ['-u', remoteReleases, '-r', outputDirectory];
 
     if (remoteToken) {
-      args.push('-t', remoteToken);
+      syncReleasesArgs.push('-t', remoteToken);
     }
 
-    log(await spawn(cmd, args));
+    log(await spawnDotNet(path.join(vendorPath, 'SyncReleases.exe'), syncReleasesArgs));
   }
 
-  cmd = path.join(vendorPath, 'Squirrel.exe');
-  args = [
+  const squirrelCmd = path.join(vendorPath, canRunWindowsExeNatively() ? 'Squirrel.exe' : 'Squirrel-Mono.exe');
+  const squirrelArgs = [
     '--releasify', nupkgPath,
     '--releaseDir', outputDirectory,
     '--loadingGif', loadingGif
   ];
 
-  if (useMono) {
-    args.unshift(path.join(vendorPath, 'Squirrel-Mono.exe'));
-    cmd = monoExe;
-  }
-
   if (signWithParams) {
-    args.push('--signWithParams');
+    squirrelArgs.push('--signWithParams');
     if (!signWithParams.includes('/f') && !signWithParams.includes('/p') && certificateFile && certificatePassword) {
-      args.push(`${signWithParams} /a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+      squirrelArgs.push(`${signWithParams} /a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
     } else {
-      args.push(signWithParams);
+      squirrelArgs.push(signWithParams);
     }
   } else if (certificateFile && certificatePassword) {
-    args.push('--signWithParams');
-    args.push(`/a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+    squirrelArgs.push('--signWithParams');
+    squirrelArgs.push(`/a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
   }
 
   if (options.setupIcon) {
-    args.push('--setupIcon');
-    args.push(path.resolve(options.setupIcon));
+    squirrelArgs.push('--setupIcon');
+    squirrelArgs.push(path.resolve(options.setupIcon));
   }
 
   if (options.noMsi) {
-    args.push('--no-msi');
+    squirrelArgs.push('--no-msi');
   }
 
   if (options.noDelta) {
-    args.push('--no-delta');
+    squirrelArgs.push('--no-delta');
   }
 
   if (options.frameworkVersion) {
-    args.push('--framework-version');
-    args.push(options.frameworkVersion);
+    squirrelArgs.push('--framework-version');
+    squirrelArgs.push(options.frameworkVersion);
   }
 
-  log(await spawn(cmd, args));
+  log(await spawnDotNet(squirrelCmd, squirrelArgs));
 
   if (options.fixUpPaths !== false) {
     log('Fixing up paths');

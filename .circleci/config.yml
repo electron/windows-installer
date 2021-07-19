@@ -45,10 +45,23 @@ step-install-os-dependencies: &step-install-os-dependencies
           wine64 hostname
         ;;
         Darwin)
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install 10
+          nvm alias default 10
+          echo 'export NVM_DIR=${HOME}/.nvm' >> $BASH_ENV
+          echo "[ -s '${NVM_DIR}/nvm.sh' ] && . '${NVM_DIR}/nvm.sh'" >> $BASH_ENV
           brew install --cask xquartz wine-stable
           brew install mono
           wine64 hostname
         ;;
+        Windows*|CYGWIN*|MINGW*|MSYS*)
+          nvm install 10.22.0
+          nvm use 10.22.0
+          nvm list
+          npm.cmd install -g yarn
+          ;;
       esac
 
 steps-linux-win: &steps-linux-win
@@ -75,11 +88,11 @@ steps-mac: &steps-mac
 
 version: 2.1
 orbs:
-  win: circleci/windows@1.0.0
+  win: circleci/windows@2.4.0
 jobs:
   test-linux:
     docker:
-      - image: circleci/node@sha256:44c6136b6b55003fa12321aa1eb790a5a6482edb461227cb56daf488178d04dc
+      - image: circleci/node:10
     <<: *steps-linux-win
   test-mac:
     macos:
@@ -87,13 +100,13 @@ jobs:
     <<: *steps-mac
   test-windows:
     executor:
-      name: win/vs2019
+      name: win/default
       shell: bash.exe
     <<: *steps-linux-win
 
   release:
     docker:
-      - image: circleci/node:10.15
+      - image: circleci/node:10
     steps:
       - checkout
       - *step-restore-cache
@@ -104,12 +117,12 @@ workflows:
   test_and_release:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
-      # - test-linux
+      - test-linux
       - test-mac
       - test-windows
       - release:
           requires:
-            # - test-linux
+            - test-linux
             - test-mac
             - test-windows
           filters:
