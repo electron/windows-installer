@@ -47,7 +47,6 @@ step-install-os-dependencies: &step-install-os-dependencies
         Darwin)
           brew install --cask xquartz wine-stable
           brew install mono
-          sudo cp /usr/local/bin/wine64 /usr/local/bin/wine
           wine64 hostname
         ;;
       esac
@@ -107,12 +106,12 @@ workflows:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
       # - test-linux
-      - test-mac
+      # - test-mac
       - test-windows
       - release:
           requires:
             # - test-linux
-            - test-mac
+            # - test-mac
             - test-windows
           filters:
             branches:
