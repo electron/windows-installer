@@ -98,6 +98,7 @@ jobs:
       - checkout
       - *step-restore-cache
       - run: yarn
+      - run: npx @continuous-auth/circleci-oidc-github-auth@1.0.4
       - run: npx semantic-release
 workflows:
   version: 2
@@ -115,4 +116,5 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
+          context: cfa-release

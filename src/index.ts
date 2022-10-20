@@ -69,7 +69,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
 
   const metadata: Metadata = {
     description: '',
-    iconUrl: 'https://raw.githubusercontent.com/electron/electron/master/shell/browser/resources/win/electron.ico'
+    iconUrl: 'https://raw.githubusercontent.com/electron/electron/main/shell/browser/resources/win/electron.ico'
   };
 
   if (options.usePackageJson !== false) {
