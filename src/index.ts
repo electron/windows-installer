@@ -1,12 +1,12 @@
 import * as asar from 'asar';
 import { createTempDir } from './temp-utils';
 import * as fs from 'fs-extra';
-import { Metadata, Options, PersonMetadata } from './options';
+import { Metadata, SquirrelWindowsOptions, PersonMetadata } from './options';
 import * as path from 'path';
 import spawn from './spawn-promise';
 import template from 'lodash.template';
 
-export { Options } from './options';
+export { SquirrelWindowsOptions } from './options';
 
 const log = require('debug')('electron-windows-installer:main');
 
@@ -22,7 +22,7 @@ export function convertVersion(version: string): string {
 }
 
 
-export async function createWindowsInstaller(options: Options): Promise<void> {
+export async function createWindowsInstaller(options: SquirrelWindowsOptions): Promise<void> {
   let useMono = false;
 
   const monoExe = 'mono';
