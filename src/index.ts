@@ -7,6 +7,7 @@ import spawn from './spawn-promise';
 import template from 'lodash.template';
 
 export { SquirrelWindowsOptions } from './options';
+export { SquirrelWindowsOptions as Options} from './options';
 
 const log = require('debug')('electron-windows-installer:main');
 
