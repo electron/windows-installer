@@ -83,7 +83,8 @@ jobs:
     <<: *steps-linux-win
   test-mac:
     macos:
-      xcode: "11.1.0"
+      xcode: "13.3.0"
+    resource_class: macos.x86.medium.gen2
     <<: *steps-mac
   test-windows:
     executor:
@@ -106,12 +107,12 @@ workflows:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
       # - test-linux
-      - test-mac
+      # - test-mac
       - test-windows
       - release:
           requires:
             # - test-linux
-            - test-mac
+            # - test-mac
             - test-windows
           filters:
             branches:
