@@ -1,4 +1,4 @@
-import * as asar from 'asar';
+import * as asar from '@electron/asar';
 import { createTempDir } from './temp-utils';
 import * as fs from 'fs-extra';
 import { Metadata, SquirrelWindowsOptions, PersonMetadata } from './options';
@@ -78,7 +78,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     let appMetadata;
 
     if (await fs.pathExists(asarFile)) {
-      appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
+      appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json').toString());
     } else {
       appMetadata = await fs.readJson(path.join(appResources, 'app', 'package.json'));
     }
