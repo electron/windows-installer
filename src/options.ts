@@ -2,7 +2,7 @@
 // Original definitions by: Brendan Forster <https://github.com/shiftkey>, Daniel Perez Alvarez <https://github.com/unindented>
 // Original definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-export interface Options {
+export interface SquirrelWindowsOptions {
   /**
    * The folder path of your Electron app
    */
