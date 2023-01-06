@@ -15,8 +15,7 @@
     "prepublish": "npm run build",
     "lint": "eslint --ext .ts src spec",
     "test": "npm run lint && ava",
-    "tdd": "ava --watch",
-    "semantic-release": "semantic-release"
+    "tdd": "ava --watch"
   },
   "dependencies": {
     "@electron/asar": "^3.2.1",
