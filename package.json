@@ -15,8 +15,7 @@
     "prepublish": "npm run build",
     "lint": "eslint --ext .ts src spec",
     "test": "npm run lint && ava",
-    "tdd": "ava --watch",
-    "semantic-release": "semantic-release"
+    "tdd": "ava --watch"
   },
   "dependencies": {
     "@electron/asar": "^3.2.1",
@@ -26,7 +25,7 @@
     "temp": "^0.9.0"
   },
   "devDependencies": {
-    "@continuous-auth/semantic-release-npm": "^2.0.0",
+    "@continuous-auth/semantic-release-npm": "^3.0.0",
     "@types/fs-extra": "^5.0.5",
     "@types/lodash.template": "^4.4.6",
     "@types/node": "^12.0.0",
