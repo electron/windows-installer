@@ -90,6 +90,10 @@ export interface SquirrelWindowsOptions {
    */
   iconUrl?: string;
   /**
+   * Path to an ICO file that will be used for icon shortcuts
+   */
+  icon?: string;
+  /**
    * The ICO file to use as the icon for the generated Setup.exe
    */
   setupIcon?: string;
