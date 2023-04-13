@@ -193,11 +193,6 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     args.push(path.resolve(options.setupIcon));
   }
 
-  if (options.icon) {
-    args.push('--icon');
-    args.push(path.resolve(options.icon));
-  }
-
   if (options.noMsi) {
     args.push('--no-msi');
   }
