@@ -1,6 +1,6 @@
 {
-  "name": "electron-winstaller",
-  "version": "0.0.0-development",
+  "name": "@ice/electron-winstaller",
+  "version": "5.1.0-gosign",
   "description": "Module to generate Windows installers for Electron apps",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,6 +8,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/electron/windows-installer"
+  },
+  "publishConfig": {
+    "registry": "https://integrazione.mgmt.infocert.it/artifactory/api/npm/npm-ice-local/"
   },
   "scripts": {
     "install": "node ./script/select-7z-arch.js",
