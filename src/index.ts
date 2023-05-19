@@ -12,7 +12,7 @@ export { SquirrelWindowsOptions as Options} from './options';
 const log = require('debug')('electron-windows-installer:main');
 
 export function convertVersion(version: string): string {
-  const parts = version.split('-');
+  const parts = version.split('+')[0].split('-');
   const mainVersion = parts.shift();
 
   if (parts.length > 0) {
