@@ -73,7 +73,7 @@ workflows:
             parameters:
               executor:
                 - node/linux
-                - node/macos
+                # - node/macos
                 - node/windows
               node-version:
                 - 20.2.0
