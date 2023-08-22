@@ -1,110 +1,89 @@
-step-env: &step-env
-  run:
-    # prevent Wine popup dialogs about installing additional packages
-    name: Setup Environment Variables
-    command: |
-      echo 'export WINEDLLOVERRIDES="mscoree,mshtml="' >> $BASH_ENV
-      echo 'export WINEDEBUG="-all"' >> $BASH_ENV
-
-step-restore-brew-cache: &step-restore-brew-cache
-  restore_cache:
-    name: Restoring Homebrew cache
-    paths:
-      - /usr/local/Homebrew
-    keys:
-      - v1-brew-cache-{{ arch }}
-
-step-save-brew-cache: &step-save-brew-cache
-  save_cache:
-    name: Persisting Homebrew cache
-    paths:
-      - /usr/local/Homebrew
-    key: v1-brew-cache-{{ arch }}
-
-step-restore-cache: &step-restore-cache
-  restore_cache:
-    keys:
-      - v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
-      - v1-dependencies-{{ arch }}-
-
-step-save-cache: &step-save-cache
-  save_cache:
-    paths:
-      - node_modules
-    key: v1-dependencies-{{ arch }}-{{ checksum "yarn.lock" }}
-
-step-install-os-dependencies: &step-install-os-dependencies
-  run:
-    name: Install OS Dependencies
-    command: |
-      case "$(uname)" in
-        Linux)
-          sudo dpkg --add-architecture i386
-          sudo apt-get -qq update
-          sudo apt-get install --no-install-recommends -y wine64 wine32 wine mono-devel
-          wine64 hostname
-        ;;
-        Darwin)
-          brew install --cask xquartz wine-stable
-          brew install mono
-          wine64 hostname
-        ;;
-      esac
-
-steps-linux-win: &steps-linux-win
-  steps:
-    - *step-env
-    - *step-install-os-dependencies
-    - checkout
-    - *step-restore-cache
-    - run: yarn
-    - *step-save-cache
-    - run: yarn test
-
-steps-mac: &steps-mac
-  steps:
-    - *step-env
-    - *step-restore-brew-cache
-    - *step-install-os-dependencies
-    - *step-save-brew-cache
-    - checkout
-    - *step-restore-cache
-    - run: yarn
-    - *step-save-cache
-    - run: yarn test
-
 version: 2.1
+
 orbs:
-  win: circleci/windows@5.0.0
   cfa: continuousauth/npm@1.0.2
+  node: electronjs/node@1.2.0
+
 jobs:
-  test-linux:
-    docker:
-      - image: circleci/node@sha256:44c6136b6b55003fa12321aa1eb790a5a6482edb461227cb56daf488178d04dc
-    <<: *steps-linux-win
-  test-mac:
-    macos:
-      xcode: "13.3.0"
-    resource_class: macos.x86.medium.gen2
-    <<: *steps-mac
-  test-windows:
-    executor:
-      name: win/server-2019
-      shell: bash.exe
-    <<: *steps-linux-win
+  test:
+    environment:
+      # prevent Wine popup dialogs about installing additional packages
+      WINEDLLOVERRIDES: mscoree,mshtml=
+      WINEDEBUG: -all
+    executor: <<parameters.executor>>
+    parameters:
+      executor:
+        description: The executor to use for the job.
+        type: string
+      node-version:
+        description: Specify the Node.js version to install.
+        type: string
+    steps:
+      - node/test:
+          checkout-steps:
+            - when:
+                condition:
+                  equal: [ node/macos, << parameters.executor >> ]
+                steps:
+                  - restore_cache:
+                      name: Restoring Homebrew cache
+                      paths:
+                        - /usr/local/Homebrew
+                      keys:
+                        - v1-brew-cache-{{ arch }}
+            - run:
+                name: Install OS Dependencies
+                command: |
+                  case "$(uname)" in
+                    Linux)
+                      sudo dpkg --add-architecture i386
+                      sudo apt-get -qq update
+                      sudo apt-get install --no-install-recommends -y wine64 wine32 wine mono-devel
+                      wine64 hostname
+                    ;;
+                    Darwin)
+                      brew install --cask xquartz
+                      brew tap homebrew/cask-versions
+                      brew install --cask --no-quarantine wine-stable
+                      brew install mono
+                      wine64 hostname
+                    ;;
+                  esac
+            - when:
+                condition:
+                  equal: [ node/macos, << parameters.executor >> ]
+                steps:
+                  - save_cache:
+                      name: Persisting Homebrew cache
+                      paths:
+                        - /usr/local/Homebrew
+                      key: v1-brew-cache-{{ arch }}
+            - checkout
+          node-version: << parameters.node-version >>
 
 workflows:
   test_and_release:
     # Run the test jobs first, then the release only when all the test jobs are successful
     jobs:
-      # - test-linux
-      # - test-mac
-      - test-windows
+      - test:
+          name: test-<< matrix.executor >>-<< matrix.node-version >>
+          matrix:
+            alias: test
+            parameters:
+              executor:
+                - node/linux
+                - node/macos
+                - node/windows
+              node-version:
+                - 20.2.0
+                - 18.14.0
+                - 16.19.0
+                - 14.19.0
+                - 12.22.12
+                - 10.24.1
       - cfa/release:
           requires:
-            # - test-linux
-            # - test-mac
-            - test-windows
+            - test
           filters:
             branches:
               only:
