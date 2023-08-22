@@ -60,6 +60,7 @@ jobs:
                       key: v1-brew-cache-{{ arch }}
             - checkout
           node-version: << parameters.node-version >>
+          override-ci-command: yarn install --frozen-lockfile --ignore-engines
 
 workflows:
   test_and_release:
@@ -67,7 +68,6 @@ workflows:
     jobs:
       - test:
           name: test-<< matrix.executor >>-<< matrix.node-version >>
-          override-ci-command: yarn install --frozen-lockfile --ignore-engines
           matrix:
             alias: test
             parameters:
