@@ -39,6 +39,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     log(`Using Wine: '${wineExe}'`);
   }
 
+  // eslint-disable-next-line prefer-const
   let { appDirectory, outputDirectory, loadingGif } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
@@ -49,7 +50,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
     let cmd = path.join(vendorPath, 'rcedit.exe');
-    let args = [
+    const args = [
       appUpdate,
       '--set-icon', options.setupIcon
     ];
@@ -65,7 +66,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
-  let { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
+  const { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
 
   const metadata: Metadata = {
     description: '',
@@ -95,7 +96,6 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     if (typeof (metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
       metadata.authors = (metadata.author || ({} as PersonMetadata)).name || '';
     }
   }
