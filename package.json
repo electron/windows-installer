@@ -28,15 +28,15 @@
     "@continuous-auth/semantic-release-npm": "^3.0.0",
     "@types/fs-extra": "^5.0.5",
     "@types/lodash.template": "^4.4.6",
-    "@types/node": "^12.0.0",
+    "@types/node": "^20.6.0",
     "@types/temp": "^0.8.34",
-    "@typescript-eslint/eslint-plugin": "^1.7.0",
-    "@typescript-eslint/parser": "^1.7.0",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
     "ava": "^2.4.0",
-    "eslint": "^5.14.1",
+    "eslint": "^8.49.0",
     "eslint-plugin-ava": "^7.1.0",
-    "ts-node": "^8.1.0",
-    "typescript": "^3.4.5"
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
   },
   "engines": {
     "node": ">=8.0.0"
