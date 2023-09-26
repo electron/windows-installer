@@ -9,6 +9,15 @@
     "type": "git",
     "url": "https://github.com/electron/windows-installer"
   },
+  "files": [
+    "lib",
+    "resources",
+    "script",
+    "template.nuspectemplate",
+    "vendor",
+    "!vendor/7z.dll",
+    "!vendor/7z.exe"
+  ],
   "scripts": {
     "install": "node ./script/select-7z-arch.js",
     "build": "tsc",
