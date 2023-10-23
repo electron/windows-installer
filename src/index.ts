@@ -42,10 +42,12 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
 
   if (process.platform !== 'win32') {
     useMono = true;
-    const isWineInstalled = await checkIfCommandExists(wineExe);
-    const isMonoInstalled = await checkIfCommandExists(monoExe);
+    const [hasWine, hasMono] = await Promise.all([
+      checkIfCommandExists(wineExe),
+      checkIfCommandExists(monoExe)
+    ]);
 
-    if (!isWineInstalled || !isMonoInstalled) {
+    if (!hasWine || !hasMono) {
       throw new Error('You must install both Mono and Wine on non-Windows');
     }
 
