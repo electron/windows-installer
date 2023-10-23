@@ -3,6 +3,8 @@ import { createTempDir } from './temp-utils';
 import * as fs from 'fs-extra';
 import { Metadata, SquirrelWindowsOptions, PersonMetadata } from './options';
 import * as path from 'path';
+import * as os from 'os';
+import { exec } from 'child_process';
 import spawn from './spawn-promise';
 import template from 'lodash.template';
 
@@ -22,6 +24,15 @@ export function convertVersion(version: string): string {
   }
 }
 
+function checkIfCommandExists(command: string): Promise<boolean> {
+  const checkCommand = os.platform() === 'win32' ? 'where' : 'which';
+  return new Promise((resolve) => {
+    exec(`${checkCommand} ${command}`, (error) => {
+      resolve(error ? false : true);
+    });
+  });
+}
+
 
 export async function createWindowsInstaller(options: SquirrelWindowsOptions): Promise<void> {
   let useMono = false;
@@ -31,7 +42,10 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
 
   if (process.platform !== 'win32') {
     useMono = true;
-    if (!wineExe || !monoExe) {
+    const isWineInstalled = await checkIfCommandExists(wineExe);
+    const isMonoInstalled = await checkIfCommandExists(monoExe);
+
+    if (!isWineInstalled || !isMonoInstalled) {
       throw new Error('You must install both Mono and Wine on non-Windows');
     }
 
