@@ -2,7 +2,7 @@
 // Original definitions by: Brendan Forster <https://github.com/shiftkey>, Daniel Perez Alvarez <https://github.com/unindented>
 // Original definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-export interface Options {
+export interface SquirrelWindowsOptions {
   /**
    * The folder path of your Electron app
    */
@@ -139,6 +139,11 @@ export interface PersonMetadata {
   url?: string;
 }
 
+export interface AdditionalFile {
+  src: string;
+  target: string;
+}
+
 export interface Metadata {
   name?: string;
   productName?: string;
@@ -149,4 +154,5 @@ export interface Metadata {
   owners?: string | PersonMetadata[];
   description?: string;
   iconUrl?: string;
+  additionalFiles?: AdditionalFile[];
 }
