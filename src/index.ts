@@ -130,7 +130,8 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     metadata.additionalFiles.push({ src: 'vk_swiftshader_icd.json', target: 'lib\\net45' });
   }
 
-  let templateData = await fs.readFile(path.join(__dirname, '..', 'template.nuspectemplate'), 'utf8');
+  const templatePath = options.nuspecTemplate || path.join(__dirname, '..', 'template.nuspectemplate');
+  let templateData = await fs.readFile(templatePath, 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
     for (const f of metadata.additionalFiles) {
