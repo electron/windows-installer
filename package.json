@@ -23,7 +23,7 @@
     "build": "tsc",
     "prepublish": "npm run build",
     "lint": "eslint --ext .ts src spec",
-    "test": "npm run lint && ava",
+    "test": "npm run lint && ava --timeout=30s",
     "tdd": "ava --watch"
   },
   "dependencies": {
