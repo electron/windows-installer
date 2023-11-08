@@ -38,7 +38,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   let useMono = false;
 
   const monoExe = 'mono';
-  const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
+  const wineExe = ['arm64', 'x64'].includes(process.arch) ? 'wine64' : 'wine';
 
   if (process.platform !== 'win32') {
     useMono = true;
