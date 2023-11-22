@@ -34,7 +34,6 @@
     "temp": "^0.9.0"
   },
   "devDependencies": {
-    "@continuous-auth/semantic-release-npm": "^3.0.0",
     "@types/fs-extra": "^5.0.5",
     "@types/lodash.template": "^4.4.6",
     "@types/node": "^20.6.0",
