@@ -60,7 +60,6 @@ jobs:
                       key: v1-brew-cache-{{ arch }}
             - checkout
           node-version: << parameters.node-version >>
-          override-ci-command: yarn install --frozen-lockfile --ignore-engines
 
 workflows:
   test_and_release:
@@ -76,10 +75,10 @@ workflows:
                 # - node/macos
                 - node/windows
               node-version:
-                - 20.2.0
-                - 18.14.0
-                - 16.19.0
-                - 14.19.0
+                - '20.10'
+                - '18.18'
+                - '16.20'
+                - '14.21'
       - cfa/release:
           requires:
             - test
