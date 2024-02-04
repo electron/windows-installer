@@ -5,8 +5,13 @@ lib/
 .idea/
 npm-debug.log
 SquirrelSetup.log
+electron-windows-sign.log
+receiver.mjs
+signtool-original.exe
+Squirrel-Releasify.log
 .node-version
 .DS_Store
 spec/fixtures/app/Update.exe
 vendor/7z.dll
 vendor/7z.exe
+hook.log

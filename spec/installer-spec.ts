@@ -4,10 +4,9 @@ import { createTempDir } from '../src/temp-utils';
 import fs from 'fs-extra';
 import { createWindowsInstaller } from '../src';
 import spawn from '../src/spawn-promise';
+import { createTempAppDirectory } from './helpers/helpers';
 
 const log = require('debug')('electron-windows-installer:spec');
-
-const fixtureAppDirectory = path.join(__dirname, 'fixtures/app');
 
 function spawn7z(args: string[]): Promise<string> {
   const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
@@ -17,11 +16,6 @@ function spawn7z(args: string[]): Promise<string> {
     : spawn(sevenZipPath, args);
 }
 
-async function createTempAppDirectory(): Promise<string> {
-  const appDirectory = await createTempDir('electron-winstaller-ad-');
-  await fs.copy(fixtureAppDirectory, appDirectory);
-  return appDirectory;
-}
 
 test.serial('creates a nuget package and installer', async (t): Promise<void> => {
   const outputDirectory = await createTempDir('ei-');
