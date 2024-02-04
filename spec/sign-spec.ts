@@ -5,10 +5,16 @@ import fs from 'fs-extra';
 import { createWindowsInstaller } from '../src';
 import { createTempAppDirectory } from './helpers/helpers';
 import { SignToolOptions } from '@electron/windows-sign';
+import semver from 'semver';
 
 const log = require('debug')('electron-windows-installer:spec');
 
 test.serial('creates a signtool.exe and uses it to sign', async (t): Promise<void> => {
+  if (semver.lt(process.version, '18.0.0')) {
+    log('Skipping test because Node.js < 18.0.0');
+    return;
+  }
+
   const outputDirectory = await createTempDir('ei-');
   const appDirectory = await createTempAppDirectory();
   const hookLogPath = path.join(__dirname, './helpers/hook.log');
