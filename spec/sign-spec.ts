@@ -9,7 +9,7 @@ import semver from 'semver';
 
 const log = require('debug')('electron-windows-installer:spec');
 
-if (process.platform === 'win32' && semver.gte(process.version, '19.0.0')) {
+if (process.platform === 'win32' && semver.gte(process.version, '20.0.0')) {
   test.serial('creates a signtool.exe and uses it to sign', async (t): Promise<void> => {
 
     const outputDirectory = await createTempDir('ei-');
