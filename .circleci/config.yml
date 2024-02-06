@@ -78,7 +78,8 @@ workflows:
                 - '20.10'
                 - '18.18'
                 - '16.20'
-      - cfa/release:
+                - '14.21'
+       - cfa/release:
           requires:
             - test
           filters:

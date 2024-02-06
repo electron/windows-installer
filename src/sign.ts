@@ -54,7 +54,7 @@ export async function resetSignTool() {
  * @electron/windows-installer only requires Node.js >= 8.0.0.
  * @electron/windows-sign requires Node.js >= 16.0.0.
  * @electron/windows-sign's "fake signtool.exe" feature requires
- * Node.js >= 18.0.0, the first version to contain the "single
+ * Node.js >= 19.0.0, the first version to contain the "single
  * executable" feature.
  * 
  * Since this is overall a very niche feature and only benefits
@@ -73,8 +73,8 @@ async function getCreateSeaSignTool(): Promise<typeof createSeaSignToolType> {
   } catch(error) {
     let message  = 'In order to use windowsSign options, @electron/windows-sign must be installed as a dependency.';
 
-    if (semver.lt(process.version, '18.0.0')) {
-      message += ` You are currently using Node.js ${process.version}. Please upgrade to Node.js 18 or later and reinstall all dependencies to ensure that @electron/windows-sign is available.`;
+    if (semver.lt(process.version, '19.0.0')) {
+      message += ` You are currently using Node.js ${process.version}. Please upgrade to Node.js 19 or later and reinstall all dependencies to ensure that @electron/windows-sign is available.`;
     } else {
       message += ` ${error}`;
     }
