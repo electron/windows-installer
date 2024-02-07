@@ -33,7 +33,7 @@ export default function spawn(exe: string, params: string[], opts?: SpawnOptions
       if (--refCount <= 0 && !rejected) resolve(stdout);
     };
 
-    let bufHandler = (chunk: string): void => {
+    const bufHandler = (chunk: string): void => {
       stdout += chunk;
     };
 
