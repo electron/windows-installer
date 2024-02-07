@@ -1,7 +1,7 @@
 # Electron Installer
 
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/bq6c06suq5abb66s/branch/master?svg=true)](https://ci.appveyor.com/project/electron-bot/windows-installer/branch/master)
-[![CircleCI](https://circleci.com/gh/electron/windows-installer.svg?style=svg)](https://circleci.com/gh/electron/windows-installer)
+[![CircleCI](https://circleci.com/gh/electron/windows-installer.svg?style=shield)](https://circleci.com/gh/electron/windows-installer)
+[![NPM package](https://img.shields.io/npm/v/electron-winstaller)](https://npm.im/electron-winstaller)
 
 NPM module that builds Windows installers for
 [Electron](https://github.com/electron/electron) apps using

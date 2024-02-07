@@ -1,17 +1,20 @@
-import * as asar from 'asar';
+import * as asar from '@electron/asar';
 import { createTempDir } from './temp-utils';
 import * as fs from 'fs-extra';
-import { Metadata, Options, PersonMetadata } from './options';
+import { Metadata, SquirrelWindowsOptions, PersonMetadata } from './options';
 import * as path from 'path';
+import * as os from 'os';
+import { exec } from 'child_process';
 import spawn from './spawn-promise';
 import template from 'lodash.template';
 
-export { Options } from './options';
+export { SquirrelWindowsOptions } from './options';
+export { SquirrelWindowsOptions as Options} from './options';
 
 const log = require('debug')('electron-windows-installer:main');
 
 export function convertVersion(version: string): string {
-  const parts = version.split('-');
+  const parts = version.split('+')[0].split('-');
   const mainVersion = parts.shift();
 
   if (parts.length > 0) {
@@ -21,16 +24,30 @@ export function convertVersion(version: string): string {
   }
 }
 
+function checkIfCommandExists(command: string): Promise<boolean> {
+  const checkCommand = os.platform() === 'win32' ? 'where' : 'which';
+  return new Promise((resolve) => {
+    exec(`${checkCommand} ${command}`, (error) => {
+      resolve(error ? false : true);
+    });
+  });
+}
 
-export async function createWindowsInstaller(options: Options): Promise<void> {
+
+export async function createWindowsInstaller(options: SquirrelWindowsOptions): Promise<void> {
   let useMono = false;
 
   const monoExe = 'mono';
-  const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
+  const wineExe = ['arm64', 'x64'].includes(process.arch) ? 'wine64' : 'wine';
 
   if (process.platform !== 'win32') {
     useMono = true;
-    if (!wineExe || !monoExe) {
+    const [hasWine, hasMono] = await Promise.all([
+      checkIfCommandExists(wineExe),
+      checkIfCommandExists(monoExe)
+    ]);
+
+    if (!hasWine || !hasMono) {
       throw new Error('You must install both Mono and Wine on non-Windows');
     }
 
@@ -38,6 +55,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
     log(`Using Wine: '${wineExe}'`);
   }
 
+  // eslint-disable-next-line prefer-const
   let { appDirectory, outputDirectory, loadingGif } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
@@ -48,7 +66,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
   await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
     let cmd = path.join(vendorPath, 'rcedit.exe');
-    let args = [
+    const args = [
       appUpdate,
       '--set-icon', options.setupIcon
     ];
@@ -64,11 +82,11 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
   const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
-  let { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
+  const { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
 
   const metadata: Metadata = {
     description: '',
-    iconUrl: 'https://raw.githubusercontent.com/electron/electron/master/shell/browser/resources/win/electron.ico'
+    iconUrl: 'https://raw.githubusercontent.com/electron/electron/main/shell/browser/resources/win/electron.ico'
   };
 
   if (options.usePackageJson !== false) {
@@ -77,7 +95,7 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
     let appMetadata;
 
     if (await fs.pathExists(asarFile)) {
-      appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json'));
+      appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json').toString());
     } else {
       appMetadata = await fs.readJson(path.join(appResources, 'app', 'package.json'));
     }
@@ -94,7 +112,6 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
     if (typeof (metadata.author) === 'string') {
       metadata.authors = metadata.author;
     } else {
-      // eslint-disable-next-line @typescript-eslint/no-object-literal-type-assertion
       metadata.authors = (metadata.author || ({} as PersonMetadata)).name || '';
     }
   }
@@ -113,7 +130,8 @@ export async function createWindowsInstaller(options: Options): Promise<void> {
     metadata.additionalFiles.push({ src: 'vk_swiftshader_icd.json', target: 'lib\\net45' });
   }
 
-  let templateData = await fs.readFile(path.join(__dirname, '..', 'template.nuspectemplate'), 'utf8');
+  const templatePath = options.nuspecTemplate || path.join(__dirname, '..', 'template.nuspectemplate');
+  let templateData = await fs.readFile(templatePath, 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
     for (const f of metadata.additionalFiles) {

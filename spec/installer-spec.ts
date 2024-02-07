@@ -11,7 +11,7 @@ const fixtureAppDirectory = path.join(__dirname, 'fixtures/app');
 
 function spawn7z(args: string[]): Promise<string> {
   const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
-  const wineExe = process.arch === 'x64' ? 'wine64' : 'wine';
+  const wineExe = ['arm64', 'x64'].includes(process.arch) ? 'wine64' : 'wine';
   return process.platform !== 'win32'
     ? spawn(wineExe, [sevenZipPath, ...args])
     : spawn(sevenZipPath, args);
@@ -23,7 +23,7 @@ async function createTempAppDirectory(): Promise<string> {
   return appDirectory;
 }
 
-test('creates a nuget package and installer', async (t): Promise<void> => {
+test.serial('creates a nuget package and installer', async (t): Promise<void> => {
   const outputDirectory = await createTempDir('ei-');
   const appDirectory = await createTempAppDirectory();
   const options = { appDirectory, outputDirectory };
@@ -53,7 +53,7 @@ test('creates a nuget package and installer', async (t): Promise<void> => {
   t.true(packageContents.includes('lib\\net45\\swiftshader\\libEGL.dll'));
 });
 
-test('creates an installer when swiftshader files are missing', async (t): Promise<void> => {
+test.serial('creates an installer when swiftshader files are missing', async (t): Promise<void> => {
   const appDirectory = await createTempAppDirectory();
   const outputDirectory = await createTempDir('electron-winstaller-test-');
   const options = { appDirectory, outputDirectory };

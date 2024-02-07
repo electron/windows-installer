@@ -2,7 +2,7 @@
 // Original definitions by: Brendan Forster <https://github.com/shiftkey>, Daniel Perez Alvarez <https://github.com/unindented>
 // Original definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-export interface Options {
+export interface SquirrelWindowsOptions {
   /**
    * The folder path of your Electron app
    */
@@ -13,6 +13,12 @@ export interface Options {
    * Defaults to the installer folder at the project root.
    */
   outputDirectory?: string;
+  /**
+   * The path to the .nuspectemplate file used by Squirrel.exe.
+   *
+   * Defaults to the bundled template.nuspectemplate.
+   */
+  nuspecTemplate?: string;
   /**
    * The local path to a `.gif` file to display during install.
    */
