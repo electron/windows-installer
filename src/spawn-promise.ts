@@ -33,14 +33,13 @@ export default function spawn(exe: string, params: string[], opts?: SpawnOptions
       if (--refCount <= 0 && !rejected) resolve(stdout);
     };
 
-    const bufHandler = (b: Buffer): void => {
-      const chunk = b.toString();
+    const bufHandler = (chunk: string): void => {
       stdout += chunk;
     };
 
-    proc.stdout.on('data', bufHandler);
+    proc.stdout.setEncoding('utf8').on('data', bufHandler);
     proc.stdout.once('close', release);
-    proc.stderr.on('data', bufHandler);
+    proc.stderr.setEncoding('utf8').on('data', bufHandler);
     proc.stderr.once('close', release);
     proc.on('error', (e: Error): void => reject(e));
 
