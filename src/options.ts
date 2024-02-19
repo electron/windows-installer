@@ -80,9 +80,7 @@ export interface SquirrelWindowsOptions {
    */
   certificatePassword?: string;
   /**
-   * Params to pass to signtool.
-   *
-   * Overrides `certificateFile` and `certificatePassword`.
+   * Extra params to pass to signtool.
    */
   signWithParams?: string;
   /**
