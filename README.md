@@ -70,6 +70,7 @@ There are several configuration settings supported:
 | `remoteReleases`      | No       | A URL to your existing updates. If given, these will be downloaded to create delta updates |
 | `remoteToken`         | No       | Authentication token for remote updates |
 | `frameworkVersion`    | No       | Set the required .NET framework version, e.g. `net461` |
+| `windowsSign`         | No       | Use [@electron/windows-sign][@electron/windows-sign] for advanced codesigning. See [documentation](#advanced-codesigning-with-electronwindows-sign) for details. |
 
 ## Sign your installer or else bad things will happen
 
@@ -169,6 +170,16 @@ function handleSquirrelEvent() {
 
 Notice that the first time the installer launches your app, your app will see a `--squirrel-firstrun` flag. This allows you to do things like showing up a splash screen or presenting a settings UI. Another thing to be aware of is that, since the app is spawned by squirrel and squirrel acquires a file lock during installation, you won't be able to successfully check for app updates till a few seconds later when squirrel releases the lock.
 
+## Advanced codesigning with [@electron/windows-sign][@electron/windows-sign]
+
+This package supports two different ways to codesign your application and the installer:
+
+1) Modern: By passing a `windowsSign` option, which will be passed to [@electron/windows-sign]. This method allows full customization of the code-signing process - and supports more complicated scenarios like cloud-hosted EV certificates, custom sign pipelines, and per-file overrides. It also supports all existing "simple" codesigning scenarios, including just passing a certificate file and password. Please see https://github.com/@electron/windows-sign for all possible configuration options.
+  
+    When passing `windowsSign`, do not pass any other available parameters at the top level (like `certificateFile`, `certificatePassword`, or `signWithParams`).
+
+2) Legacy: By passing the top-level settings (`certificateFile`, `certificatePassword`, and `signWithParams`). For simple codesigning scenarios, there's no reason not to use this method - it'll work just as fine as the modern method.
+
 ## Debugging this package
 
 You can get debug messages from this package by running with the environment variable `DEBUG=electron-windows-installer:main` e.g.
@@ -176,3 +187,5 @@ You can get debug messages from this package by running with the environment var
 ```shell
 DEBUG=electron-windows-installer:main node tasks/electron-winstaller.js
 ```
+
+[@electron/windows-sign]: https://github.com/electron/windows-sign/
