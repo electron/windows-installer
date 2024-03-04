@@ -26,10 +26,10 @@
   optionalDependencies:
     "@types/glob" "^7.1.1"
 
-"@electron/windows-sign@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@electron/windows-sign/-/windows-sign-1.1.0.tgz#83a42d0372b8f8a83d8f63e5b10791012ffd6760"
-  integrity sha512-8AkEWLW+F98+ryIhHLvffAZEy9L3N8xQZbBX5D7TouZ14LZWSPjsoChafeKr6+3Vq1stiX+BftCvp05Hh8IvFg==
+"@electron/windows-sign@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@electron/windows-sign/-/windows-sign-1.1.2.tgz#5489861ca62348d2300407e85d949af95849955e"
+  integrity sha512-eXEiZjDtxW3QORCWfRUarANPRTlH9B6At4jqBZJ0NzokSGutXQUVLPA6WmGpIhDW6w2yCMdHW1EJd1HrXtU5sg==
   dependencies:
     cross-dirname "^0.1.0"
     debug "^4.3.4"

@@ -48,7 +48,7 @@
     "typescript": "^4.9.3"
   },
   "optionalDependencies": {
-    "@electron/windows-sign": "^1.1.0"
+    "@electron/windows-sign": "^1.1.2"
   },
   "engines": {
     "node": ">=8.0.0"
