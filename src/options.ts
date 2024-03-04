@@ -2,6 +2,8 @@
 // Original definitions by: Brendan Forster <https://github.com/shiftkey>, Daniel Perez Alvarez <https://github.com/unindented>
 // Original definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
+import { SignToolOptions } from '@electron/windows-sign';
+
 export interface SquirrelWindowsOptions {
   /**
    * The folder path of your Electron app
@@ -72,17 +74,29 @@ export interface SquirrelWindowsOptions {
    */
   name?: string;
   /**
-   * The path to an Authenticode Code Signing Certificate
+   * The path to an Authenticode Code Signing Certificate.
+   * 
+   * This is a legacy parameter provided for backwards compatibility.
+   * For more comprehensive support of various codesigning scenarios
+   * like EV certificates, see the "windowsSign" parameter.
    */
   certificateFile?: string;
   /**
    * The password to decrypt the certificate given in `certificateFile`
+   * 
+   * This is a legacy parameter provided for backwards compatibility.
+   * For more comprehensive support of various codesigning scenarios
+   * like EV certificates, see the "windowsSign" parameter.
    */
   certificatePassword?: string;
   /**
    * Params to pass to signtool.
    *
    * Overrides `certificateFile` and `certificatePassword`.
+   * 
+   * This is a legacy parameter provided for backwards compatibility.
+   * For more comprehensive support of various codesigning scenarios
+   * like EV certificates, see the "windowsSign" parameter.
    */
   signWithParams?: string;
   /**
@@ -131,6 +145,20 @@ export interface SquirrelWindowsOptions {
   fixUpPaths?: boolean;
 
   skipUpdateIcon?: boolean;
+
+  /**
+   * Requires Node.js 18 or newer.
+   * 
+   * Sign your app with @electron/windows-sign, allowing for full customization
+   * of the code-signing process - and supports more complicated scenarios like
+   * cloud-hosted EV certificates, custom sign pipelines, and per-file overrides.
+   * It also supports all existing "simple" codesigning scenarios, including
+   * just passing a certificate file and password. 
+   * 
+   * Please see https://github.com/@electron/windows-sign for all possible
+   * configuration options.
+   */
+  windowsSign?: SignToolOptions;
 }
 
 export interface PersonMetadata {

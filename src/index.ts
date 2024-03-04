@@ -7,6 +7,7 @@ import * as os from 'os';
 import { exec } from 'child_process';
 import spawn from './spawn-promise';
 import template from 'lodash.template';
+import { createSignTool, resetSignTool } from './sign';
 
 export { SquirrelWindowsOptions } from './options';
 export { SquirrelWindowsOptions as Options} from './options';
@@ -82,7 +83,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
-  const { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken } = options;
+  const { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken, windowsSign } = options;
 
   const metadata: Metadata = {
     description: '',
@@ -193,6 +194,8 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     cmd = monoExe;
   }
 
+  // Legacy codesign options
+  await resetSignTool();
   if (signWithParams) {
     args.push('--signWithParams');
     if (!signWithParams.includes('/f') && !signWithParams.includes('/p') && certificateFile && certificatePassword) {
@@ -203,6 +206,11 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   } else if (certificateFile && certificatePassword) {
     args.push('--signWithParams');
     args.push(`/a /f "${path.resolve(certificateFile)}" /p "${certificatePassword}"`);
+  // @electron/windows-sign options
+  } else if (windowsSign) {
+    args.push('--signWithParams');
+    args.push('windows-sign');
+    await createSignTool(options);
   }
 
   if (options.setupIcon) {
@@ -244,4 +252,6 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
       }
     }
   }
+
+  await resetSignTool();
 }
