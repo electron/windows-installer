@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { exec } from 'child_process';
 import spawn from './spawn-promise';
-import template from 'lodash.template';
+import { template } from 'lodash';
 import { createSignTool, resetSignTool } from './sign';
 
 export { SquirrelWindowsOptions } from './options';
