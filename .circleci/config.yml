@@ -20,6 +20,12 @@ jobs:
         type: string
     steps:
       - node/test:
+          override-ci-command: |
+            if [ << matrix.node-version >> = '14.21' ]; then
+              yarn install --frozen-lockfile --ignore-engines
+            else
+              yarn install --frozen-lockfile
+            fi
           checkout-steps:
             - when:
                 condition:
