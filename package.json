@@ -21,6 +21,7 @@
   "scripts": {
     "install": "node ./script/select-7z-arch.js",
     "build": "tsc",
+    "docs": "npx typedoc",
     "prepublish": "npm run build",
     "lint": "eslint --ext .ts src spec",
     "ava": "ava --timeout=60s",
@@ -45,6 +46,7 @@
     "eslint": "^8.49.0",
     "eslint-plugin-ava": "^14.0.0",
     "ts-node": "^10.9.1",
+    "typedoc": "0.26.2",
     "typescript": "^4.9.3"
   },
   "optionalDependencies": {
