@@ -12,65 +12,82 @@ export interface SquirrelWindowsOptions {
   /**
    * The folder path to create the .exe installer in.
    *
-   * Defaults to the installer folder at the project root.
+   * @defaultValue an `installer` folder at the project root.
    */
   outputDirectory?: string;
   /**
    * The path to the .nuspectemplate file used by Squirrel.exe.
    *
-   * Defaults to the bundled template.nuspectemplate.
+   * @defaultValue the bundled {@link https://github.com/electron/windows-installer/blob/main/template.nuspectemplate | template.nuspectemplate}.
    */
   nuspecTemplate?: string;
   /**
    * The local path to a `.gif` file to display during install.
+   * 
+   * @defaultValue the bundled {@link https://github.com/electron/windows-installer/blob/main/resources/install-spinner.gif | install-spinner.gif}
    */
   loadingGif?: string;
   /**
-   * The authors value for the nuget package metadata.
+   * The `authors` value for the NuGet package metadata.
    *
-   * Defaults to the `author` field from your app's package.json file when unspecified.
+   * @defaultValue the `author` field from your app's package.json file
+   * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
+   * @see {@link https://learn.microsoft.com/en-us/nuget/reference/nuspec | the Microsoft .nuspec reference}.
    */
   authors?: string;
   /**
-   * The owners value for the nuget package metadata.
+   * The `owners` value for the NuGet package metadata.
    *
-   * Defaults to the `authors` field when unspecified.
+   * @defaultValue the `authors` field from your app's package.json file
+   * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
+   * @see {@link https://learn.microsoft.com/en-us/nuget/reference/nuspec | the Microsoft .nuspec reference}.
    */
   owners?: string;
   /**
-   * The copyright value for the nuget package metadata.
+   * The `copyright` value for the NuGet package metadata.
    *
-   * Defaults to a generated copyright with `authors` or `owners`.
+   * @defaultValue a generated copyright with {@link SquirrelWindowsOptions.authors | authors}
+   * or {@link SquirrelWindowsOptions.owners | owners}.
+   * @see {@link https://learn.microsoft.com/en-us/nuget/reference/nuspec | the Microsoft .nuspec reference}.
    */
   copyright?: string;
   /**
    * The name of your app's main `.exe` file.
    *
-   * This uses the `name` field in your app's package.json file with an added `.exe` extension when unspecified.
+   * @defaultValue the `name` field in your app's package.json file with an added `.exe` extension
+   * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
    */
   exe?: string;
   /**
-   * The description value for the nuget package metadata.
+   * The `description` value for the NuGet package metadata.
    *
-   * Defaults to the `description` field from your app's package.json file when unspecified.
+   * @defaultValue the `description` field from your app's package.json file
+   * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
+   * @see {@link https://learn.microsoft.com/en-us/nuget/reference/nuspec | the Microsoft .nuspec reference}.
    */
   description?: string;
   /**
-   * The version value for the nuget package metadata.
+   * The `version` value for the Nuget package metadata.
    *
-   * Defaults to the `version` field from your app's package.json file when unspecified.
+   * @defaultValue the `version` field from your app's package.json file
+   * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
+   * @see {@link https://learn.microsoft.com/en-us/nuget/reference/nuspec | the Microsoft .nuspec reference}.
    */
   version?: string;
   /**
-   * The title value for the nuget package metadata.
+   * The `title` value for the nuget package metadata.
    *
-   * Defaults to the `productName` field and then the `name` field from your app's package.json file when unspecified.
+   * @defaultValue the `productName` field and then the `name` field from your app's package.json
+   * file unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
+   * @see {@link https://learn.microsoft.com/en-us/nuget/reference/nuspec | the Microsoft .nuspec reference}.
    */
   title?: string;
   /**
    * Windows Application Model ID (appId).
    *
-   * Defaults to the name field in your app's package.json file.
+   * @defaultValue the `name` field in your app's package.json file
+   * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
+   * @see {@link https://learn.microsoft.com/en-us/windows/win32/shell/appids | Microsoft's Application User Model IDs documentation}.
    */
   name?: string;
   /**
@@ -78,7 +95,8 @@ export interface SquirrelWindowsOptions {
    * 
    * This is a legacy parameter provided for backwards compatibility.
    * For more comprehensive support of various codesigning scenarios
-   * like EV certificates, see the "windowsSign" parameter.
+   * like EV certificates, see the
+   * {@link SquirrelWindowsOptions.windowsSign | windowsSign} parameter.
    */
   certificateFile?: string;
   /**
@@ -86,17 +104,20 @@ export interface SquirrelWindowsOptions {
    * 
    * This is a legacy parameter provided for backwards compatibility.
    * For more comprehensive support of various codesigning scenarios
-   * like EV certificates, see the "windowsSign" parameter.
+   * like EV certificates, see the
+   * {@link SquirrelWindowsOptions.windowsSign | windowsSign} parameter.
    */
   certificatePassword?: string;
   /**
    * Params to pass to signtool.
    *
-   * Overrides `certificateFile` and `certificatePassword`.
+   * Overrides {@link SquirrelWindowsOptions.certificateFile | certificateFile}
+   * and {@link SquirrelWindowsOptions.certificatePassword | certificatePassword}`.
    * 
    * This is a legacy parameter provided for backwards compatibility.
    * For more comprehensive support of various codesigning scenarios
-   * like EV certificates, see the "windowsSign" parameter.
+   * like EV certificates, see the
+   * {@link SquirrelWindowsOptions.windowsSign | windowsSign} parameter.
    */
   signWithParams?: string;
   /**
@@ -106,7 +127,7 @@ export interface SquirrelWindowsOptions {
    *
    * Does not accept `file:` URLs.
    *
-   * Defaults to the Electron icon.
+   * @defaultValue the Electron icon.
    */
   iconUrl?: string;
   /**
@@ -115,48 +136,65 @@ export interface SquirrelWindowsOptions {
   setupIcon?: string;
   /**
    * The name to use for the generated Setup.exe file
+   * @defaultValue the `productName` field from your app's package.json file
+   * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
    */
   setupExe?: string;
   /**
    * The name to use for the generated Setup.msi file
+   * @defaultValue the `productName` field from your app's package.json file
+   * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.
    */
   setupMsi?: string;
   /**
-   * Should Squirrel.Windows create an MSI installer?
+   * Enable this flag to prevent Squirrel.Windows from creating an MSI installer.
+   * @defaultValue false
    */
   noMsi?: boolean;
   /**
-   * Should Squirrel.Windows delta packages? (disable only if necessary, they are a Good Thing)
+   * Enable this flag to prevent Squirrel.Windows from creating delta packages (disable only if necessary, they are a Good Thing).
+   * @defaultValue false
    */
   noDelta?: boolean;
   /**
-   * A URL to your existing updates. If given, these will be downloaded to create delta updates
+   * A URL to your existing updates. If given, these will be downloaded to create delta updates.
    */
   remoteReleases?: string;
   /**
-   * Authentication token for remote updates
+   * Authentication token for remote updates using {@link SquirrelWindowsOptions.remoteReleases | remoteReleases}
    */
   remoteToken?: string;
-
+  /**
+   * Whether or not to infer metadata options from your app's package.json file.
+   * @defaultValue true
+   */
   usePackageJson?: boolean;
-
+  /**
+   * Set the required .NET framework version (e.g. `net461`).
+   */
   frameworkVersion?: string;
-
+  /**
+   * Attempt to create more descriptive installer names using metadata parameters.
+   * @defaultValue false
+   */
   fixUpPaths?: boolean;
-
+  /**
+   * Enable this flag to skip setting a custom icon for `Update.exe`
+   * @defaultValue false
+   */
   skipUpdateIcon?: boolean;
 
   /**
    * Requires Node.js 18 or newer.
    * 
-   * Sign your app with @electron/windows-sign, allowing for full customization
+   * Sign your app with `@electron/windows-sign`, allowing for full customization
    * of the code-signing process - and supports more complicated scenarios like
    * cloud-hosted EV certificates, custom sign pipelines, and per-file overrides.
    * It also supports all existing "simple" codesigning scenarios, including
    * just passing a certificate file and password. 
    * 
-   * Please see https://github.com/@electron/windows-sign for all possible
-   * configuration options.
+   * @see {@link https://github.com/electron/windows-sign | @electron/windows-sign documentation}
+   * for all possible configuration options.
    */
   windowsSign?: SignToolOptions;
 }
