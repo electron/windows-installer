@@ -77,6 +77,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   const vendorPath = path.join(__dirname, '..', 'vendor');
   const vendorUpdate = path.join(vendorPath, 'Squirrel.exe');
   const appUpdate = path.join(appDirectory, 'Squirrel.exe');
+  const electronIconUrl = 'https://raw.githubusercontent.com/electron/electron/main/shell/browser/resources/win/electron.ico';
 
   await fs.copy(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
@@ -101,7 +102,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
 
   const metadata: Metadata = {
     description: '',
-    iconUrl: 'https://raw.githubusercontent.com/electron/electron/main/shell/browser/resources/win/electron.ico'
+    iconUrl: options.setupIcon ? options.setupIcon : electronIconUrl
   };
 
   if (options.usePackageJson !== false) {
