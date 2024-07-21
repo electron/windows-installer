@@ -23,7 +23,7 @@ export async function createSignTool(options: SquirrelWindowsOptions): Promise<v
     throw new Error('Signtool should only be created if windowsSign options are set');
   }
 
-  VENDOR_PATH = options.vendorDirectory;
+  VENDOR_PATH = options.vendorDirectory || path.join(__dirname, '..', 'vendor');
   ORIGINAL_SIGN_TOOL_PATH = path.join(VENDOR_PATH, 'signtool.exe');
   BACKUP_SIGN_TOOL_PATH = path.join(VENDOR_PATH, 'signtool-original.exe');
   SIGN_LOG_PATH = path.join(VENDOR_PATH, 'electron-windows-sign.log');
