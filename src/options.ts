@@ -10,6 +10,10 @@ export interface SquirrelWindowsOptions {
    */
   appDirectory: string;
   /**
+   * The folder path of Squirrel windows
+   */
+  vendorDirectory?: string;
+  /**
    * The folder path to create the .exe installer in.
    *
    * @defaultValue an `installer` folder at the project root.
@@ -23,7 +27,7 @@ export interface SquirrelWindowsOptions {
   nuspecTemplate?: string;
   /**
    * The local path to a `.gif` file to display during install.
-   * 
+   *
    * @defaultValue the bundled {@link https://github.com/electron/windows-installer/blob/main/resources/install-spinner.gif | install-spinner.gif}
    */
   loadingGif?: string;
@@ -92,7 +96,7 @@ export interface SquirrelWindowsOptions {
   name?: string;
   /**
    * The path to an Authenticode Code Signing Certificate.
-   * 
+   *
    * This is a legacy parameter provided for backwards compatibility.
    * For more comprehensive support of various codesigning scenarios
    * like EV certificates, see the
@@ -101,7 +105,7 @@ export interface SquirrelWindowsOptions {
   certificateFile?: string;
   /**
    * The password to decrypt the certificate given in `certificateFile`
-   * 
+   *
    * This is a legacy parameter provided for backwards compatibility.
    * For more comprehensive support of various codesigning scenarios
    * like EV certificates, see the
@@ -113,7 +117,7 @@ export interface SquirrelWindowsOptions {
    *
    * Overrides {@link SquirrelWindowsOptions.certificateFile | certificateFile}
    * and {@link SquirrelWindowsOptions.certificatePassword | certificatePassword}`.
-   * 
+   *
    * This is a legacy parameter provided for backwards compatibility.
    * For more comprehensive support of various codesigning scenarios
    * like EV certificates, see the
@@ -186,13 +190,13 @@ export interface SquirrelWindowsOptions {
 
   /**
    * Requires Node.js 18 or newer.
-   * 
+   *
    * Sign your app with `@electron/windows-sign`, allowing for full customization
    * of the code-signing process - and supports more complicated scenarios like
    * cloud-hosted EV certificates, custom sign pipelines, and per-file overrides.
    * It also supports all existing "simple" codesigning scenarios, including
-   * just passing a certificate file and password. 
-   * 
+   * just passing a certificate file and password.
+   *
    * @see {@link https://github.com/electron/windows-sign | @electron/windows-sign documentation}
    * for all possible configuration options.
    */
