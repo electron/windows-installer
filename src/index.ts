@@ -45,7 +45,7 @@ function checkIfCommandExists(command: string): Promise<boolean> {
 /**
  * This package's main function, which creates a Squirrel.Windows executable
  * installer and optionally code-signs the output.
- * 
+ *
  * @param options Options for installer generation and signing
  * @see {@link https://github.com/Squirrel/Squirrel.Windows | Squirrel.Windows}
  */
@@ -74,7 +74,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   let { appDirectory, outputDirectory, loadingGif } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
-  const vendorPath = path.join(__dirname, '..', 'vendor');
+  const vendorPath = options.vendorDirectory || path.join(__dirname, '..', 'vendor');
   const vendorUpdate = path.join(vendorPath, 'Squirrel.exe');
   const appUpdate = path.join(appDirectory, 'Squirrel.exe');
 
