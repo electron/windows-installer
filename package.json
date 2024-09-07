@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/electron/windows-installer"
+    "url": "git+https://github.com/electron/windows-installer.git"
   },
   "files": [
     "lib",
