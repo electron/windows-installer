@@ -1,6 +1,5 @@
 import type { createSeaSignTool as createSeaSignToolType } from '@electron/windows-sign';
 import path from 'path';
-import semver from 'semver';
 import fs from 'fs-extra';
 
 import { SquirrelWindowsOptions } from './options';
@@ -78,7 +77,7 @@ async function getCreateSeaSignTool(): Promise<typeof createSeaSignToolType> {
   } catch(error) {
     let message  = 'In order to use windowsSign options, @electron/windows-sign must be installed as a dependency.';
 
-    if (semver.lte(process.version, '20.0.0')) {
+    if (process.versions.node.split('.')[0] < '20') {
       message += ` You are currently using Node.js ${process.version}. Please upgrade to Node.js 19 or later and reinstall all dependencies to ensure that @electron/windows-sign is available.`;
     } else {
       message += ` ${error}`;
