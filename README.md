@@ -172,7 +172,7 @@ Notice that the first time the installer launches your app, your app will see a 
 
 This package supports two different ways to codesign your application and the installer:
 
-1) Modern: By passing a `windowsSign` option, which will be passed to [@electron/windows-sign]. This method allows full customization of the code-signing process - and supports more complicated scenarios like cloud-hosted EV certificates, custom sign pipelines, and per-file overrides. It also supports all existing "simple" codesigning scenarios, including just passing a certificate file and password. Please see https://github.com/@electron/windows-sign for all possible configuration options.
+1) Modern: By passing a `windowsSign` option, which will be passed to [@electron/windows-sign]. This method allows full customization of the code-signing process - and supports more complicated scenarios like cloud-hosted EV certificates, custom sign pipelines, and per-file overrides. It also supports all existing "simple" codesigning scenarios, including just passing a certificate file and password. Please see https://github.com/electron/windows-sign for all possible configuration options.
   
     When passing `windowsSign`, do not pass any other available parameters at the top level (like `certificateFile`, `certificatePassword`, or `signWithParams`).
 
