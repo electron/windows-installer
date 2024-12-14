@@ -1,0 +1,53 @@
+name: Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 22 * * 3'
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test
+    strategy:
+      matrix:
+        node-version:
+          - '20.10'
+          - '18.18'
+          - '16.20'
+          - '14.21'
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: "${{ matrix.os }}"
+    env:
+      WINEDLLOVERRIDES: mscoree,mshtml=
+      WINEDEBUG: -all
+    steps:
+      - name: Install Dependencies (Linux)
+        if : ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get -qq update
+          sudo apt-get install --no-install-recommends -y wine64 wine32 wine mono-devel
+          wine64 hostname
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "${{ matrix.node-version }}"
+          cache: 'yarn'
+      - name: Install (Node.js v16+)
+        if : ${{ matrix.node-version != '14.21' }}
+        run: yarn install --frozen-lockfile
+      - name: Install (Node.js v14)
+        if : ${{ matrix.node-version == '14.21' }}
+        run: yarn install --frozen-lockfile --ignore-engines
+      - name: Test
+        run: yarn test
