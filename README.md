@@ -1,6 +1,6 @@
 # Electron Installer
 
-[![CircleCI](https://circleci.com/gh/electron/windows-installer.svg?style=shield)](https://circleci.com/gh/electron/windows-installer)
+[![Test](https://github.com/electron/windows-installer/actions/workflows/test.yml/badge.svg)](https://github.com/electron/windows-installer/actions/workflows/test.yml)
 [![NPM package](https://img.shields.io/npm/v/electron-winstaller)](https://npm.im/electron-winstaller)
 
 NPM module that builds Windows installers for

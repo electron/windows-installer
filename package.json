@@ -56,6 +56,9 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "publishConfig": {
+    "provenance": true
+  },
   "ava": {
     "extensions": [
       "ts"
