@@ -22,7 +22,7 @@ jobs:
           - '16.20'
           - '14.21'
         os:
-          - ubuntu-latest
+          - ubuntu-22.04
           - windows-latest
     runs-on: "${{ matrix.os }}"
     env:
@@ -30,7 +30,7 @@ jobs:
       WINEDEBUG: -all
     steps:
       - name: Install Dependencies (Linux)
-        if : ${{ matrix.os == 'ubuntu-latest' }}
+        if : ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
           sudo dpkg --add-architecture i386
           sudo apt-get -qq update
