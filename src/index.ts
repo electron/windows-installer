@@ -62,8 +62,12 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
       checkIfCommandExists(monoExe)
     ]);
 
-    if (!hasWine || !hasMono) {
+    if (!hasWine && !hasMono) {
       throw new Error('You must install both Mono and Wine on non-Windows');
+    } else if (!hasWine) {
+      throw new Error('You must install Wine on non-Windows');
+    } else if (!hasMono) {
+      throw new Error('You must install Mono on non-Windows');
     }
 
     log(`Using Mono: '${monoExe}'`);
