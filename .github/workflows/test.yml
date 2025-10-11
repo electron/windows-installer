@@ -45,9 +45,9 @@ jobs:
           cache: 'yarn'
       - name: Install (Node.js v16+)
         if : ${{ matrix.node-version != '14.21' }}
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
       - name: Install (Node.js v14)
         if : ${{ matrix.node-version == '14.21' }}
-        run: yarn install --frozen-lockfile --ignore-engines
+        run: yarn install --immutable --ignore-engines
       - name: Test
         run: yarn test

@@ -16,3 +16,4 @@ vendor/7z.dll
 vendor/7z.exe
 hook.log
 docs
+.yarn/install-state.gz

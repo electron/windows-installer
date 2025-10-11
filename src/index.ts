@@ -8,6 +8,7 @@ import { exec } from 'child_process';
 import spawn from './spawn-promise';
 import { template } from 'lodash';
 import { createSignTool, resetSignTool } from './sign';
+import { prepare7z } from './7z';
 
 export { SquirrelWindowsOptions } from './options';
 export { SquirrelWindowsOptions as Options} from './options';
@@ -50,6 +51,8 @@ function checkIfCommandExists(command: string): Promise<boolean> {
  * @see {@link https://github.com/Squirrel/Squirrel.Windows | Squirrel.Windows}
  */
 export async function createWindowsInstaller(options: SquirrelWindowsOptions): Promise<void> {
+  await prepare7z();
+
   let useMono = false;
 
   const monoExe = 'mono';
