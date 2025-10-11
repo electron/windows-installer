@@ -3,7 +3,7 @@ import path from 'node:path';
 
 import { SignToolOptions } from '@electron/windows-sign';
 
-import test from 'ava';
+import { describe, it, expect } from 'vitest';
 import debug from 'debug';
 
 import { createTempDir } from '../src/temp-utils';
@@ -13,38 +13,40 @@ import { existsSync } from 'node:fs';
 
 const log = debug('electron-windows-installer:spec');
 
-test.serial('creates a signtool.exe and uses it to sign', async (t): Promise<void> => {
+describe('sign', () => {
+  it('creates a signtool.exe and uses it to sign', async (): Promise<void> => {
 
-  const outputDirectory = await createTempDir('ei-');
-  const appDirectory = await createTempAppDirectory();
-  const hookLogPath = path.join(__dirname, './helpers/hook.log');
-  const hookModulePath = path.join(__dirname, './helpers/windowsSignHook.js');
-  const windowsSign: SignToolOptions = { hookModulePath };
-  const options = { appDirectory, outputDirectory, windowsSign };
+    const outputDirectory = await createTempDir('ei-');
+    const appDirectory = await createTempAppDirectory();
+    const hookLogPath = path.join(__dirname, './helpers/hook.log');
+    const hookModulePath = path.join(__dirname, './helpers/windowsSignHook.js');
+    const windowsSign: SignToolOptions = { hookModulePath };
+    const options = { appDirectory, outputDirectory, windowsSign };
 
-  // Reset
-  await fs.rm(hookLogPath);
+    // Reset
+    await fs.rm(hookLogPath, { force: true });
 
-  // Test
-  await createWindowsInstaller(options);
+    // Test
+    await createWindowsInstaller(options);
 
-  log(`Verifying assertions on ${outputDirectory}`);
-  log(JSON.stringify(await fs.readdir(outputDirectory)));
+    log(`Verifying assertions on ${outputDirectory}`);
+    log(JSON.stringify(await fs.readdir(outputDirectory)));
 
-  const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
+    const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
 
-  t.true(existsSync(nupkgPath));
-  t.true(existsSync(path.join(outputDirectory, 'MyAppSetup.exe')));
+    expect(existsSync(nupkgPath)).toBe(true);
+    expect(existsSync(path.join(outputDirectory, 'MyAppSetup.exe'))).toBe(true);
 
-  if (process.platform === 'win32') {
-    t.true(existsSync(path.join(outputDirectory, 'MyAppSetup.msi')));
-  }
+    if (process.platform === 'win32') {
+      expect(existsSync(path.join(outputDirectory, 'MyAppSetup.msi'))).toBe(true);
+    }
 
-  log('Verifying Update.exe');
-  t.true(existsSync(path.join(appDirectory, 'Squirrel.exe')));
+    log('Verifying Update.exe');
+    expect(existsSync(path.join(appDirectory, 'Squirrel.exe'))).toBe(true);
 
-  log('Verifying that our hook got to "sign" all files');
-  const hookLog = await fs.readFile(hookLogPath, { encoding: 'utf8' });
-  const filesLogged = hookLog.split('\n').filter(v => !!v.trim()).length;
-  t.is(filesLogged, 8);
+    log('Verifying that our hook got to "sign" all files');
+    const hookLog = await fs.readFile(hookLogPath, { encoding: 'utf8' });
+    const filesLogged = hookLog.split('\n').filter(v => !!v.trim()).length;
+    expect(filesLogged).toBe(8);
+  });
 });

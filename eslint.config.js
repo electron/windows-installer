@@ -1,11 +1,9 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
-import avaPlugin from 'eslint-plugin-ava';
 
 export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
-  // avaPlugin.configs.recommended,
   {
     languageOptions: {
       parser: tseslint.parser,

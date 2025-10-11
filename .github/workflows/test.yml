@@ -17,10 +17,7 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - '20.19'
-          - '18.18'
-          - '16.20'
-          - '14.21'
+          - 22.12.x
         os:
           - ubuntu-22.04
           - windows-latest
@@ -43,11 +40,9 @@ jobs:
         with:
           node-version: "${{ matrix.node-version }}"
           cache: 'yarn'
-      - name: Install (Node.js v16+)
-        if : ${{ matrix.node-version != '14.21' }}
+      - name: Install Modules
         run: yarn install --immutable
-      - name: Install (Node.js v14)
-        if : ${{ matrix.node-version == '14.21' }}
-        run: yarn install --immutable --ignore-engines
+      - name: Build
+        run: yarn build
       - name: Test
         run: yarn test

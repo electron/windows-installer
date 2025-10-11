@@ -21,12 +21,11 @@
   ],
   "scripts": {
     "build": "tsc",
-    "docs": "npx typedoc",
+    "docs": "yarn typedoc",
     "prepack": "yarn build",
     "lint": "eslint --ext .ts src spec",
-    "ava": "ava --timeout=60s",
-    "test": "yarn lint && yarn ava",
-    "tdd": "ava --watch"
+    "test": "yarn lint && vitest run",
+    "tdd": "vitest"
   },
   "dependencies": {
     "@electron/asar": "^4.0.1",
@@ -45,13 +44,11 @@
     "@types/temp": "^0.8.34",
     "@typescript-eslint/eslint-plugin": "^8.45.0",
     "@typescript-eslint/parser": "^8.45.0",
-    "ava": "^5.1.1",
     "eslint": "^9.37.0",
-    "eslint-plugin-ava": "^15.1.0",
-    "ts-node": "^10.9.1",
     "typedoc": "0.28.13",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.45.0"
+    "typescript-eslint": "^8.45.0",
+    "vitest": "^3.2.4"
   },
   "optionalDependencies": {
     "@electron/windows-sign": "^2.0.2"
@@ -61,17 +58,6 @@
   },
   "publishConfig": {
     "provenance": true
-  },
-  "ava": {
-    "extensions": [
-      "ts"
-    ],
-    "files": [
-      "spec/*.ts"
-    ],
-    "require": [
-      "ts-node/register/transpile-only"
-    ]
   },
   "packageManager": "yarn@4.10.3+sha512.c38cafb5c7bb273f3926d04e55e1d8c9dfa7d9c3ea1f36a4868fa028b9e5f72298f0b7f401ad5eb921749eb012eb1c3bb74bf7503df3ee43fd600d14a018266f"
 }
