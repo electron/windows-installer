@@ -1,5 +1,5 @@
-const fs = require('fs-extra');
-const path = require('path');
+import fs from 'node:fs';
+import path from 'node:path';
 
 module.exports = function(args) {
   console.log(...args);

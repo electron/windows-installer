@@ -1,16 +1,20 @@
-import test from 'ava';
-import path from 'path';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+import { SignToolOptions } from '@electron/windows-sign';
+
+import { describe, it, expect } from 'vitest';
+import debug from 'debug';
+
 import { createTempDir } from '../src/temp-utils';
-import fs from 'fs-extra';
 import { createWindowsInstaller } from '../src';
 import { createTempAppDirectory } from './helpers/helpers';
-import { SignToolOptions } from '@electron/windows-sign';
-import semver from 'semver';
+import { existsSync } from 'node:fs';
 
-const log = require('debug')('electron-windows-installer:spec');
+const log = debug('electron-windows-installer:spec');
 
-if (process.platform === 'win32' && semver.gte(process.version, '20.0.0')) {
-  test.serial('creates a signtool.exe and uses it to sign', async (t): Promise<void> => {
+describe('sign', () => {
+  it('creates a signtool.exe and uses it to sign', async (): Promise<void> => {
 
     const outputDirectory = await createTempDir('ei-');
     const appDirectory = await createTempAppDirectory();
@@ -20,7 +24,7 @@ if (process.platform === 'win32' && semver.gte(process.version, '20.0.0')) {
     const options = { appDirectory, outputDirectory, windowsSign };
 
     // Reset
-    await fs.remove(hookLogPath);
+    await fs.rm(hookLogPath, { force: true });
 
     // Test
     await createWindowsInstaller(options);
@@ -30,19 +34,19 @@ if (process.platform === 'win32' && semver.gte(process.version, '20.0.0')) {
 
     const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
 
-    t.true(await fs.pathExists(nupkgPath));
-    t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.exe')));
+    expect(existsSync(nupkgPath)).toBe(true);
+    expect(existsSync(path.join(outputDirectory, 'MyAppSetup.exe'))).toBe(true);
 
     if (process.platform === 'win32') {
-      t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.msi')));
+      expect(existsSync(path.join(outputDirectory, 'MyAppSetup.msi'))).toBe(true);
     }
 
     log('Verifying Update.exe');
-    t.true(await fs.pathExists(path.join(appDirectory, 'Squirrel.exe')));
+    expect(existsSync(path.join(appDirectory, 'Squirrel.exe'))).toBe(true);
 
     log('Verifying that our hook got to "sign" all files');
     const hookLog = await fs.readFile(hookLogPath, { encoding: 'utf8' });
     const filesLogged = hookLog.split('\n').filter(v => !!v.trim()).length;
-    t.is(filesLogged, 8);
+    expect(filesLogged).toBe(8);
   });
-}
+});

@@ -1,21 +1,10 @@
 {
+  "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es5",
-    "lib": [
-      "es2017"
-    ],
     "sourceMap": true,
-    "strict": true,
-    "outDir": "lib",
-    "declaration": true,
-    "esModuleInterop": true,
-    "types": [
-      "node"
-    ]
+    "outDir": "dist",
+    "types": ["node"],
+    "declaration": true
   },
-  "include": [
-    "src",
-    "typings"
-  ]
+  "include": ["src"]
 }
