@@ -9,6 +9,17 @@ const arch = os.arch;
 
 console.log('Selecting 7-Zip for arch ' + arch);
 
+// Verify Windows platform
+try {
+    if (os.platform() !== 'win32') {
+        console.log('is not Windows');
+        process.exit(0);
+    }
+} catch (err) {
+    throw err;
+}
+
+
 // Copy the 7-Zip executable for the configured architecture.
 try {
     fs.copyFileSync('vendor/7z-' + arch + '.exe', 'vendor/7z.exe');
