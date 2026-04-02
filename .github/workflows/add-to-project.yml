@@ -4,7 +4,7 @@ on:
   issues:
     types:
       - opened
-  pull_request_target: # zizmor: ignore[dangerous-triggers] project-board automation, no PR code checkout, empty permissions
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types:
       - opened
 
