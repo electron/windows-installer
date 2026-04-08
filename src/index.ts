@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as os from 'os';
 import { exec } from 'child_process';
 import spawn from './spawn-promise';
-import { template } from './template';
+import { Eta } from 'eta';
 import { createSignTool, resetSignTool } from './sign';
 
 export { SquirrelWindowsOptions } from './options';
@@ -154,7 +154,8 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
       f.target = f.target.replace(/\\/g, '/');
     }
   }
-  const nuspecContent = template(templateData, metadata);
+  const eta = new Eta({ autoTrim: false, useWith: true });
+  const nuspecContent = eta.renderString(templateData, metadata);
 
   log(`Created NuSpec file:\n${nuspecContent}`);
 
