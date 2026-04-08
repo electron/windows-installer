@@ -154,7 +154,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
       f.target = f.target.replace(/\\/g, '/');
     }
   }
-  const nuspecContent = template(templateData)(metadata);
+  const nuspecContent = template(templateData, metadata);
 
   log(`Created NuSpec file:\n${nuspecContent}`);
 
