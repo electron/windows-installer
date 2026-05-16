@@ -63,7 +63,10 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     ]);
 
     if (!hasWine || !hasMono) {
-      throw new Error('You must install both Mono and Wine on non-Windows');
+      const missing = [];
+      if (!hasWine) missing.push(wineExe);
+      if (!hasMono) missing.push(monoExe);
+      throw new Error(`You must install both Mono and Wine on non-Windows. Missing: ${missing.join(', ')}`);
     }
 
     log(`Using Mono: '${monoExe}'`);
