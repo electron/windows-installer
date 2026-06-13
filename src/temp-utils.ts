@@ -1,8 +1,11 @@
-import * as temp from 'temp';
+import { mkdtemp } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { promisify } from 'util';
-temp.track();
 
-const createTempDir = promisify(temp.mkdir);
+const mkdtempAsync = promisify(mkdtemp);
+
+const createTempDir = (prefix: string) => mkdtempAsync(join(tmpdir(), prefix));
 
 export {
   createTempDir
