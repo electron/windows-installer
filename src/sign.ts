@@ -48,7 +48,7 @@ export async function createSignTool(options: SquirrelWindowsOptions): Promise<v
  * fake substitute.
  */
 export async function resetSignTool() {
-  if (fs.existsSync(BACKUP_SIGN_TOOL_PATH)) {
+  if (BACKUP_SIGN_TOOL_PATH && ORIGINAL_SIGN_TOOL_PATH && fs.existsSync(BACKUP_SIGN_TOOL_PATH)) {
     // Reset the backup of signtool.exe
     await fs.copy(BACKUP_SIGN_TOOL_PATH, ORIGINAL_SIGN_TOOL_PATH, { overwrite: true });
     await fs.remove(BACKUP_SIGN_TOOL_PATH);
