@@ -22,7 +22,7 @@
     "install": "node ./script/select-7z-arch.js",
     "build": "tsc",
     "docs": "typedoc",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "lint": "eslint --ext .ts src spec",
     "ava": "ava --timeout=60s",
     "test": "npm run lint && npm run ava",
