@@ -35,6 +35,20 @@ export function convertVersion(version: string): string {
   }
 }
 
+/**
+ * Strips characters that NuGet does not allow in the nuspec `<authors>`
+ * element. NuGet rejects an `@` character (for example, when the author is an
+ * email address) with "The '@' character ... cannot be included in a name",
+ * causing the build to fail.
+ *
+ * @param authors The raw authors value from the package metadata
+ * @returns The authors value with disallowed characters removed
+ * @see {@link https://github.com/electron/windows-installer/issues/389}
+ */
+export function sanitizeAuthors(authors: string): string {
+  return authors.replace(/@/g, '');
+}
+
 function checkIfCommandExists(command: string): Promise<boolean> {
   const checkCommand = os.platform() === 'win32' ? 'where' : 'which';
   return new Promise((resolve) => {
@@ -55,14 +69,18 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   let useMono = false;
 
   const monoExe = 'mono';
-  const wineExe = ['arm64', 'x64'].includes(process.arch) ? 'wine64' : 'wine';
+  // On 64-bit hosts prefer `wine64`, but fall back to `wine`, since some
+  // distributions only ship the `wine` binary even on x64/arm64.
+  let wineExe = ['arm64', 'x64'].includes(process.arch) ? 'wine64' : 'wine';
 
   if (process.platform !== 'win32') {
     useMono = true;
-    const [hasWine, hasMono] = await Promise.all([
-      checkIfCommandExists(wineExe),
-      checkIfCommandExists(monoExe)
-    ]);
+    let hasWine = await checkIfCommandExists(wineExe);
+    if (!hasWine && wineExe !== 'wine') {
+      wineExe = 'wine';
+      hasWine = await checkIfCommandExists(wineExe);
+    }
+    const hasMono = await checkIfCommandExists(monoExe);
 
     if (!hasWine || !hasMono) {
       throw new Error('You must install both Mono and Wine on non-Windows');
@@ -140,6 +158,12 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   metadata.copyright = metadata.copyright ||
     `Copyright © ${new Date().getFullYear()} ${metadata.authors || metadata.owners}`;
   metadata.additionalFiles = metadata.additionalFiles || [];
+
+  // NuGet does not allow an `@` in the nuspec `<authors>` element, so strip it
+  // out. This must happen after `owners` and `copyright` default to `authors`,
+  // since those fields are not affected by the same restriction.
+  // See https://github.com/electron/windows-installer/issues/389
+  metadata.authors = sanitizeAuthors(metadata.authors as string);
 
   if (await exists(path.join(appDirectory, 'swiftshader'))) {
     metadata.additionalFiles.push({ src: 'swiftshader\\**', target: 'lib\\net45\\swiftshader' });

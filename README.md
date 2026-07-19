@@ -63,6 +63,7 @@ There are several configuration settings supported:
 | `skipUpdateIcon`      | No       | Disables setting the icon of `Update.exe`. This can solve installation errors with the following message: "This application could not be started", when the setup is built on a non-Windows system. |
 | `setupExe`            | No       | The name to use for the generated Setup.exe file |
 | `setupMsi`            | No       | The name to use for the generated Setup.msi file |
+| `fixUpPaths`          | No       | Whether to rename the generated `Setup.exe` and `Setup.msi` to more descriptive names based on the `setupExe`/`setupMsi` options or the app's `productName` (e.g. `MyAppSetup.exe`). Enabled by default; set to `false` to keep the default `Setup.exe`/`Setup.msi` names. |
 | `noMsi`               | No       | Should Squirrel.Windows create an MSI installer? |
 | `noDelta`             | No       | Should Squirrel.Windows delta packages? (disable only if necessary, they are a Good Thing) |
 | `remoteReleases`      | No       | A URL to your existing updates. If given, these will be downloaded to create delta updates |

@@ -87,7 +87,10 @@ export interface SquirrelWindowsOptions {
    */
   title?: string;
   /**
-   * Windows Application Model ID (appId).
+   * The application name.
+   *
+   * This is *not* the Windows Application User Model ID (AUMID). The AUMID is
+   * derived from this value as `com.squirrel.<name>.<packageName>`.
    *
    * @defaultValue the `name` field in your app's package.json file
    * unless {@link SquirrelWindowsOptions.usePackageJson | usePackageJson} is false.

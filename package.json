@@ -22,7 +22,7 @@
     "install": "node ./script/select-7z-arch.js",
     "build": "tsc",
     "docs": "typedoc",
-    "prepublish": "npm run build",
+    "prepare": "npm run build",
     "lint": "eslint --ext .ts src spec",
     "ava": "ava --timeout=60s",
     "test": "npm run lint && npm run ava",
@@ -32,13 +32,11 @@
     "@electron/asar": "^3.2.1",
     "debug": "^4.1.1",
     "lodash": "^4.17.21",
-    "semver": "^7.6.3",
-    "temp": "^0.9.0"
+    "semver": "^7.6.3"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.6.0",
-    "@types/temp": "^0.8.34",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "ava": "^5.1.1",
