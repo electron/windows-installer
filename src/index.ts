@@ -47,6 +47,19 @@ export function sanitizeAuthors(authors: string): string {
   return authors.replace(/@/g, '');
 }
 
+/**
+ * Asserts that the host architecture is supported. Installer creation
+ * requires an x64 or arm64 build machine; the bundled 7-Zip, NuGet, and
+ * Squirrel tooling cannot run on 32-bit hosts.
+ *
+ * @param arch The host architecture, as reported by `process.arch`
+ */
+export function assertSupportedArch(arch: string = process.arch): void {
+  if (arch !== 'x64' && arch !== 'arm64') {
+    throw new Error('32-bit build machines are not supported');
+  }
+}
+
 function checkIfCommandExists(command: string): Promise<boolean> {
   const checkCommand = os.platform() === 'win32' ? 'where' : 'which';
   return new Promise((resolve) => {
@@ -64,6 +77,8 @@ function checkIfCommandExists(command: string): Promise<boolean> {
  * @see {@link https://github.com/Squirrel/Squirrel.Windows | Squirrel.Windows}
  */
 export async function createWindowsInstaller(options: SquirrelWindowsOptions): Promise<void> {
+  assertSupportedArch();
+
   let useMono = false;
 
   const monoExe = 'mono';

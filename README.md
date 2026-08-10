@@ -13,6 +13,16 @@ NPM module that builds Windows installers for
 npm install --save-dev electron-winstaller
 ```
 
+## Supported platforms
+
+Installers can be created on x64 and arm64 build machines (Windows, or
+macOS/Linux with Wine and Mono). 32-bit build machines are not supported —
+if you are on 64-bit Windows, make sure you are running 64-bit Node.js.
+
+Apps targeting 32-bit Windows (Electron <= 43) can still be packaged from
+a 64-bit machine; the generated installer runs on 32-bit Windows. Electron
+44 and later do not ship 32-bit Windows builds.
+
 ## Usage
 
 Require the package:

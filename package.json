@@ -54,6 +54,10 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
   "publishConfig": {
     "provenance": true
   },
