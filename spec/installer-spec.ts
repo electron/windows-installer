@@ -1,7 +1,7 @@
 import test from 'ava';
 import path from 'path';
 import { createTempDir } from '../src/temp-utils';
-import fs from 'fs-extra';
+import fs from 'fs/promises';
 import { createWindowsInstaller } from '../src';
 import spawn from '../src/spawn-promise';
 import { createTempAppDirectory } from './helpers/helpers';
@@ -16,6 +16,8 @@ function spawn7z(args: string[]): Promise<string> {
     : spawn(sevenZipPath, args);
 }
 
+const exists = (p: string) => fs.access(p).then(() => true).catch(() => false);
+
 
 test.serial('creates a nuget package and installer', async (t): Promise<void> => {
   const outputDirectory = await createTempDir('ei-');
@@ -29,15 +31,15 @@ test.serial('creates a nuget package and installer', async (t): Promise<void> =>
 
   const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
 
-  t.true(await fs.pathExists(nupkgPath));
-  t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.exe')));
+  t.true(await exists(nupkgPath));
+  t.true(await exists(path.join(outputDirectory, 'MyAppSetup.exe')));
 
   if (process.platform === 'win32') {
-    t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.msi')));
+    t.true(await exists(path.join(outputDirectory, 'MyAppSetup.msi')));
   }
 
   log('Verifying Update.exe');
-  t.true(await fs.pathExists(path.join(appDirectory, 'Squirrel.exe')));
+  t.true(await exists(path.join(appDirectory, 'Squirrel.exe')));
 
   log('Verifying contents of .nupkg');
 
@@ -53,10 +55,10 @@ test.serial('creates an installer when swiftshader files are missing', async (t)
   const options = { appDirectory, outputDirectory };
 
   // Remove swiftshader folder and swiftshader json file, simulating Electron < 10.0
-  await fs.remove(path.join(appDirectory, 'swiftshader', 'libEGL.dll'));
-  await fs.remove(path.join(appDirectory, 'swiftshader', 'libGLESv2.dll'));
-  await fs.rmdir(path.join(appDirectory, 'swiftshader'));
-  await fs.remove(path.join(appDirectory, 'vk_swiftshader_icd.json'));
+  await fs.rm(path.join(appDirectory, 'swiftshader', 'libEGL.dll'), { force: true, recursive: true });
+  await fs.rm(path.join(appDirectory, 'swiftshader', 'libGLESv2.dll'), { force: true, recursive: true });
+  await fs.rm(path.join(appDirectory, 'swiftshader'), { force: true, recursive: true });
+  await fs.rm(path.join(appDirectory, 'vk_swiftshader_icd.json'), { force: true, recursive: true });
 
   await createWindowsInstaller(options);
 
