@@ -1,4 +1,4 @@
-import type { createSeaSignTool as createSeaSignToolType } from '@electron/windows-sign';
+import type { createSeaSignTool as createSeaSignToolType } from '@electron/windows-sign' with { 'resolution-mode': 'import' };
 import path from 'path';
 import semver from 'semver';
 import fs from 'fs-extra';
@@ -57,14 +57,12 @@ export async function resetSignTool() {
 
 /**
  * @electron/windows-installer only requires Node.js >= 8.0.0.
- * @electron/windows-sign requires Node.js >= 16.0.0.
- * @electron/windows-sign's "fake signtool.exe" feature requires
- * Node.js >= 20.0.0, the first version to contain the "single
- * executable" feature with proper support.
+ * @electron/windows-sign requires Node.js >= 22.12.0, the first
+ * version that can require() an ES module like it without a flag.
  *
  * Since this is overall a very niche feature and only benefits
  * consumers with rather advanced codesigning needs, we did not
- * want to make Node.js v18 a hard requirement for @electron/windows-installer.
+ * want to make Node.js v22 a hard requirement for @electron/windows-installer.
  *
  * Instead, @electron/windows-sign is an optional dependency - and
  * if it didn't install, we'll throw a useful error here.
@@ -78,8 +76,8 @@ async function getCreateSeaSignTool(): Promise<typeof createSeaSignToolType> {
   } catch(error) {
     let message  = 'In order to use windowsSign options, @electron/windows-sign must be installed as a dependency.';
 
-    if (semver.lte(process.version, '20.0.0')) {
-      message += ` You are currently using Node.js ${process.version}. Please upgrade to Node.js 19 or later and reinstall all dependencies to ensure that @electron/windows-sign is available.`;
+    if (semver.lt(process.version, '22.12.0')) {
+      message += ` You are currently using Node.js ${process.version}. Please upgrade to Node.js 22.12 or later and reinstall all dependencies to ensure that @electron/windows-sign is available.`;
     } else {
       message += ` ${error}`;
     }

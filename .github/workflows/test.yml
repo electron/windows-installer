@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         node-version:
+          - '22.12'
           - '20.19'
           - '18.18'
           - '16.20'
@@ -45,11 +46,13 @@ jobs:
         with:
           node-version: "${{ matrix.node-version }}"
           cache: 'yarn'
-      - name: Install (Node.js v16+)
-        if : ${{ matrix.node-version != '14.21' }}
+      - name: Install (Node.js v22.12+)
+        if : ${{ matrix.node-version == '22.12' }}
         run: yarn install --frozen-lockfile
-      - name: Install (Node.js v14)
-        if : ${{ matrix.node-version == '14.21' }}
+      - name: Install (older Node.js)
+        # @electron/windows-sign requires Node.js 22.12+ and would otherwise be
+        # skipped as an optional dependency, but its types are needed to build.
+        if : ${{ matrix.node-version != '22.12' }}
         run: yarn install --frozen-lockfile --ignore-engines
       - name: Test
         run: yarn test
