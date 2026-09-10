@@ -1,6 +1,4 @@
-import type { createSeaSignTool as createSeaSignToolType } from '@electron/windows-sign' with { 'resolution-mode': 'import' };
 import path from 'path';
-import semver from 'semver';
 import fs from 'fs-extra';
 
 import { SquirrelWindowsOptions } from './options';
@@ -28,7 +26,8 @@ export async function createSignTool(options: SquirrelWindowsOptions): Promise<v
   BACKUP_SIGN_TOOL_PATH = path.join(VENDOR_PATH, 'signtool-original.exe');
   SIGN_LOG_PATH = path.join(VENDOR_PATH, 'electron-windows-sign.log');
 
-  const createSeaSignTool = await getCreateSeaSignTool();
+  // @electron/windows-sign is ESM-only, so it can't be require()d from this CommonJS module.
+  const { createSeaSignTool } = await import('@electron/windows-sign');
 
   await resetSignTool();
   await fs.remove(SIGN_LOG_PATH);
@@ -52,36 +51,5 @@ export async function resetSignTool() {
     // Reset the backup of signtool.exe
     await fs.copy(BACKUP_SIGN_TOOL_PATH, ORIGINAL_SIGN_TOOL_PATH, { overwrite: true });
     await fs.remove(BACKUP_SIGN_TOOL_PATH);
-  }
-}
-
-/**
- * @electron/windows-installer only requires Node.js >= 8.0.0.
- * @electron/windows-sign requires Node.js >= 22.12.0, the first
- * version that can require() an ES module like it without a flag.
- *
- * Since this is overall a very niche feature and only benefits
- * consumers with rather advanced codesigning needs, we did not
- * want to make Node.js v22 a hard requirement for @electron/windows-installer.
- *
- * Instead, @electron/windows-sign is an optional dependency - and
- * if it didn't install, we'll throw a useful error here.
- *
- * @returns
- */
-async function getCreateSeaSignTool(): Promise<typeof createSeaSignToolType> {
-  try {
-    const { createSeaSignTool } = await import('@electron/windows-sign');
-    return createSeaSignTool;
-  } catch(error) {
-    let message  = 'In order to use windowsSign options, @electron/windows-sign must be installed as a dependency.';
-
-    if (semver.lt(process.version, '22.12.0')) {
-      message += ` You are currently using Node.js ${process.version}. Please upgrade to Node.js 22.12 or later and reinstall all dependencies to ensure that @electron/windows-sign is available.`;
-    } else {
-      message += ` ${error}`;
-    }
-
-    throw new Error(message);
   }
 }
