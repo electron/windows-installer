@@ -103,7 +103,6 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     log(`Using Wine: '${wineExe}'`);
   }
 
-  // eslint-disable-next-line prefer-const
   let { appDirectory, outputDirectory, loadingGif } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
