@@ -30,7 +30,7 @@
     "tdd": "ava --watch"
   },
   "dependencies": {
-    "@electron/asar": "^3.2.1",
+    "@electron/asar": "^4.0.0",
     "@electron/windows-sign": "^2.1.0",
     "debug": "^4.1.1"
   },
