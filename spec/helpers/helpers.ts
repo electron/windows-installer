@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'node:fs';
 
-import { createTempDir } from '../../src/temp-utils';
+import { createTempDir } from '../../src/temp-utils.js';
 
 export const FIXTURE_APP_DIR = path.join(import.meta.dirname, '../fixtures/app');
 

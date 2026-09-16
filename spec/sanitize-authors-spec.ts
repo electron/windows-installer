@@ -1,5 +1,5 @@
 import test from 'ava';
-import { sanitizeAuthors } from '../src/index';
+import { sanitizeAuthors } from '../src/index.js';
 
 test('removes "@" characters that NuGet rejects in the authors field', (t): void => {
   t.is(sanitizeAuthors('Jane Doe <jane@example.com>'), 'Jane Doe <janeexample.com>');

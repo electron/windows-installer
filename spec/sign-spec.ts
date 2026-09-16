@@ -1,9 +1,9 @@
 import test from 'ava';
 import path from 'path';
-import { createTempDir } from '../src/temp-utils';
+import { createTempDir } from '../src/temp-utils.js';
 import fs from 'node:fs';
-import { createWindowsInstaller } from '../src';
-import { createTempAppDirectory } from './helpers/helpers';
+import { createWindowsInstaller } from '../src/index.js';
+import { createTempAppDirectory } from './helpers/helpers.js';
 import type { SignToolOptions } from '@electron/windows-sign' with { 'resolution-mode': 'import' };
 import { createDebug } from 'obug';
 

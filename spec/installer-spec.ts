@@ -1,10 +1,10 @@
 import test from 'ava';
 import path from 'path';
-import { createTempDir } from '../src/temp-utils';
+import { createTempDir } from '../src/temp-utils.js';
 import fs from 'node:fs';
-import { createWindowsInstaller } from '../src';
-import spawn from '../src/spawn-promise';
-import { createTempAppDirectory } from './helpers/helpers';
+import { createWindowsInstaller } from '../src/index.js';
+import spawn from '../src/spawn-promise.js';
+import { createTempAppDirectory } from './helpers/helpers.js';
 import { createDebug } from 'obug';
 
 const log = createDebug('electron-windows-installer:spec');

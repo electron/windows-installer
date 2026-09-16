@@ -1,5 +1,5 @@
 import test from 'ava';
-import { convertVersion } from '../src/index';
+import { convertVersion } from '../src/index.js';
 
 test('makes semver versions into valid NuGet versions', (t): void => {
   t.is(convertVersion('1'), '1');

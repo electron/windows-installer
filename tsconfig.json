@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "module": "es2022",
-	"moduleResolution": "node",
+    "module": "node16",
     "target": "es2015",
     "lib": [
       "es2017"
