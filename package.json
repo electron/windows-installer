@@ -32,7 +32,7 @@
   "dependencies": {
     "@electron/asar": "^4.0.0",
     "@electron/windows-sign": "^2.1.0",
-    "debug": "^4.1.1"
+    "obug": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

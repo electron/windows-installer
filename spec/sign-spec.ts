@@ -5,9 +5,9 @@ import fs from 'node:fs';
 import { createWindowsInstaller } from '../src';
 import { createTempAppDirectory } from './helpers/helpers';
 import type { SignToolOptions } from '@electron/windows-sign' with { 'resolution-mode': 'import' };
-import debug from 'debug';
+import { createDebug } from 'obug';
 
-const log = debug('electron-windows-installer:spec');
+const log = createDebug('electron-windows-installer:spec');
 
 if (process.platform === 'win32') {
   test.serial('creates a signtool.exe and uses it to sign', async (t): Promise<void> => {

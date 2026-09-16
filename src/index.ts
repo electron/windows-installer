@@ -8,12 +8,12 @@ import { exec } from 'child_process';
 import spawn from './spawn-promise.js';
 import { renderTemplate } from './template.js';
 import { createSignTool, resetSignTool } from './sign.js';
-import debug from 'debug';
+import { createDebug } from 'obug';
 
 export { SquirrelWindowsOptions } from './options.js';
 export { SquirrelWindowsOptions as Options} from './options.js';
 
-const log = debug('electron-windows-installer:main');
+const log = createDebug('electron-windows-installer:main');
 
 /**
  * A utility function to convert SemVer version strings into NuGet-compatible

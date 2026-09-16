@@ -5,9 +5,9 @@ import fs from 'node:fs';
 import { createWindowsInstaller } from '../src';
 import spawn from '../src/spawn-promise';
 import { createTempAppDirectory } from './helpers/helpers';
-import debug from 'debug';
+import { createDebug } from 'obug';
 
-const log = debug('electron-windows-installer:spec');
+const log = createDebug('electron-windows-installer:spec');
 
 function spawn7z(args: string[]): Promise<string> {
   const sevenZipPath = path.join(import.meta.dirname, '..', 'vendor', '7z.exe');
