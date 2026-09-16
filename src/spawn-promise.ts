@@ -1,6 +1,7 @@
 import { spawn as spawnOg, SpawnOptionsWithoutStdio } from 'child_process';
+import debug from 'debug';
 
-const d = require('debug')('electron-windows-installer:spawn');
+const d = debug('electron-windows-installer:spawn');
 
 // Public: Maps a process's output into an {Observable}
 //

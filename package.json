@@ -18,6 +18,7 @@
     "!vendor/7z.dll",
     "!vendor/7z.exe"
   ],
+  "type": "module",
   "scripts": {
     "install": "node ./script/select-7z-arch.js",
     "build": "tsc",
@@ -34,7 +35,7 @@
     "debug": "^4.1.1"
   },
   "devDependencies": {
-    "@types/node": "^20.6.0",
+    "@types/node": "^22.0.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "ava": "^5.1.1",
@@ -42,7 +43,7 @@
     "eslint-plugin-ava": "^14.0.0",
     "ts-node": "^10.9.1",
     "typedoc": "0.25.13",
-    "typescript": "~5.4.5"
+    "typescript": "^5.6.0"
   },
   "engines": {
     "node": ">=22.12.0"

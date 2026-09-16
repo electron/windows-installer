@@ -1,7 +1,8 @@
-import path from 'path';
+import { createSeaSignTool } from '@electron/windows-sign';
 import fs from 'node:fs';
+import path from 'path';
 
-import { SquirrelWindowsOptions } from './options';
+import { SquirrelWindowsOptions } from './options.js';
 
 let VENDOR_PATH: string;
 let ORIGINAL_SIGN_TOOL_PATH: string;
@@ -21,13 +22,11 @@ export async function createSignTool(options: SquirrelWindowsOptions): Promise<v
     throw new Error('Signtool should only be created if windowsSign options are set');
   }
 
-  VENDOR_PATH = options.vendorDirectory || path.join(__dirname, '..', 'vendor');
+  VENDOR_PATH = options.vendorDirectory || path.join(import.meta.dirname, '..', 'vendor');
   ORIGINAL_SIGN_TOOL_PATH = path.join(VENDOR_PATH, 'signtool.exe');
   BACKUP_SIGN_TOOL_PATH = path.join(VENDOR_PATH, 'signtool-original.exe');
   SIGN_LOG_PATH = path.join(VENDOR_PATH, 'electron-windows-sign.log');
 
-  // @electron/windows-sign is ESM-only, so it can't be require()d from this CommonJS module.
-  const { createSeaSignTool } = await import('@electron/windows-sign');
 
   await resetSignTool();
   fs.rmSync(SIGN_LOG_PATH);

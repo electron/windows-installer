@@ -1,18 +1,19 @@
 import * as asar from '@electron/asar';
-import { createTempDir } from './temp-utils';
+import { createTempDir } from './temp-utils.js';
 import * as fs from 'node:fs';
-import { Metadata, SquirrelWindowsOptions, PersonMetadata } from './options';
+import { Metadata, SquirrelWindowsOptions, PersonMetadata } from './options.js';
 import * as path from 'path';
 import * as os from 'os';
 import { exec } from 'child_process';
-import spawn from './spawn-promise';
-import { renderTemplate } from './template';
-import { createSignTool, resetSignTool } from './sign';
+import spawn from './spawn-promise.js';
+import { renderTemplate } from './template.js';
+import { createSignTool, resetSignTool } from './sign.js';
+import debug from 'debug';
 
-export { SquirrelWindowsOptions } from './options';
-export { SquirrelWindowsOptions as Options} from './options';
+export { SquirrelWindowsOptions } from './options.js';
+export { SquirrelWindowsOptions as Options} from './options.js';
 
-const log = require('debug')('electron-windows-installer:main');
+const log = debug('electron-windows-installer:main');
 
 /**
  * A utility function to convert SemVer version strings into NuGet-compatible
@@ -107,7 +108,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   let { appDirectory, outputDirectory, loadingGif } = options;
   outputDirectory = path.resolve(outputDirectory || 'installer');
 
-  const vendorPath = options.vendorDirectory || path.join(__dirname, '..', 'vendor');
+  const vendorPath = options.vendorDirectory || path.join(import.meta.dirname, '..', 'vendor');
   const vendorUpdate = path.join(vendorPath, 'Squirrel.exe');
   const appUpdate = path.join(appDirectory, 'Squirrel.exe');
 
@@ -127,7 +128,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     await spawn(cmd, args);
   }
 
-  const defaultLoadingGif = path.join(__dirname, '..', 'resources', 'install-spinner.gif');
+  const defaultLoadingGif = path.join(import.meta.dirname, '..', 'resources', 'install-spinner.gif');
   loadingGif = loadingGif ? path.resolve(loadingGif) : defaultLoadingGif;
 
   const { certificateFile, certificatePassword, remoteReleases, signWithParams, remoteToken, windowsSign } = options;
@@ -184,7 +185,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     metadata.additionalFiles.push({ src: 'vk_swiftshader_icd.json', target: 'lib\\net45' });
   }
 
-  const templatePath = options.nuspecTemplate || path.join(__dirname, '..', 'template.nuspectemplate');
+  const templatePath = options.nuspecTemplate || path.join(import.meta.dirname, '..', 'template.nuspectemplate');
   let templateData = fs.readFileSync(templatePath, 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
