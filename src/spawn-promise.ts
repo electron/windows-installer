@@ -13,14 +13,8 @@ const d = createDebug('electron-windows-installer:spawn');
 // spawned process
 export default function spawn(exe: string, params: string[], opts?: SpawnOptionsWithoutStdio): Promise<string> {
   return new Promise((resolve, reject): void => {
-    let proc = null;
-
     d(`Spawning ${exe} ${params.join(' ')}`);
-    if (!opts) {
-      proc = spawnOg(exe, params);
-    } else {
-      proc = spawnOg(exe, params, opts);
-    }
+    const proc = opts ? spawnOg(exe, params, opts) : spawnOg(exe, params);
 
     // We need to wait until all three events have happened:
     // * stdout's pipe is closed

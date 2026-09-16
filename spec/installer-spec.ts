@@ -33,9 +33,10 @@ test.serial('creates a nuget package and installer', async (t): Promise<void> =>
   t.true(fs.existsSync(nupkgPath));
   t.true(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.exe')));
 
-  if (process.platform === 'win32') {
-    t.true(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.msi')));
-  }
+  t.true(
+    process.platform !== 'win32' || fs.existsSync(path.join(outputDirectory, 'MyAppSetup.msi')),
+    `expected ${path.join(outputDirectory, 'MyAppSetup.msi')} to exist`
+  );
 
   log('Verifying Update.exe');
   t.true(fs.existsSync(path.join(appDirectory, 'Squirrel.exe')));

@@ -80,6 +80,6 @@ export function renderTemplate(text: string, data: object): string {
     const render = new Function('__e', '__s', ...names, source);
     return render((value: unknown) =>  stringify(value).replace(/[&<>"']/g, (char) => escapes[char]), stringify, ...names.map((name) => values[name]));
   } catch (error) {
-    throw new Error(`Failed to render template: ${(error as Error).message}`);
+    throw new Error(`Failed to render template: ${(error as Error).message}`, { cause: error });
   }
 }
