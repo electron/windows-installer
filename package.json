@@ -25,9 +25,9 @@
     "docs": "typedoc",
     "prepare": "npm run build",
     "lint": "eslint",
-    "ava": "ava --timeout=60s",
-    "test": "npm run lint && npm run ava",
-    "tdd": "ava --watch"
+    "unit": "tsx --test --test-timeout=120000 \"spec/*-spec.ts\"",
+    "test": "npm run lint && npm run unit",
+    "tdd": "tsx --test --watch \"spec/*-spec.ts\""
   },
   "dependencies": {
     "@electron/asar": "^4.0.0",
@@ -38,9 +38,7 @@
     "@eslint/js": "^10",
     "@stylistic/eslint-plugin": "^5",
     "@types/node": "^22",
-    "ava": "^6.4.1",
     "eslint": "^10",
-    "eslint-plugin-ava": "^17",
     "globals": "^17",
     "tsx": "^4.20.3",
     "typedoc": "^0.28.0",
@@ -52,16 +50,5 @@
   },
   "publishConfig": {
     "provenance": true
-  },
-  "ava": {
-    "extensions": {
-      "ts": "module"
-    },
-    "files": [
-      "spec/*.ts"
-    ],
-    "nodeArguments": [
-      "--import=tsx"
-    ]
   }
 }

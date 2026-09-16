@@ -1,4 +1,5 @@
-import test from 'ava';
+import test from 'node:test';
+import assert from 'node:assert/strict';
 import path from 'path';
 import { createTempDir } from '../src/temp-utils.js';
 import fs from 'node:fs';
@@ -9,9 +10,7 @@ import { createDebug } from 'obug';
 
 const log = createDebug('electron-windows-installer:spec');
 
-const windowsOnly = process.platform === 'win32' ? test.serial : test.serial.skip;
-
-windowsOnly('creates a signtool.exe and uses it to sign', async (t): Promise<void> => {
+test('creates a signtool.exe and uses it to sign', { skip: process.platform !== 'win32' }, async (): Promise<void> => {
   const outputDirectory = createTempDir('ei-');
   const appDirectory = await createTempAppDirectory();
   const hookLogPath = path.join(import.meta.dirname, './helpers/hook.log');
@@ -30,15 +29,15 @@ windowsOnly('creates a signtool.exe and uses it to sign', async (t): Promise<voi
 
   const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
 
-  t.true(fs.existsSync(nupkgPath));
-  t.true(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.exe')));
-  t.true(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.msi')));
+  assert.ok(fs.existsSync(nupkgPath));
+  assert.ok(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.exe')));
+  assert.ok(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.msi')));
 
   log('Verifying Update.exe');
-  t.true(fs.existsSync(path.join(appDirectory, 'Squirrel.exe')));
+  assert.ok(fs.existsSync(path.join(appDirectory, 'Squirrel.exe')));
 
   log('Verifying that our hook got to "sign" all files');
   const hookLog = fs.readFileSync(hookLogPath, { encoding: 'utf8' });
   const filesLogged = hookLog.split('\n').filter(v => !!v.trim()).length;
-  t.is(filesLogged, 8);
+  assert.equal(filesLogged, 8);
 });
