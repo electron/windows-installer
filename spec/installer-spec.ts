@@ -56,7 +56,7 @@ test.serial('creates an installer when swiftshader files are missing', async (t)
   // Remove swiftshader folder and swiftshader json file, simulating Electron < 10.0
   fs.rmSync(path.join(appDirectory, 'swiftshader', 'libEGL.dll'), { force: true });
   fs.rmSync(path.join(appDirectory, 'swiftshader', 'libGLESv2.dll'), { force: true });
-  fs.rmSync(path.join(appDirectory, 'swiftshader'), { force: true });
+  fs.rmSync(path.join(appDirectory, 'swiftshader'), { force: true, recursive: true });
   fs.rmSync(path.join(appDirectory, 'vk_swiftshader_icd.json'), { force: true });
 
   await createWindowsInstaller(options);

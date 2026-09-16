@@ -7,6 +7,6 @@ export const FIXTURE_APP_DIR = path.join(import.meta.dirname, '../fixtures/app')
 
 export async function createTempAppDirectory(): Promise<string> {
   const appDirectory = await createTempDir('electron-winstaller-ad-');
-  fs.cpSync(FIXTURE_APP_DIR, appDirectory);
+  fs.cpSync(FIXTURE_APP_DIR, appDirectory, { recursive: true });
   return appDirectory;
 }

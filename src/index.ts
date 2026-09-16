@@ -10,8 +10,8 @@ import { renderTemplate } from './template.js';
 import { createSignTool, resetSignTool } from './sign.js';
 import { createDebug } from 'obug';
 
-export { SquirrelWindowsOptions } from './options.js';
-export { SquirrelWindowsOptions as Options} from './options.js';
+export type { SquirrelWindowsOptions } from './options.js';
+export type { SquirrelWindowsOptions as Options } from './options.js';
 
 const log = createDebug('electron-windows-installer:main');
 
