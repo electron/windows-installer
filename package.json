@@ -42,7 +42,7 @@
     "eslint": "^8.49.0",
     "eslint-plugin-ava": "^14.0.0",
     "tsx": "^4.20.3",
-    "typedoc": "0.25.13",
+    "typedoc": "^0.28.0",
     "typescript": "^5.7.0"
   },
   "engines": {
