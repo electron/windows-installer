@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs from 'node:fs';
 import os from 'os';
 import path from 'path';
 
@@ -15,7 +15,7 @@ function registerCleanup(): void {
   process.on('exit', () => {
     for (const dir of createdTempDirs) {
       try {
-        fs.removeSync(dir);
+        fs.rmSync(dir, { recursive: true, force: true });
       } catch {
         // Best-effort cleanup on exit; ignore failures.
       }
@@ -30,9 +30,9 @@ function registerCleanup(): void {
  * @param prefix - A prefix for the generated directory name.
  * @returns The absolute path to the newly created temporary directory.
  */
-export async function createTempDir(prefix: string): Promise<string> {
+export function createTempDir(prefix: string): string {
   registerCleanup();
-  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), prefix));
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), prefix));
   createdTempDirs.push(tempDir);
   return tempDir;
 }

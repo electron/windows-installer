@@ -1,6 +1,6 @@
 import * as asar from '@electron/asar';
 import { createTempDir } from './temp-utils';
-import * as fs from 'fs-extra';
+import * as fs from 'node:fs';
 import { Metadata, SquirrelWindowsOptions, PersonMetadata } from './options';
 import * as path from 'path';
 import * as os from 'os';
@@ -111,7 +111,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   const vendorUpdate = path.join(vendorPath, 'Squirrel.exe');
   const appUpdate = path.join(appDirectory, 'Squirrel.exe');
 
-  await fs.copy(vendorUpdate, appUpdate);
+  fs.cpSync(vendorUpdate, appUpdate);
   if (options.setupIcon && (options.skipUpdateIcon !== true)) {
     let cmd = path.join(vendorPath, 'rcedit.exe');
     const args = [
@@ -142,10 +142,10 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     const asarFile = path.join(appResources, 'app.asar');
     let appMetadata;
 
-    if (await fs.pathExists(asarFile)) {
+    if (fs.existsSync(asarFile)) {
       appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json').toString());
     } else {
-      appMetadata = await fs.readJson(path.join(appResources, 'app', 'package.json'));
+      appMetadata = JSON.parse(fs.readFileSync(path.join(appResources, 'app', 'package.json'), 'utf8'));
     }
 
     Object.assign(metadata, {
@@ -176,16 +176,16 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
   // See https://github.com/electron/windows-installer/issues/389
   metadata.authors = sanitizeAuthors(metadata.authors as string);
 
-  if (await fs.pathExists(path.join(appDirectory, 'swiftshader'))) {
+  if (fs.existsSync(path.join(appDirectory, 'swiftshader'))) {
     metadata.additionalFiles.push({ src: 'swiftshader\\**', target: 'lib\\net45\\swiftshader' });
   }
 
-  if (await fs.pathExists(path.join(appDirectory, 'vk_swiftshader_icd.json'))) {
+  if (fs.existsSync(path.join(appDirectory, 'vk_swiftshader_icd.json'))) {
     metadata.additionalFiles.push({ src: 'vk_swiftshader_icd.json', target: 'lib\\net45' });
   }
 
   const templatePath = options.nuspecTemplate || path.join(__dirname, '..', 'template.nuspectemplate');
-  let templateData = await fs.readFile(templatePath, 'utf8');
+  let templateData = fs.readFileSync(templatePath, 'utf8');
   if (path.sep === '/') {
     templateData = templateData.replace(/\\/g, '/');
     for (const f of metadata.additionalFiles) {
@@ -197,10 +197,10 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
 
   log(`Created NuSpec file:\n${nuspecContent}`);
 
-  const nugetOutput = await createTempDir('si-');
+  const nugetOutput = createTempDir('si-');
   const targetNuspecPath = path.join(nugetOutput, metadata.name + '.nuspec');
 
-  await fs.writeFile(targetNuspecPath, nuspecContent);
+  fs.writeFileSync(targetNuspecPath, nuspecContent);
 
   let cmd = path.join(vendorPath, 'nuget.exe');
   let args = [
@@ -293,15 +293,15 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
       const setupPath = path.join(outputDirectory, options.setupExe || `${metadata.productName}Setup.exe`);
       const unfixedSetupPath = path.join(outputDirectory, 'Setup.exe');
       log(`Renaming ${unfixedSetupPath} => ${setupPath}`);
-      await fs.rename(unfixedSetupPath, setupPath);
+      fs.renameSync(unfixedSetupPath, setupPath);
     }
 
     if (metadata.productName || options.setupMsi) {
       const msiPath = path.join(outputDirectory, options.setupMsi || `${metadata.productName}Setup.msi`);
       const unfixedMsiPath = path.join(outputDirectory, 'Setup.msi');
-      if (await fs.pathExists(unfixedMsiPath)) {
+      if (fs.existsSync(unfixedMsiPath)) {
         log(`Renaming ${unfixedMsiPath} => ${msiPath}`);
-        await fs.rename(unfixedMsiPath, msiPath);
+        fs.renameSync(unfixedMsiPath, msiPath);
       }
     }
   }

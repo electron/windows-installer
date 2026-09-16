@@ -1,7 +1,7 @@
 import test from 'ava';
 import path from 'path';
 import { createTempDir } from '../src/temp-utils';
-import fs from 'fs-extra';
+import fs from 'node:fs';
 import { createWindowsInstaller } from '../src';
 import spawn from '../src/spawn-promise';
 import { createTempAppDirectory } from './helpers/helpers';
@@ -25,19 +25,19 @@ test.serial('creates a nuget package and installer', async (t): Promise<void> =>
   await createWindowsInstaller(options);
 
   log(`Verifying assertions on ${outputDirectory}`);
-  log(JSON.stringify(await fs.readdir(outputDirectory)));
+  log(JSON.stringify(fs.readdirSync(outputDirectory)));
 
   const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
 
-  t.true(await fs.pathExists(nupkgPath));
-  t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.exe')));
+  t.true(fs.existsSync(nupkgPath));
+  t.true(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.exe')));
 
   if (process.platform === 'win32') {
-    t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.msi')));
+    t.true(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.msi')));
   }
 
   log('Verifying Update.exe');
-  t.true(await fs.pathExists(path.join(appDirectory, 'Squirrel.exe')));
+  t.true(fs.existsSync(path.join(appDirectory, 'Squirrel.exe')));
 
   log('Verifying contents of .nupkg');
 
@@ -53,10 +53,10 @@ test.serial('creates an installer when swiftshader files are missing', async (t)
   const options = { appDirectory, outputDirectory };
 
   // Remove swiftshader folder and swiftshader json file, simulating Electron < 10.0
-  await fs.remove(path.join(appDirectory, 'swiftshader', 'libEGL.dll'));
-  await fs.remove(path.join(appDirectory, 'swiftshader', 'libGLESv2.dll'));
-  await fs.rmdir(path.join(appDirectory, 'swiftshader'));
-  await fs.remove(path.join(appDirectory, 'vk_swiftshader_icd.json'));
+  fs.rmSync(path.join(appDirectory, 'swiftshader', 'libEGL.dll'), { force: true });
+  fs.rmSync(path.join(appDirectory, 'swiftshader', 'libGLESv2.dll'), { force: true });
+  fs.rmSync(path.join(appDirectory, 'swiftshader'), { force: true });
+  fs.rmSync(path.join(appDirectory, 'vk_swiftshader_icd.json'), { force: true });
 
   await createWindowsInstaller(options);
 

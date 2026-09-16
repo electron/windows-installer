@@ -1,7 +1,7 @@
 import test from 'ava';
 import path from 'path';
 import { createTempDir } from '../src/temp-utils';
-import fs from 'fs-extra';
+import fs from 'node:fs';
 import { createWindowsInstaller } from '../src';
 import { createTempAppDirectory } from './helpers/helpers';
 import type { SignToolOptions } from '@electron/windows-sign' with { 'resolution-mode': 'import' };
@@ -19,28 +19,28 @@ if (process.platform === 'win32') {
     const options = { appDirectory, outputDirectory, windowsSign };
 
     // Reset
-    await fs.remove(hookLogPath);
+    fs.rmSync(hookLogPath, { force: true, recursive: true });
 
     // Test
     await createWindowsInstaller(options);
 
     log(`Verifying assertions on ${outputDirectory}`);
-    log(JSON.stringify(await fs.readdir(outputDirectory)));
+    log(JSON.stringify(fs.readdirSync(outputDirectory)));
 
     const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
 
-    t.true(await fs.pathExists(nupkgPath));
-    t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.exe')));
+    t.true(fs.existsSync(nupkgPath));
+    t.true(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.exe')));
 
     if (process.platform === 'win32') {
-      t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.msi')));
+      t.true(fs.existsSync(path.join(outputDirectory, 'MyAppSetup.msi')));
     }
 
     log('Verifying Update.exe');
-    t.true(await fs.pathExists(path.join(appDirectory, 'Squirrel.exe')));
+    t.true(fs.existsSync(path.join(appDirectory, 'Squirrel.exe')));
 
     log('Verifying that our hook got to "sign" all files');
-    const hookLog = await fs.readFile(hookLogPath, { encoding: 'utf8' });
+    const hookLog = fs.readFileSync(hookLogPath, { encoding: 'utf8' });
     const filesLogged = hookLog.split('\n').filter(v => !!v.trim()).length;
     t.is(filesLogged, 8);
   });

@@ -1,5 +1,5 @@
 import path from 'path';
-import fs from 'fs-extra';
+import fs from 'node:fs';
 
 import { SquirrelWindowsOptions } from './options';
 
@@ -30,10 +30,10 @@ export async function createSignTool(options: SquirrelWindowsOptions): Promise<v
   const { createSeaSignTool } = await import('@electron/windows-sign');
 
   await resetSignTool();
-  await fs.remove(SIGN_LOG_PATH);
+  fs.rmSync(SIGN_LOG_PATH);
 
   // Make a backup of signtool.exe
-  await fs.copy(ORIGINAL_SIGN_TOOL_PATH, BACKUP_SIGN_TOOL_PATH, { overwrite: true });
+  fs.cpSync(ORIGINAL_SIGN_TOOL_PATH, BACKUP_SIGN_TOOL_PATH);
 
   // Create a new signtool.exe using @electron/windows-sign
   await createSeaSignTool({
@@ -49,7 +49,7 @@ export async function createSignTool(options: SquirrelWindowsOptions): Promise<v
 export async function resetSignTool() {
   if (BACKUP_SIGN_TOOL_PATH && ORIGINAL_SIGN_TOOL_PATH && fs.existsSync(BACKUP_SIGN_TOOL_PATH)) {
     // Reset the backup of signtool.exe
-    await fs.copy(BACKUP_SIGN_TOOL_PATH, ORIGINAL_SIGN_TOOL_PATH, { overwrite: true });
-    await fs.remove(BACKUP_SIGN_TOOL_PATH);
+    fs.cpSync(BACKUP_SIGN_TOOL_PATH, ORIGINAL_SIGN_TOOL_PATH);
+    fs.rmSync(BACKUP_SIGN_TOOL_PATH, { force: true });
   }
 }
