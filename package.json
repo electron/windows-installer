@@ -31,11 +31,9 @@
   "dependencies": {
     "@electron/asar": "^3.2.1",
     "@electron/windows-sign": "^2.1.0",
-    "debug": "^4.1.1",
-    "lodash": "^4.17.21"
+    "debug": "^4.1.1"
   },
   "devDependencies": {
-    "@types/lodash": "^4.17.0",
     "@types/node": "^20.6.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
