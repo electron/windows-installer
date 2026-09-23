@@ -47,6 +47,9 @@
     "typedoc": "0.25.13",
     "typescript": "~5.4.5"
   },
+  "resolutions": {
+    "lru-cache": "11.5.2"
+  },
   "engines": {
     "node": ">=22.12.0"
   },
