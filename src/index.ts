@@ -2,7 +2,7 @@ import { exec } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 
-import asar from '@electron/asar';
+import { extractFile } from '@electron/asar';
 import debug from 'debug';
 import fs from 'fs-extra';
 import lodash from 'lodash';
@@ -145,7 +145,7 @@ export async function createWindowsInstaller(options: SquirrelWindowsOptions): P
     let appMetadata;
 
     if (await fs.pathExists(asarFile)) {
-      appMetadata = JSON.parse(asar.extractFile(asarFile, 'package.json').toString());
+      appMetadata = JSON.parse(extractFile(asarFile, 'package.json').toString());
     } else {
       appMetadata = await fs.readJson(path.join(appResources, 'app', 'package.json'));
     }
