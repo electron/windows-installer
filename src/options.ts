@@ -2,7 +2,7 @@
 // Original definitions by: Brendan Forster <https://github.com/shiftkey>, Daniel Perez Alvarez <https://github.com/unindented>
 // Original definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
-import type { SignToolOptions } from '@electron/windows-sign' with { 'resolution-mode': 'import' };
+import type { SignToolOptions } from '@electron/windows-sign';
 
 export interface SquirrelWindowsOptions {
   /**

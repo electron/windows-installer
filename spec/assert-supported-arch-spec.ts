@@ -1,5 +1,5 @@
 import test from 'ava';
-import { assertSupportedArch } from '../src/index';
+import { assertSupportedArch } from '../src/index.js';
 
 test('throws for 32-bit architectures', (t): void => {
   t.throws(() => assertSupportedArch('ia32'), { message: '32-bit build machines are not supported' });

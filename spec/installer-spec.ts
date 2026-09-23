@@ -1,15 +1,18 @@
-import test from 'ava';
-import path from 'path';
-import { createTempDir } from '../src/temp-utils';
-import fs from 'fs-extra';
-import { createWindowsInstaller } from '../src';
-import spawn from '../src/spawn-promise';
-import { createTempAppDirectory } from './helpers/helpers';
+import path from 'node:path';
 
-const log = require('debug')('electron-windows-installer:spec');
+import test from 'ava';
+import debug from 'debug';
+import fs from 'fs-extra';
+
+import { createWindowsInstaller } from '../src/index.js';
+import spawn from '../src/spawn-promise.js';
+import { createTempDir } from '../src/temp-utils.js';
+import { createTempAppDirectory } from './helpers/helpers.js';
+
+const log = debug('electron-windows-installer:spec');
 
 function spawn7z(args: string[]): Promise<string> {
-  const sevenZipPath = path.join(__dirname, '..', 'vendor', '7z.exe');
+  const sevenZipPath = path.join(import.meta.dirname, '..', 'vendor', '7z.exe');
   const wineExe = ['arm64', 'x64'].includes(process.arch) ? 'wine64' : 'wine';
   return process.platform !== 'win32'
     ? spawn(wineExe, [sevenZipPath, ...args])

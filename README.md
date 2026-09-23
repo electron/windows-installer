@@ -25,17 +25,22 @@ a 64-bit machine; the generated installer runs on 32-bit Windows. Electron
 
 ## Usage
 
-Require the package:
+> [!NOTE]
+> `electron-winstaller` is an ESM-only package and requires Node.js 22.12 or
+> newer. Use `import` to load it. On Node.js 22.12+, `require()` of the ESM
+> entry point also works via Node's `require(esm)` support.
+
+Import the package:
 
 ```javascript
-const electronInstaller = require('electron-winstaller');
+import { createWindowsInstaller } from 'electron-winstaller';
 ```
 
 Then do a build like so..
 
 ```javascript
 try {
-  await electronInstaller.createWindowsInstaller({
+  await createWindowsInstaller({
     appDirectory: '/tmp/build/my-app-64',
     outputDirectory: '/tmp/build/installer64',
     authors: 'My App Inc.',

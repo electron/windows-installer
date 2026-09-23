@@ -2,7 +2,8 @@
   "name": "electron-winstaller",
   "version": "0.0.0-development",
   "description": "Module to generate Windows installers for Electron apps",
-  "main": "lib/index.js",
+  "type": "module",
+  "exports": "./lib/index.js",
   "types": "lib/index.d.ts",
   "license": "MIT",
   "repository": {
@@ -37,12 +38,13 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.12",
     "@types/fs-extra": "^5.0.5",
     "@types/lodash": "^4.17.0",
-    "@types/node": "^20.6.0",
+    "@types/node": "~22.10.7",
     "ava": "^5.1.1",
     "oxlint": "1.81.0",
-    "ts-node": "^10.9.1",
+    "tsx": "^4.19.0",
     "typedoc": "0.25.13",
     "typescript": "~5.4.5"
   },
@@ -53,14 +55,15 @@
     "provenance": true
   },
   "ava": {
-    "extensions": [
-      "ts"
-    ],
+    "extensions": {
+      "ts": "module"
+    },
     "files": [
       "spec/*.ts"
     ],
-    "require": [
-      "ts-node/register/transpile-only"
-    ]
+    "nodeArguments": [
+      "--import=tsx"
+    ],
+    "workerThreads": false
   }
 }

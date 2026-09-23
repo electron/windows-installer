@@ -1,20 +1,23 @@
-import test from 'ava';
-import path from 'path';
-import { createTempDir } from '../src/temp-utils';
-import fs from 'fs-extra';
-import { createWindowsInstaller } from '../src';
-import { createTempAppDirectory } from './helpers/helpers';
-import type { SignToolOptions } from '@electron/windows-sign' with { 'resolution-mode': 'import' };
+import path from 'node:path';
 
-const log = require('debug')('electron-windows-installer:spec');
+import type { SignToolOptions } from '@electron/windows-sign';
+import test from 'ava';
+import debug from 'debug';
+import fs from 'fs-extra';
+
+import { createWindowsInstaller } from '../src/index.js';
+import { createTempDir } from '../src/temp-utils.js';
+import { createTempAppDirectory } from './helpers/helpers.js';
+
+const log = debug('electron-windows-installer:spec');
 
 if (process.platform === 'win32') {
   test.serial('creates a signtool.exe and uses it to sign', async (t): Promise<void> => {
 
     const outputDirectory = await createTempDir('ei-');
     const appDirectory = await createTempAppDirectory();
-    const hookLogPath = path.join(__dirname, './helpers/hook.log');
-    const hookModulePath = path.join(__dirname, './helpers/windowsSignHook.js');
+    const hookLogPath = path.join(import.meta.dirname, './helpers/hook.log');
+    const hookModulePath = path.join(import.meta.dirname, './helpers/windowsSignHook.js');
     const windowsSign: SignToolOptions = { hookModulePath };
     const options = { appDirectory, outputDirectory, windowsSign };
 
