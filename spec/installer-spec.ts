@@ -1,4 +1,5 @@
-import test from 'ava';
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
 import path from 'path';
 import { createTempDir } from '../src/temp-utils';
 import fs from 'fs-extra';
@@ -17,7 +18,7 @@ function spawn7z(args: string[]): Promise<string> {
 }
 
 
-test.serial('creates a nuget package and installer', async (t): Promise<void> => {
+test('creates a nuget package and installer', async (): Promise<void> => {
   const outputDirectory = await createTempDir('ei-');
   const appDirectory = await createTempAppDirectory();
   const options = { appDirectory, outputDirectory };
@@ -29,25 +30,25 @@ test.serial('creates a nuget package and installer', async (t): Promise<void> =>
 
   const nupkgPath = path.join(outputDirectory, 'myapp-1.0.0-full.nupkg');
 
-  t.true(await fs.pathExists(nupkgPath));
-  t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.exe')));
+  assert.ok(await fs.pathExists(nupkgPath));
+  assert.ok(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.exe')));
 
   if (process.platform === 'win32') {
-    t.true(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.msi')));
+    assert.ok(await fs.pathExists(path.join(outputDirectory, 'MyAppSetup.msi')));
   }
 
   log('Verifying Update.exe');
-  t.true(await fs.pathExists(path.join(appDirectory, 'Squirrel.exe')));
+  assert.ok(await fs.pathExists(path.join(appDirectory, 'Squirrel.exe')));
 
   log('Verifying contents of .nupkg');
 
   const packageContents = await spawn7z(['l', nupkgPath]);
 
-  t.true(packageContents.includes('lib\\net45\\vk_swiftshader_icd.json'));
-  t.true(packageContents.includes('lib\\net45\\swiftshader\\libEGL.dll'));
+  assert.ok(packageContents.includes('lib\\net45\\vk_swiftshader_icd.json'));
+  assert.ok(packageContents.includes('lib\\net45\\swiftshader\\libEGL.dll'));
 });
 
-test.serial('creates an installer when swiftshader files are missing', async (t): Promise<void> => {
+test('creates an installer when swiftshader files are missing', async (): Promise<void> => {
   const appDirectory = await createTempAppDirectory();
   const outputDirectory = await createTempDir('electron-winstaller-test-');
   const options = { appDirectory, outputDirectory };
@@ -65,6 +66,6 @@ test.serial('creates an installer when swiftshader files are missing', async (t)
   log('Verifying contents of .nupkg');
 
   const packageContents = await spawn7z(['l', nupkgPath]);
-  t.false(packageContents.includes('vk_swiftshader_icd.json'));
-  t.false(packageContents.includes('swiftshader\\'));
+  assert.ok(!packageContents.includes('vk_swiftshader_icd.json'));
+  assert.ok(!packageContents.includes('swiftshader\\'));
 });

@@ -25,9 +25,9 @@
     "prepare": "npm run build",
     "lint": "oxlint src spec",
     "lint:fix": "oxlint --fix src spec",
-    "ava": "ava --timeout=60s",
-    "test": "npm run lint && npm run ava",
-    "tdd": "ava --watch"
+    "test": "npm run lint && npm run test:unit",
+    "test:unit": "node --require ts-node/register/transpile-only --test --test-timeout=60000 \"spec/*-spec.ts\"",
+    "tdd": "node --require ts-node/register/transpile-only --test --watch \"spec/*-spec.ts\""
   },
   "dependencies": {
     "@electron/asar": "^3.2.1",
@@ -40,7 +40,6 @@
     "@types/fs-extra": "^5.0.5",
     "@types/lodash": "^4.17.0",
     "@types/node": "^20.6.0",
-    "ava": "^5.1.1",
     "oxlint": "1.81.0",
     "ts-node": "^10.9.1",
     "typedoc": "0.25.13",
@@ -51,16 +50,5 @@
   },
   "publishConfig": {
     "provenance": true
-  },
-  "ava": {
-    "extensions": [
-      "ts"
-    ],
-    "files": [
-      "spec/*.ts"
-    ],
-    "require": [
-      "ts-node/register/transpile-only"
-    ]
   }
 }
