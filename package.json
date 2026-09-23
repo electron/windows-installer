@@ -26,9 +26,9 @@
     "prepare": "npm run build",
     "lint": "oxlint src spec",
     "lint:fix": "oxlint --fix src spec",
-    "ava": "ava --timeout=60s",
-    "test": "npm run lint && npm run ava",
-    "tdd": "ava --watch"
+    "test": "npm run lint && npm run test:unit",
+    "test:unit": "node --import jiti/register --test --test-timeout=60000 \"spec/*-spec.ts\"",
+    "tdd": "node --import jiti/register --test --watch \"spec/*-spec.ts\""
   },
   "dependencies": {
     "@electron/asar": "^3.2.1",
@@ -42,9 +42,8 @@
     "@types/fs-extra": "^5.0.5",
     "@types/lodash": "^4.17.0",
     "@types/node": "~22.10.7",
-    "ava": "^5.1.1",
+    "jiti": "2.7.0",
     "oxlint": "1.81.0",
-    "tsx": "^4.19.0",
     "typedoc": "0.25.13",
     "typescript": "~5.4.5"
   },
@@ -53,17 +52,5 @@
   },
   "publishConfig": {
     "provenance": true
-  },
-  "ava": {
-    "extensions": {
-      "ts": "module"
-    },
-    "files": [
-      "spec/*.ts"
-    ],
-    "nodeArguments": [
-      "--import=tsx"
-    ],
-    "workerThreads": false
   }
 }

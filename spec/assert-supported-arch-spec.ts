@@ -1,12 +1,14 @@
-import test from 'ava';
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+
 import { assertSupportedArch } from '../src/index.js';
 
-test('throws for 32-bit architectures', (t): void => {
-  t.throws(() => assertSupportedArch('ia32'), { message: '32-bit build machines are not supported' });
-  t.throws(() => assertSupportedArch('arm'), { message: '32-bit build machines are not supported' });
+test('throws for 32-bit architectures', (): void => {
+  assert.throws(() => assertSupportedArch('ia32'), { message: '32-bit build machines are not supported' });
+  assert.throws(() => assertSupportedArch('arm'), { message: '32-bit build machines are not supported' });
 });
 
-test('does not throw for 64-bit architectures', (t): void => {
-  t.notThrows(() => assertSupportedArch('x64'));
-  t.notThrows(() => assertSupportedArch('arm64'));
+test('does not throw for 64-bit architectures', (): void => {
+  assert.doesNotThrow(() => assertSupportedArch('x64'));
+  assert.doesNotThrow(() => assertSupportedArch('arm64'));
 });
