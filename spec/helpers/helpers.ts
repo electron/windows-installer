@@ -1,9 +1,10 @@
-import path from 'path';
+import path from 'node:path';
+
 import fs from 'fs-extra';
 
-import { createTempDir } from '../../src/temp-utils';
+import { createTempDir } from '../../src/temp-utils.js';
 
-export const FIXTURE_APP_DIR = path.join(__dirname, '../fixtures/app');
+export const FIXTURE_APP_DIR = path.join(import.meta.dirname, '../fixtures/app');
 
 export async function createTempAppDirectory(): Promise<string> {
   const appDirectory = await createTempDir('electron-winstaller-ad-');

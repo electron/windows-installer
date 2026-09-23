@@ -1,21 +1,16 @@
 {
   "compilerOptions": {
     "module": "node16",
-    "target": "es5",
-    "lib": [
-      "es2017"
-    ],
+    "target": "es2022",
+    "lib": ["es2023"],
     "sourceMap": true,
     "strict": true,
+    "rootDir": "src",
     "outDir": "lib",
     "declaration": true,
     "esModuleInterop": true,
-    "types": [
-      "node"
-    ]
+    "skipLibCheck": true,
+    "types": ["node"]
   },
-  "include": [
-    "src",
-    "typings"
-  ]
+  "include": ["src"]
 }

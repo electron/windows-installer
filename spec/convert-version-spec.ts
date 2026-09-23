@@ -1,6 +1,7 @@
-import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { convertVersion } from '../src/index';
+import { test } from 'node:test';
+
+import { convertVersion } from '../src/index.js';
 
 test('makes semver versions into valid NuGet versions', (): void => {
   assert.equal(convertVersion('1'), '1');

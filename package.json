@@ -2,7 +2,8 @@
   "name": "electron-winstaller",
   "version": "0.0.0-development",
   "description": "Module to generate Windows installers for Electron apps",
-  "main": "lib/index.js",
+  "type": "module",
+  "exports": "./lib/index.js",
   "types": "lib/index.d.ts",
   "license": "MIT",
   "repository": {
@@ -26,8 +27,8 @@
     "lint": "oxlint src spec",
     "lint:fix": "oxlint --fix src spec",
     "test": "npm run lint && npm run test:unit",
-    "test:unit": "node --require ts-node/register/transpile-only --test --test-timeout=60000 \"spec/*-spec.ts\"",
-    "tdd": "node --require ts-node/register/transpile-only --test --watch \"spec/*-spec.ts\""
+    "test:unit": "node --import jiti/register --test --test-timeout=60000 \"spec/*-spec.ts\"",
+    "tdd": "node --import jiti/register --test --watch \"spec/*-spec.ts\""
   },
   "dependencies": {
     "@electron/asar": "^3.2.1",
@@ -37,11 +38,12 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.12",
     "@types/fs-extra": "^5.0.5",
     "@types/lodash": "^4.17.0",
-    "@types/node": "^20.6.0",
+    "@types/node": "~22.10.7",
+    "jiti": "2.7.0",
     "oxlint": "1.81.0",
-    "ts-node": "^10.9.1",
     "typedoc": "0.25.13",
     "typescript": "~5.4.5"
   },

@@ -1,6 +1,7 @@
-import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { sanitizeAuthors } from '../src/index';
+import { test } from 'node:test';
+
+import { sanitizeAuthors } from '../src/index.js';
 
 test('removes "@" characters that NuGet rejects in the authors field', (): void => {
   assert.equal(sanitizeAuthors('Jane Doe <jane@example.com>'), 'Jane Doe <janeexample.com>');

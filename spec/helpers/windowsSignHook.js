@@ -1,8 +1,9 @@
-const fs = require('fs-extra');
-const path = require('path');
+import path from 'node:path';
 
-module.exports = function(args) {
+import fs from 'fs-extra';
+
+export default function (args) {
   console.log(...args);
 
-  fs.appendFileSync(path.join(__dirname, 'hook.log'), `${JSON.stringify(args)}\n`);
-};
+  fs.appendFileSync(path.join(import.meta.dirname, 'hook.log'), `${JSON.stringify(args)}\n`);
+}
