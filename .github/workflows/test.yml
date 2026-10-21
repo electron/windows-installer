@@ -18,7 +18,7 @@ jobs:
       matrix:
         node-version:
           - '24'
-          - '22.12'
+          - '22.23.4'
         os:
           - ubuntu-22.04
           - windows-latest
