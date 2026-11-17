@@ -52,5 +52,6 @@
   },
   "publishConfig": {
     "provenance": true
-  }
+  },
+  "packageManager": "yarn@4.10.3"
 }

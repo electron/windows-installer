@@ -16,3 +16,10 @@ vendor/7z.dll
 vendor/7z.exe
 hook.log
 docs
+
+# Yarn Berry
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+.pnp.*

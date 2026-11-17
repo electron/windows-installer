@@ -45,7 +45,7 @@ jobs:
           check-latest: true
           cache: 'yarn'
       - name: Install
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
       - name: Test
         run: yarn test
 
